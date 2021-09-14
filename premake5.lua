@@ -8,7 +8,7 @@ workspace "Odysseus"
 		"Dist"
 	}
 
-outputdir = "%{cfg.buildcfg}-%{cfg.sustem}-%{cfg.architecture}"
+outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
@@ -25,7 +25,7 @@ project "Odysseus"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "odcpch.h"
-	pchsource "Odysseus/Odysseus/odcpch.cpp"
+	pchsource "Odysseus/odcpch.cpp"
 
 	files
 	{
@@ -36,12 +36,12 @@ project "Odysseus"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/spdlog/include",
+		"%{prj.name}/vendor/spdlog/include",
 		"%{IncludeDir.GLFW}"
 	}
 
-	links
-	{
+	links 
+	{ 
 		"GLFW",
 		"opengl32.lib"
 	}
@@ -54,25 +54,24 @@ project "Odysseus"
 		defines
 		{
 			"ODC_PLATFORM_WINDOWS",
-			"ODC_BUILD_DLL",
-			"_WINDLL"
+			"ODC_BUILD_DLL"
 		}
 
 		postbuildcommands
 		{
 			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
 		}
-	
+
 	filter "configurations:Debug"
-		defines "HZ_DEBUG"
+		defines "ODC_DEBUG"
 		symbols "On"
-	
+
 	filter "configurations:Release"
-		defines "HZ_RELEASE"
+		defines "ODC_RELEASE"
 		optimize "On"
-	
+
 	filter "configurations:Dist"
-		defines "HZ_DIST"
+		defines "ODC_DIST"
 		optimize "On"
 
 project "Sandbox"
@@ -91,7 +90,7 @@ project "Sandbox"
 
 	includedirs
 	{
-		"Odysseus/spdlog/include",
+		"Odysseus/vendor/spdlog/include",
 		"Odysseus/src"
 	}
 
@@ -107,18 +106,17 @@ project "Sandbox"
 
 		defines
 		{
-			"ODC_PLATFORM_WINDOWS",
-			"_WINDLL"
+			"ODC_PLATFORM_WINDOWS"
 		}
-	
+
 	filter "configurations:Debug"
-		defines "HZ_DEBUG"
+		defines "ODC_DEBUG"
 		symbols "On"
-	
+
 	filter "configurations:Release"
-		defines "HZ_RELEASE"
+		defines "ODC_RELEASE"
 		optimize "On"
-	
+
 	filter "configurations:Dist"
-		defines "HZ_DIST"
+		defines "ODC_DIST"
 		optimize "On"
