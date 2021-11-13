@@ -7,49 +7,54 @@
     <Filter Include="Odysseus\Events">
       <UniqueIdentifier>{08A53D4D-7430-AB11-7D41-2E06E94B0712}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{2AC788B4-1694-E3BF-3FAD-D1672BD9184E}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Odysseus\Odysseus.h" />
-    <ClInclude Include="Odysseus\Application.h">
+    <ClInclude Include="src\Odysseus.h" />
+    <ClInclude Include="src\Odysseus\Application.h">
       <Filter>Odysseus</Filter>
     </ClInclude>
-    <ClInclude Include="Odysseus\Core.h">
+    <ClInclude Include="src\Odysseus\Core.h">
       <Filter>Odysseus</Filter>
     </ClInclude>
-    <ClInclude Include="Odysseus\EntryPoint.h">
+    <ClInclude Include="src\Odysseus\EntryPoint.h">
       <Filter>Odysseus</Filter>
     </ClInclude>
-    <ClInclude Include="Odysseus\Events\ApplicationEvent.h">
+    <ClInclude Include="src\Odysseus\Events\ApplicationEvent.h">
       <Filter>Odysseus\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Odysseus\Events\Event.h">
+    <ClInclude Include="src\Odysseus\Events\Event.h">
       <Filter>Odysseus\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Odysseus\Events\KeyEvent.h">
+    <ClInclude Include="src\Odysseus\Events\KeyEvent.h">
       <Filter>Odysseus\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Odysseus\Events\MouseEvent.h">
+    <ClInclude Include="src\Odysseus\Events\MouseEvent.h">
       <Filter>Odysseus\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Odysseus\Log.h">
+    <ClInclude Include="src\Odysseus\Log.h">
       <Filter>Odysseus</Filter>
     </ClInclude>
-    <ClInclude Include="Odysseus\odcpch.h">
+    <ClInclude Include="src\Odysseus\Window.h">
       <Filter>Odysseus</Filter>
     </ClInclude>
-    <ClInclude Include="Odysseus\Window.h" />
-    <ClInclude Include="Platform\WindowsWindow.h" />
+    <ClInclude Include="src\Platform\WindowsWindow.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\odcpch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Odysseus\Application.cpp">
+    <ClCompile Include="src\Odysseus\Application.cpp">
       <Filter>Odysseus</Filter>
     </ClCompile>
-    <ClCompile Include="Odysseus\Log.cpp">
+    <ClCompile Include="src\Odysseus\Log.cpp">
       <Filter>Odysseus</Filter>
     </ClCompile>
-    <ClCompile Include="Odysseus\odcpch.cpp">
-      <Filter>Odysseus</Filter>
+    <ClCompile Include="src\Platform\WindowsWindow.cpp">
+      <Filter>Platform</Filter>
     </ClCompile>
-    <ClCompile Include="Platform\WindowsWindow.cpp" />
+    <ClCompile Include="src\odcpch.cpp" />
   </ItemGroup>
 </Project>

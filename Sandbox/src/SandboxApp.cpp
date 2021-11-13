@@ -1,4 +1,4 @@
-#include "../Odysseus/Odysseus.h"
+#include <Odysseus.h>
 
 class Sandbox : public Odysseus::Application
 {

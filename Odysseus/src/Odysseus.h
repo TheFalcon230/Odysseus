@@ -2,9 +2,9 @@
 
 //For use by Odysseus Application
 
-#include "Application.h"
-#include "Log.h"
+#include "Odysseus/Application.h"
+#include "Odysseus/Log.h"
 
 // -------ENTRY POINT-------------
-#include "EntryPoint.h"
+#include "Odysseus/EntryPoint.h"
 // -------------------------------

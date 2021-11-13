@@ -25,7 +25,7 @@ project "Odysseus"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "odcpch.h"
-	pchsource "Odysseus/odcpch.cpp"
+	pchsource "Odysseus/src/odcpch.cpp"
 
 	files
 	{

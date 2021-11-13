@@ -1,6 +1,6 @@
-#include "../odcpch.h"
+#include "odcpch.h"
 #include "WindowsWindow.h"
-#include "../Odysseus/Log.h"
+#include "Odysseus/Log.h"
 
 namespace Odysseus
 {
@@ -29,6 +29,7 @@ namespace Odysseus
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
+
 		glfwSwapInterval((int)enabled);
 
 		m_Data.vSync = enabled;

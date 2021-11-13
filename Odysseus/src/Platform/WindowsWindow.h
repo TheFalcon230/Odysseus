@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../Odysseus/Window.h"
+
+#include "Odysseus/Window.h"
 
 #include <GLFW/glfw3.h>
 

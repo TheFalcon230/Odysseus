@@ -1,5 +1,5 @@
-[submodule "spdlog"]
-	path = spdlog
+[submodule "Odysseus/vendor/spdlog"]
+	path = Odysseus/vendor/spdlog
 	url = https://github.com/gabime/spdlog
 [submodule "Odysseus/vendor/GLFW"]
 	path = Odysseus/vendor/GLFW
