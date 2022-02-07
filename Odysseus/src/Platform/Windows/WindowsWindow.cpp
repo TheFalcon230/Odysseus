@@ -8,7 +8,6 @@
 #include "Odysseus/Events/MouseEvent.h"
 
 #include <glad.h>
-#include <glfw3.h>
 
 namespace Odysseus
 {

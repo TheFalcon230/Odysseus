@@ -109,6 +109,7 @@ project "Sandbox"
 	{
 		"Odysseus/vendor/spdlog/include",
 		"Odysseus/src",
+		"Hazel/vendor",
 		"%{IncludeDir.glm}"
 	}
 

@@ -170,7 +170,6 @@
     <ClInclude Include="src\Odysseus\Log.h" />
     <ClInclude Include="src\Odysseus\MouseButtonCodes.h" />
     <ClInclude Include="src\Odysseus\Window.h" />
-    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\odcpch.h" />
@@ -594,9 +593,9 @@
     <ClCompile Include="src\Layer.cpp" />
     <ClCompile Include="src\LayerStack.cpp" />
     <ClCompile Include="src\Odysseus\Application.cpp" />
+    <ClCompile Include="src\Odysseus\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Odysseus\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Odysseus\Log.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\odcpch.cpp">

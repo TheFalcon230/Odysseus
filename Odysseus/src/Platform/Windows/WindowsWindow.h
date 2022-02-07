@@ -3,6 +3,8 @@
 
 #include "Odysseus/Window.h"
 
+#include <glfw3.h>
+
 struct GLFWwindow;
 
 namespace Odysseus
