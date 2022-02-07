@@ -12,7 +12,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["GLFW"] = "Odysseus/vendor/GLFW/include"
+IncludeDir["GLFW"] = "MyLib/include"
 
 include "Odysseus/vendor/GLFW"
 
@@ -43,7 +43,8 @@ project "Odysseus"
 	links 
 	{ 
 		"GLFW",
-		"opengl32.lib"
+		"opengl32.lib",
+		"GLFW.lib"
 	}
 
 	filter "system:windows"
