@@ -12,6 +12,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Layer.h" />
+    <ClInclude Include="src\LayerStack.h" />
     <ClInclude Include="src\Odysseus.h" />
     <ClInclude Include="src\Odysseus\Application.h">
       <Filter>Odysseus</Filter>
@@ -46,6 +48,8 @@
     <ClInclude Include="src\odcpch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Layer.cpp" />
+    <ClCompile Include="src\LayerStack.cpp" />
     <ClCompile Include="src\Odysseus\Application.cpp">
       <Filter>Odysseus</Filter>
     </ClCompile>
