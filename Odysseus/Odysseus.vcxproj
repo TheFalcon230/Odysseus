@@ -91,6 +91,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;GLFW.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\bin\Debug-windows-x86_64\Odysseus\Odysseus.lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\MyLib\lib</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>IF EXIST ..\bin\Debug-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Odysseus\Odysseus.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Odysseus\Odysseus.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul)</Command>
