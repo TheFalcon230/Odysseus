@@ -166,11 +166,23 @@ namespace Odysseus
 				MouseMovedEvent event(static_cast<float>(posX), static_cast<float>(posY));
 				data.EventCallback(event);
 			});
+
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keyCode)
+			{
+				WindowData& data = *static_cast<WindowData*> (glfwGetWindowUserPointer(window));
+				KeyTypedEvent event(keyCode);
+				data.EventCallback(event);
+			});
 	}
 
 	void WindowsWindow::Shutdown()
 	{
 		glfwDestroyWindow(m_Window);
+	}
+
+	void* WindowsWindow::GetNativeWindow() const
+	{
+		return m_Window;
 	}
 
 }

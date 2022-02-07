@@ -41,5 +41,8 @@ namespace Odysseus
 		};
 
 		WindowData m_Data;
+
+		// Hérité via Window
+		virtual void* GetNativeWindow() const override;
 	};
 }
