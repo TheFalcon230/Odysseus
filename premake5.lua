@@ -12,9 +12,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["GLFW"] = "MyLib/include"
+IncludeDir["GLFW"] = "MyLib/include/GLFW"
+IncludeDir["GLAD"] = "MyLib/include/GLAD"
+IncludeDir["ImGui"] = "Odysseus/vendor/imgui/include"
 
 include "Odysseus/vendor/GLFW"
+include "Odysseus/vendor/GLAD"
 
 project "Odysseus"
 	location "Odysseus"
@@ -37,12 +40,16 @@ project "Odysseus"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.ImGui}"
 	}
 
 	links 
 	{ 
 		"GLFW",
+		"GLAD",
+		"ImGui",
 		"opengl32.lib",
 		"GLFW.lib"
 	}
@@ -65,14 +72,17 @@ project "Odysseus"
 
 	filter "configurations:Debug"
 		defines "ODC_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "ODC_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "ODC_DIST"
+		buildoptions "/MD"
 		optimize "On"
 
 project "Sandbox"
@@ -112,12 +122,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "ODC_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "ODC_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "ODC_DIST"
+		buildoptions  "/MD"
 		optimize "On"

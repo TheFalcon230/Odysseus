@@ -1,5 +1,5 @@
 #pragma once
-#include "../odcpch.h"
+#include "odcpch.h"
 #include "../Core.h"
 
 
@@ -49,8 +49,8 @@ namespace Odysseus
 		{
 			return GetCategoryFlags() & category;
 		}
+		bool Handled = false;
 	protected:
-		bool m_Handled = false;
 	};
 
 	class EventDispatcher
@@ -69,7 +69,7 @@ namespace Odysseus
 		{
 			if (m_Event.GetEventType() == T::GetStaticType())
 			{
-				m_Event.m_Handled = func(*(T*)&m_Event);
+				m_Event.Handled = func(*(T*)&m_Event);
 				return true;
 			}
 			return false;
