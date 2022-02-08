@@ -2,8 +2,7 @@
 
 
 #include "Odysseus/Window.h"
-
-#include <glfw3.h>
+#include "Odysseus/Log.h"
 
 struct GLFWwindow;
 

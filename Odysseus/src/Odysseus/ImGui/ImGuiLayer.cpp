@@ -1,15 +1,19 @@
+
 #include "odcpch.h"
 #include "ImGuiLayer.h"
 
 #include "imgui.h"
-#include "backends/imgui_impl_opengl3.cpp"
-#include "backends/imgui_impl_glfw.cpp"
+
+#define IMGUI_IMPL_API
+#include "backends/imgui_impl_opengl3.h"
+#include "backends/imgui_impl_glfw.h"
 
 #include "Odysseus/Application.h"
 
-// TEMPORARY
-#include <glfw3.h>
-#include <glad.h>
+#define GLFW_INCLUDE_NONE
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 
 
 namespace Odysseus
@@ -74,7 +78,7 @@ namespace Odysseus
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
-		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
+		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
 		// Rendering
 		ImGui::Render();

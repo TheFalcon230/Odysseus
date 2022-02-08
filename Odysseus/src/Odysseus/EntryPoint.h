@@ -1,5 +1,4 @@
 #pragma once
-#include "Log.h"
 #ifdef ODC_PLATFORM_WINDOWS
 
 extern Odysseus::Application* Odysseus::CreateApplication();

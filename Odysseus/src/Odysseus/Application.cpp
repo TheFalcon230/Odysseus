@@ -3,7 +3,7 @@
 
 #include "Odysseus/Log.h"
 
-#include <glad.h>
+#include <glad/glad.h>
 
 #include "Input.h"
 

@@ -1,13 +1,16 @@
 #include "odcpch.h"
 #include "WindowsWindow.h"
-#include "Odysseus/Log.h"
+
 
 //Including Events
 #include "Odysseus/Events/ApplicationEvent.h"
 #include "Odysseus/Events/KeyEvent.h"
 #include "Odysseus/Events/MouseEvent.h"
 
-#include <glad.h>
+#define GLFW_INCLUDE_NONE
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 
 namespace Odysseus
 {
