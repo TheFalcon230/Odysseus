@@ -1,5 +1,6 @@
 #pragma once
 #include "Layer.h"
+#include "Odysseus//Log.h"
 
 #include "Odysseus/Events/ApplicationEvent.h"
 #include <Odysseus/Events/MouseEvent.h>
@@ -16,6 +17,9 @@ namespace Odysseus
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		virtual void OnImGuiRender() override;
+
+		void CreateDockingWidget(bool* open);
+		void ShowSettingWidget(bool* open);
 
 		void Begin();
 		void End();
