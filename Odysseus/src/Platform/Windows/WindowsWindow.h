@@ -2,7 +2,9 @@
 
 
 #include "Odysseus/Window.h"
-#include "Odysseus/Log.h"
+#include "Odysseus/Renderer/GraphicsContext.h"
+
+#include <GLFW/glfw3.h>
 
 struct GLFWwindow;
 

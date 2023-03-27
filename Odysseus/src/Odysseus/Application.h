@@ -4,8 +4,8 @@
 
 #include "Window.h"
 #include "LayerStack.h"
-#include "Events/Event.h"
-#include "Events/ApplicationEvent.h"
+#include "Odysseus/Events/Event.h"
+#include "Odysseus/Events/ApplicationEvent.h"
 
 #include "Odysseus/ImGui/ImGuiLayer.h"
 

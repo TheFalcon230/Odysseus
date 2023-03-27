@@ -152,8 +152,17 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Layer.h" />
-    <ClInclude Include="src\LayerStack.h" />
+    <ClInclude Include="src\Odysseus\Renderer\Buffer.h" />
+    <ClInclude Include="src\Odysseus\Renderer\Camera.h" />
+    <ClInclude Include="src\Odysseus\Renderer\RenderCommand.h" />
+    <ClInclude Include="src\Odysseus\Renderer\Renderer.h" />
+    <ClInclude Include="src\Odysseus\Renderer\RendererAPI.h" />
+    <ClInclude Include="src\Odysseus\Renderer\Shader.h" />
+    <ClInclude Include="src\Odysseus\Renderer\VertexArray.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
+    <ClInclude Include="src\Odysseus\Layer.h" />
+    <ClInclude Include="src\Odysseus\LayerStack.h" />
     <ClInclude Include="src\Odysseus.h" />
     <ClInclude Include="src\Odysseus\Application.h" />
     <ClInclude Include="src\Odysseus\Core.h" />
@@ -168,7 +177,10 @@
     <ClInclude Include="src\Odysseus\KeyCode.h" />
     <ClInclude Include="src\Odysseus\Log.h" />
     <ClInclude Include="src\Odysseus\MouseButtonCodes.h" />
+    <ClInclude Include="src\Odysseus\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Odysseus\Window.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\odcpch.h" />
@@ -589,12 +601,23 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Layer.cpp" />
-    <ClCompile Include="src\LayerStack.cpp" />
+    <ClCompile Include="src\Odysseus\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Odysseus\Renderer\Camera.cpp" />
+    <ClCompile Include="src\Odysseus\Renderer\RenderCommand.cpp" />
+    <ClCompile Include="src\Odysseus\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Odysseus\Renderer\RendererAPI.cpp" />
+    <ClCompile Include="src\Odysseus\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Odysseus\Renderer\VertexArray.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
+    <ClCompile Include="src\Odysseus\Layer.cpp" />
+    <ClCompile Include="src\Odysseus\LayerStack.cpp" />
     <ClCompile Include="src\Odysseus\Application.cpp" />
     <ClCompile Include="src\Odysseus\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Odysseus\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Odysseus\Log.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\odcpch.cpp">

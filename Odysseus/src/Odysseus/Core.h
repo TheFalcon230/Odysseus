@@ -2,12 +2,12 @@
 
 
 #ifdef ODC_PLATFORM_WINDOWS
-	#ifdef ODC_BUILD_DLL
-		#define ODYSSEUS_API __declspec(dllexport)
-	#else
-		#define ODYSSEUS_API __declspec(dllimport)
+		#ifdef ODC_BUILD_DLL
+			#define ODYSSEUS_API __declspec(dllexport)
+		#else
+			#define ODYSSEUS_API __declspec(dllimport)
 	#endif // ODC_BUILD_DLL
-#else
+	#else
 	#error Odysseus only support Winwdow!
 #endif // ODC_PLATFORM_WINDOWS
 
@@ -22,4 +22,4 @@
 
 #define BIT(x) ( 1 << x )
 
-#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+#define ODC_BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
