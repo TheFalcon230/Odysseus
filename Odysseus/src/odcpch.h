@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "Odysseus/Log.h"
 
 #ifdef ODC_PLATFORM_WINDOWS
 #include <Windows.h>

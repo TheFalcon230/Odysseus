@@ -1,11 +1,14 @@
 #pragma once
 
 #include "Core.h"
-#include "LayerStack.h"
-#include "Events/Event.h"
-#include "Events/ApplicationEvent.h"
 
 #include "Window.h"
+#include "LayerStack.h"
+#include "Odysseus/Events/Event.h"
+#include "Odysseus/Events/ApplicationEvent.h"
+
+#include "Odysseus/ImGui/ImGuiLayer.h"
+
 
 namespace Odysseus
 {
@@ -27,10 +30,12 @@ namespace Odysseus
 		inline Window& GetWindow() { return *m_Window; }
 
 		inline static Application& Get() { return *s_Instance; }
+		inline void QuitApplication() { m_Running = false; }
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 
 		std::unique_ptr<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 	private:

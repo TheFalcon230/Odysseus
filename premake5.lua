@@ -12,8 +12,8 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["GLFW"] = "MyLib/include/GLFW"
-IncludeDir["GLAD"] = "MyLib/include/GLAD"
+IncludeDir["GLFW"] = "Odysseus/vendor/GLFW/include"
+IncludeDir["GLAD"] = "Odysseus/vendor/GLAD/include"
 IncludeDir["ImGui"] = "Odysseus/vendor/oui"
 IncludeDir["glm"] = "Odysseus/vendor/glm"
 
@@ -40,6 +40,11 @@ project "Odysseus"
 		"%{prj.name}/vendor/glm/glm/**.inl",
 	}
 
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS"
+	}
+
 	includedirs
 	{
 		"%{prj.name}/src",
@@ -57,7 +62,6 @@ project "Odysseus"
 		"GLAD",
 		"ImGui",
 		"opengl32.lib",
-		"GLFW.lib"
 	}
 
 	filter "system:windows"
@@ -109,6 +113,7 @@ project "Sandbox"
 	{
 		"Odysseus/vendor/spdlog/include",
 		"Odysseus/src",
+		"Hazel/vendor",
 		"%{IncludeDir.glm}"
 	}
 

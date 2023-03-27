@@ -1,7 +1,7 @@
 #include "odcpch.h"
 #include "WindowsInput.h"
 
-#include <glfw3.h>
+#include <GLFW/glfw3.h>
 #include "Odysseus/Application.h"
 
 namespace Odysseus

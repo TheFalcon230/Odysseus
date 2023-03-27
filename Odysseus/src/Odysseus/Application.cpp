@@ -2,15 +2,18 @@
 #include "Application.h"
 
 #include "Odysseus/Log.h"
-#include "Input.h"
+#include "Odysseus/Renderer/Renderer.h"
 
-#include <glfw3.h>
+#include "Input.h"
+#include <glfw/glfw3.h>
 
 namespace Odysseus
 {
-#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+#define ODC_BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
 	Application* Application::s_Instance = nullptr;
+
+
 
 	Application::Application()
 	{
@@ -18,7 +21,10 @@ namespace Odysseus
 		s_Instance = this;
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
-		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
+		m_Window->SetEventCallback(ODC_BIND_EVENT_FN(Application::OnEvent));
+
+		m_ImGuiLayer = new ImGuiLayer();
+		PushOverlay(m_ImGuiLayer);
 	}
 
 	Application::~Application()
@@ -27,14 +33,16 @@ namespace Odysseus
 
 	void Application::Run()
 	{
-		
-		while (m_Running) 
-		{
-			glClearColor(0, 0, 0, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
 
+		while (m_Running)
+		{
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
+
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+			m_ImGuiLayer->End();
 
 			m_Window->Update();
 		}
@@ -43,9 +51,7 @@ namespace Odysseus
 	void Application::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
-
-		ODC_CORE_TRACE("{0}", e);
+		dispatcher.Dispatch<WindowCloseEvent>(ODC_BIND_EVENT_FN(Application::OnWindowClose));
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{
