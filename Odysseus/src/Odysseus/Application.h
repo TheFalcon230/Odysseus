@@ -30,6 +30,7 @@ namespace Odysseus
 		inline Window& GetWindow() { return *m_Window; }
 
 		inline static Application& Get() { return *s_Instance; }
+		inline void QuitApplication() { m_Running = false; }
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 
