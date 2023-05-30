@@ -6,6 +6,7 @@
 #include "Odysseus/Layer.h"
 #include "Odysseus/Log.h"
 
+#include "Odysseus/Core/Timestep.h"
 
 //Input Codes
 #include "Odysseus/Input.h"
@@ -20,11 +21,11 @@
 
 #include "Odysseus/Renderer/Buffer.h"
 #include "Odysseus/Renderer/Shader.h"
+#include "Odysseus/Renderer/Texture.h"
 #include "Odysseus/Renderer/VertexArray.h"
 
 #include "Odysseus/Renderer/Camera.h"
 // -----------------------------------
-
 
 // -------ENTRY POINT-------------
 #include "Odysseus/EntryPoint.h"

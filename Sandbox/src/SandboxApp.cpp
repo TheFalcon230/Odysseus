@@ -1,127 +1,135 @@
 #include <Odysseus.h>
 
-#include "../oui/imgui.h"
+#include <Platform/OpenGL/OpenGLShader.h>
+
+#include "../imgui/imgui.h"
+
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class ExampleLayer : public Odysseus::Layer
 {
 public:
 	ExampleLayer()
-		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition({0.0f, 0.0f, 0.0f})
+		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition({ 0.0f, 0.0f, 0.0f })
 	{
 
 		ODC_INFO("Start creating layer.");
 		m_SquareVA.reset(Odysseus::VertexArray::Create());
 
-		float squareVertices[3 * 4] = {
+		float squareVertices[4 * 5] = {
 			//Vertices
-			 0.5f, -0.5f, 0.0f,
-			-0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f,
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 
-		std::shared_ptr<Odysseus::VertexBuffer> squareVB;
+		Odysseus::Ref<Odysseus::VertexBuffer> squareVB;
 		squareVB.reset(Odysseus::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 		Odysseus::BufferLayout squareLayout =
 		{
-			{Odysseus::ShaderDataType::Float3, "a_Position"}
+			{Odysseus::ShaderDataType::Float3, "a_Position"},
+			{Odysseus::ShaderDataType::Float2, "a_TexCoord"}
 		};
 		squareVB->SetLayout(squareLayout);
 		m_SquareVA->AddVertexBuffer(squareVB);
 
-		unsigned int squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
+		unsigned int squareIndices[6] = { 0, 1, 2, 0, 3, 2 };
 
-		std::shared_ptr<Odysseus::IndexBuffer> squareIB;
+		Odysseus::Ref<Odysseus::IndexBuffer> squareIB;
 		squareIB.reset(Odysseus::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
-		std::string vertexSrc2 = R"(
-			#version 330 core
+		m_UnlitShader = m_ShaderLibrary.Load("assets/shaders/Unlit.glsl");
 
-			layout(location = 0) in vec3 a_Position;
+		m_Texture = Odysseus::Texture2D::Create("assets/textures/TestImage.png");
 
-			uniform mat4 u_ViewProjection;			
+		std::dynamic_pointer_cast<Odysseus::OpenGLShader>(m_UnlitShader)->Bind();
+		std::dynamic_pointer_cast<Odysseus::OpenGLShader>(m_UnlitShader)->UploadUniformInt("u_Texture", 0);
 
-			out vec3 v_Position;
-
-			void main()
-			{
-				v_Position = a_Position;
-				gl_Position = u_ViewProjection * vec4(a_Position,1.0);
-			}
-		)";
-
-		std::string FragmentSrc2 = R"(
-			#version 330 core
-
-			layout(location = 0) out vec4 finalColor;
-
-			in vec3 v_Position;
-
-			void main()
-			{
-				finalColor = vec4(0.4f, 0.25f, 0.85f, 1.0f);
-			}
-		)";
-
-		m_Shader2.reset(new Odysseus::Shader(vertexSrc2, FragmentSrc2));
 	}
 
-	void OnUpdate() override
+	void OnUpdate(Odysseus::Timestep updateTime) override
 	{
-		if (Odysseus::Input::IsKeyPressed( ODC_KEY_Q))
+		//ODC_CORE_TRACE("Delta time: {0}s | FPS: {1}", updateTime.AsSeconds(), 1.f / updateTime.AsSeconds());
+
+		if (Odysseus::Input::IsKeyPressed(ODC_KEY_A))
 		{
-			m_CameraPosition.x -= m_CameraSpeed;
+			m_CameraPosition.x -= m_CameraSpeed * updateTime.AsSeconds();
 		}
-		if (Odysseus::Input::IsKeyPressed(ODC_KEY_D))
+		else if (Odysseus::Input::IsKeyPressed(ODC_KEY_D))
 		{
-			m_CameraPosition.x += m_CameraSpeed;
+			m_CameraPosition.x += m_CameraSpeed * updateTime.AsSeconds();
 		}
-		if (Odysseus::Input::IsKeyPressed(ODC_KEY_S))
+		if (Odysseus::Input::IsKeyPressed(ODC_KEY_W))
 		{
-			m_CameraPosition.y -= m_CameraSpeed;
+			m_CameraPosition.y += m_CameraSpeed * updateTime.AsSeconds();
 		}
-		if (Odysseus::Input::IsKeyPressed(ODC_KEY_Z))
+		else if (Odysseus::Input::IsKeyPressed(ODC_KEY_S))
 		{
-			m_CameraPosition.y += m_CameraSpeed;
+			m_CameraPosition.y -= m_CameraSpeed * updateTime.AsSeconds();
 		}
+
+		if (Odysseus::Input::IsKeyPressed(ODC_KEY_Q))
+			m_CameraRotation += m_CameraRotationSpeed * updateTime.AsSeconds();
+		else if (Odysseus::Input::IsKeyPressed(ODC_KEY_E))
+			m_CameraRotation -= m_CameraRotationSpeed * updateTime.AsSeconds();
 
 
 		Odysseus::RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 		Odysseus::RenderCommand::Clear();
 
 		m_Camera.SetPosition(m_CameraPosition);
+		m_Camera.SetRotation(m_CameraRotation);
 
 		Odysseus::Renderer::BeginScene(m_Camera);
 
-		Odysseus::Renderer::Submit(m_Shader2, m_SquareVA);
+		glm::vec4 redColor(0.8f, 0.3f, 0.2f, 1.0f);
+		glm::vec4 blueColor(0.2f, 0.3f, 0.8f, 1.0f);
 
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
+		std::dynamic_pointer_cast<Odysseus::OpenGLShader>(m_UnlitShader)->Bind();
+		std::dynamic_pointer_cast<Odysseus::OpenGLShader>(m_UnlitShader)->UploadUniformFloat3("u_Color", m_SquareColor);
+
+		m_Texture->Bind();
+
+		Odysseus::Renderer::Submit(m_UnlitShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.f)));
 		Odysseus::Renderer::EndScene();
 	}
 
 	virtual void OnImGuiRender() override
 	{
-
+		ImGui::Begin("Details");
+		ImGui::ColorEdit3("Base Color", glm::value_ptr(m_SquareColor));
+		ImGui::End();
 	}
 
 	void OnEvent(Odysseus::Event& event) override
 	{
-		
+
 	}
 private:
-	std::shared_ptr<Odysseus::Shader> m_Shader;
-	std::shared_ptr<Odysseus::VertexBuffer> m_VertexBuffer;
-	std::shared_ptr<Odysseus::IndexBuffer> m_IndexBuffer;
-	std::shared_ptr<Odysseus::VertexArray> m_VertexArray;
+	Odysseus::ShaderLibrary m_ShaderLibrary;
+	Odysseus::Ref<Odysseus::Shader> m_Shader;
+	Odysseus::Ref<Odysseus::VertexBuffer> m_VertexBuffer;
+	Odysseus::Ref<Odysseus::IndexBuffer> m_IndexBuffer;
+	Odysseus::Ref<Odysseus::VertexArray> m_VertexArray;
 
+	Odysseus::Ref<Odysseus::Texture2D> m_Texture;
 
-	std::shared_ptr<Odysseus::Shader> m_Shader2;
-	std::shared_ptr<Odysseus::VertexArray> m_SquareVA;
+	Odysseus::Ref<Odysseus::Shader> m_UnlitShader;
+	Odysseus::Ref<Odysseus::VertexArray> m_SquareVA;
 
 	Odysseus::OrthographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;
-	float m_CameraSpeed = 0.1f;
+	float m_CameraSpeed = 5.f;
+
+	float m_CameraRotation = 0.0f;
+	float m_CameraRotationSpeed = 90.0f;
+
+	glm::vec3 m_SquareColor = { 1.f,1.f,1.f };
 };
 
 class Sandbox : public Odysseus::Application

@@ -33,6 +33,7 @@ namespace Odysseus
 
 		// Privates variables
 		GLFWwindow* m_Window;
+		GraphicsContext* m_context;
 
 		struct WindowData
 		{

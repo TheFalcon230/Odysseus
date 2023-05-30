@@ -23,6 +23,8 @@ namespace Odysseus
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(ODC_BIND_EVENT_FN(Application::OnEvent));
 
+		Renderer::Init();
+
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 	}
@@ -36,8 +38,15 @@ namespace Odysseus
 
 		while (m_Running)
 		{
+
+			float time = glfwGetTime();
+			Timestep timestep = time - m_lastFrameTime;
+			m_lastFrameTime = time;
+
+			float FPS = 1 / timestep.AsSeconds();
+
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+				layer->OnUpdate(timestep);
 
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)

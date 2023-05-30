@@ -3,7 +3,7 @@
 
 namespace Odysseus
 {
-	class  OrthographicCamera
+	class ODYSSEUS_API OrthographicCamera
 	{
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top);

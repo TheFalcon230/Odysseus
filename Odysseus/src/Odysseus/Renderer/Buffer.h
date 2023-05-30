@@ -39,7 +39,7 @@ namespace Odysseus
 		return 0;
 	}
 
-	struct BufferElements
+	struct BufferElement
 	{
 		ShaderDataType Type = Odysseus::ShaderDataType::None;
 		std::string Name = "";
@@ -47,10 +47,10 @@ namespace Odysseus
 		uint32_t Size = ShaderDataTypeSize(Odysseus::ShaderDataType::None);
 		bool Normalized = false;
 
-		BufferElements() : Name(""), Type(Odysseus::ShaderDataType::None), Size(ShaderDataTypeSize(Odysseus::ShaderDataType::None)), Offset(0), Normalized(false) {}
+		BufferElement() = default;
 
-		BufferElements(ShaderDataType type, const std::string& pName, bool pNormalized = false)
-			: Name(pName), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(pNormalized)
+		BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
+			: Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized)
 		{
 		}
 
@@ -94,38 +94,38 @@ namespace Odysseus
 	public:
 		BufferLayout() {}
 
-		BufferLayout(const std::initializer_list<BufferElements>& element) : m_Elements(element)
+		BufferLayout(const std::initializer_list<BufferElement>& element) : m_Elements(element)
 		{
 			CalculateOffetsAndStride();
 		}
 
 		inline uint32_t GetStride() const { return m_Stride; }
-		inline const std::vector<BufferElements>& GetElements() const { return m_Elements; }
+		inline const std::vector<BufferElement>& GetElements() const { return m_Elements; }
 
-		std::vector<BufferElements>::iterator begin() { return m_Elements.begin(); };
-		std::vector<BufferElements>::iterator end() { return m_Elements.end(); };
-		std::vector<BufferElements>::const_iterator begin()const { return m_Elements.begin(); };
-		std::vector<BufferElements>::const_iterator end() const { return m_Elements.end(); };
+		std::vector<BufferElement>::iterator begin() { return m_Elements.begin(); };
+		std::vector<BufferElement>::iterator end() { return m_Elements.end(); };
+		std::vector<BufferElement>::const_iterator begin()const { return m_Elements.begin(); };
+		std::vector<BufferElement>::const_iterator end() const { return m_Elements.end(); };
 	private:
 
 		void CalculateOffetsAndStride()
 		{
-			uint32_t offset = 0;
+			size_t offset = 0;
 			m_Stride = 0;
 			for (auto& element : m_Elements)
 			{
 				element.Offset = offset;
 				offset += element.Size;
-				m_Stride = element.Size;
+				m_Stride += element.Size;
 			}
 		}
 
 	private:
-		std::vector<BufferElements> m_Elements;
+		std::vector<BufferElement> m_Elements;
 		uint32_t m_Stride = 0;
 	};
 
-	class  VertexBuffer
+	class ODYSSEUS_API VertexBuffer
 	{
 	public:
 		virtual ~VertexBuffer() {};
@@ -141,7 +141,7 @@ namespace Odysseus
 
 	};
 
-	class  IndexBuffer
+	class ODYSSEUS_API IndexBuffer
 	{
 	public:
 		virtual ~IndexBuffer() {}

@@ -43,7 +43,7 @@ namespace Odysseus
 	void WindowsWindow::SetVSync(bool enabled)
 	{
 
-		glfwSwapInterval((int)enabled);
+		glfwSwapInterval(enabled ? 1 : 0);
 
 		m_Data.vSync = enabled;
 	}
@@ -70,8 +70,13 @@ namespace Odysseus
 			s_GLFWInitialized = true;
 		}
 
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 		m_Window = glfwCreateWindow((int)props.width, (int)props.height, m_Data.title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
+		m_context = new OpenGLContext(m_Window);
+		m_context->Init();
 		ODC_CORE_ASSERT(success, "Could not initialize GLAD");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);

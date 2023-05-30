@@ -1,5 +1,6 @@
 workspace "Odysseus"
 	architecture "x64"
+	startproject "Sandbox"
 
 	configurations
 	{
@@ -14,12 +15,13 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "Odysseus/vendor/GLFW/include"
 IncludeDir["GLAD"] = "Odysseus/vendor/GLAD/include"
-IncludeDir["ImGui"] = "Odysseus/vendor/oui"
+IncludeDir["ImGui"] = "Odysseus/vendor/imgui"
 IncludeDir["glm"] = "Odysseus/vendor/glm"
+IncludeDir["stb_image"] = "Odysseus/vendor/stb_image"
 
 include "Odysseus/vendor/GLFW"
 include "Odysseus/vendor/GLAD"
-include "Odysseus/vendor/oui"
+include "Odysseus/vendor/imgui"
 
 project "Odysseus"
 	location "Odysseus"
@@ -36,6 +38,8 @@ project "Odysseus"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/stb_image/**.cpp",
+		"%{prj.name}/vendor/stb_image/**.h",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
 	}
@@ -52,7 +56,8 @@ project "Odysseus"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}"
 
 	}
 
@@ -72,7 +77,8 @@ project "Odysseus"
 		defines
 		{
 			"ODC_PLATFORM_WINDOWS",
-			"ODC_BUILD_DLL"
+			"ODC_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands
@@ -129,7 +135,7 @@ project "Sandbox"
 
 		defines
 		{
-			"ODC_PLATFORM_WINDOWS"
+			"ODC_PLATFORM_WINDOWS",
 		}
 
 	filter "configurations:Debug"

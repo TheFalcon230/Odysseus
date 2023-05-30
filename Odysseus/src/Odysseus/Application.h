@@ -7,6 +7,8 @@
 #include "Odysseus/Events/Event.h"
 #include "Odysseus/Events/ApplicationEvent.h"
 
+#include "Odysseus/Core/Timestep.h"
+
 #include "Odysseus/ImGui/ImGuiLayer.h"
 
 
@@ -38,6 +40,7 @@ namespace Odysseus
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
+		float m_lastFrameTime = 0.f;
 	private:
 		static Application* s_Instance;
 	};

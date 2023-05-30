@@ -13,15 +13,12 @@ namespace Odysseus
 		case RendererAPI::API::None:
 			ODC_CORE_ASSERT(false, "API: None is currently not supported.");
 			return nullptr;
-			break;
 		case RendererAPI::API::OpenGL:
 			return new OpenGLVertexBuffer(vertices, size);
-			break;
-		default:
-			ODC_CORE_ASSERT(false, "Unknown RendererAPI .");
-			return nullptr;
-			break;
 		}
+
+		ODC_CORE_ASSERT(false, "Unknown RendererAPI .");
+		return nullptr;
 
 
 	}

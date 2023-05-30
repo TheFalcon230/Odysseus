@@ -2,6 +2,7 @@
 
 #include "Odysseus/Core.h"
 #include "Odysseus/Events/Event.h"
+#include "Odysseus/Core/Timestep.h"
 
 namespace Odysseus
 {
@@ -13,7 +14,7 @@ namespace Odysseus
 
 		virtual void OnAttach() {};
 		virtual void OnDetach() {};
-		virtual void OnUpdate() {};
+		virtual void OnUpdate(Timestep updateTime) {};
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {};
 
