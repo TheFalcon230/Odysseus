@@ -169,6 +169,7 @@
     <ClInclude Include="src\Odysseus\LayerStack.h" />
     <ClInclude Include="src\Odysseus\Log.h" />
     <ClInclude Include="src\Odysseus\MouseButtonCodes.h" />
+    <ClInclude Include="src\Odysseus\OrthographicCameraController.h" />
     <ClInclude Include="src\Odysseus\Renderer\Buffer.h" />
     <ClInclude Include="src\Odysseus\Renderer\Camera.h" />
     <ClInclude Include="src\Odysseus\Renderer\GraphicsContext.h" />
@@ -613,6 +614,7 @@
     <ClCompile Include="src\Odysseus\Layer.cpp" />
     <ClCompile Include="src\Odysseus\LayerStack.cpp" />
     <ClCompile Include="src\Odysseus\Log.cpp" />
+    <ClCompile Include="src\Odysseus\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\Camera.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\RenderCommand.cpp" />

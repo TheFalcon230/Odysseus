@@ -11,7 +11,7 @@ class ExampleLayer : public Odysseus::Layer
 {
 public:
 	ExampleLayer()
-		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition({ 0.0f, 0.0f, 0.0f })
+		: Layer("Example"), m_CameraController(1280.f / 720.f)
 	{
 
 		ODC_INFO("Start creating layer.");
@@ -52,38 +52,13 @@ public:
 
 	void OnUpdate(Odysseus::Timestep updateTime) override
 	{
+		m_CameraController.OnUpdate(updateTime);
 		//ODC_CORE_TRACE("Delta time: {0}s | FPS: {1}", updateTime.AsSeconds(), 1.f / updateTime.AsSeconds());
-
-		if (Odysseus::Input::IsKeyPressed(ODC_KEY_A))
-		{
-			m_CameraPosition.x -= m_CameraSpeed * updateTime.AsSeconds();
-		}
-		else if (Odysseus::Input::IsKeyPressed(ODC_KEY_D))
-		{
-			m_CameraPosition.x += m_CameraSpeed * updateTime.AsSeconds();
-		}
-		if (Odysseus::Input::IsKeyPressed(ODC_KEY_W))
-		{
-			m_CameraPosition.y += m_CameraSpeed * updateTime.AsSeconds();
-		}
-		else if (Odysseus::Input::IsKeyPressed(ODC_KEY_S))
-		{
-			m_CameraPosition.y -= m_CameraSpeed * updateTime.AsSeconds();
-		}
-
-		if (Odysseus::Input::IsKeyPressed(ODC_KEY_Q))
-			m_CameraRotation += m_CameraRotationSpeed * updateTime.AsSeconds();
-		else if (Odysseus::Input::IsKeyPressed(ODC_KEY_E))
-			m_CameraRotation -= m_CameraRotationSpeed * updateTime.AsSeconds();
-
 
 		Odysseus::RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 		Odysseus::RenderCommand::Clear();
 
-		m_Camera.SetPosition(m_CameraPosition);
-		m_Camera.SetRotation(m_CameraRotation);
-
-		Odysseus::Renderer::BeginScene(m_Camera);
+		Odysseus::Renderer::BeginScene(m_CameraController.GetCamera());
 
 		glm::vec4 redColor(0.8f, 0.3f, 0.2f, 1.0f);
 		glm::vec4 blueColor(0.2f, 0.3f, 0.8f, 1.0f);
@@ -106,9 +81,18 @@ public:
 		ImGui::End();
 	}
 
-	void OnEvent(Odysseus::Event& event) override
+	void OnEvent(Odysseus::Event& e) override
 	{
+		m_CameraController.OnEvent(e);
 
+		if (e.GetEventType() == Odysseus::EventType::WindowResize)
+		{
+			auto& re = (Odysseus::WindowResizeEvent&)e;
+
+			float zoom = (float)re.GetWidth() / 1280.f;
+
+			m_CameraController.SetZoomLevel(zoom);
+		}
 	}
 private:
 	Odysseus::ShaderLibrary m_ShaderLibrary;
@@ -122,12 +106,7 @@ private:
 	Odysseus::Ref<Odysseus::Shader> m_UnlitShader;
 	Odysseus::Ref<Odysseus::VertexArray> m_SquareVA;
 
-	Odysseus::OrthographicCamera m_Camera;
-	glm::vec3 m_CameraPosition;
-	float m_CameraSpeed = 5.f;
-
-	float m_CameraRotation = 0.0f;
-	float m_CameraRotationSpeed = 90.0f;
+	Odysseus::OrthographicCameraController m_CameraController;
 
 	glm::vec3 m_SquareColor = { 1.f,1.f,1.f };
 };

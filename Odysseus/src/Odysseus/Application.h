@@ -35,10 +35,18 @@ namespace Odysseus
 		inline void QuitApplication() { m_Running = false; }
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
 
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
+		/// <summary>
+		/// Is the application is running ?
+		/// </summary>
 		bool m_Running = true;
+		/// <summary>
+		/// Is the application minimized ?
+		/// </summary>
+		bool m_Minimized = false;
 		LayerStack m_LayerStack;
 		float m_lastFrameTime = 0.f;
 	private:

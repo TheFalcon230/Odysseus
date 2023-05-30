@@ -7,6 +7,7 @@ namespace Odysseus
 	{
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top);
+		void SetProjection(float left, float right, float bottom, float top);
 
 		const glm::vec3& GetPostion() const { return m_Position; }
 		float GetRotation() const { return m_Rotation; }
@@ -33,4 +34,5 @@ namespace Odysseus
 		glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };
 		float m_Rotation = 0.0f;
 	};
+
 }

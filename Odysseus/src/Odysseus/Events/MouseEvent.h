@@ -34,7 +34,15 @@ namespace Odysseus
 		MouseScrolledEvent(float xOffset, float yOffset)
 			:m_XOffset(xOffset), m_YOffset(yOffset) {}
 
+		/// <summary>
+		/// Return the horizontal value of the scroll button.
+		/// </summary>
+		/// <returns>Horizontal offset of the mouse scrollwheel.</returns>
 		inline float GetXOffset() const { return m_XOffset; }
+		/// <summary>
+		/// Return the vertical value of the scroll button.
+		/// </summary>
+		/// <returns>Vertical offset of the mouse scrollwheel.</returns>
 		inline float GetYOffset() const { return m_YOffset; }
 
 		std::string ToString() const override
