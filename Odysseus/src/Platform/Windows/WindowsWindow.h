@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "Odysseus/Window.h"
+#include "Odysseus/Core/Window.h"
 #include "Odysseus/Renderer/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>

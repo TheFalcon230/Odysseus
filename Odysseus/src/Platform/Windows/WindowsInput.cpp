@@ -2,7 +2,7 @@
 #include "WindowsInput.h"
 
 #include <GLFW/glfw3.h>
-#include "Odysseus/Application.h"
+#include "Odysseus/Core/Application.h"
 
 namespace Odysseus
 {

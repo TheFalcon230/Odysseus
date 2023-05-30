@@ -1,8 +1,8 @@
 #include "odcpch.h"
 #include "OrthographicCameraController.h"
 
-#include "Odysseus/Input.h"
-#include "KeyCode.h"
+#include "Odysseus/Core/Input.h"
+#include "Odysseus/Core/KeyCode.h"
 
 
 namespace Odysseus

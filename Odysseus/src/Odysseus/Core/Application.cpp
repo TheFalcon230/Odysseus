@@ -1,7 +1,7 @@
 #include "odcpch.h"
 #include "Application.h"
 
-#include "Odysseus/Log.h"
+#include "Odysseus/Core/Log.h"
 #include "Odysseus/Renderer/Renderer.h"
 
 #include "Input.h"

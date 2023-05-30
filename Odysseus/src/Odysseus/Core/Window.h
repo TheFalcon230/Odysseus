@@ -2,7 +2,7 @@
 
 #include "odcpch.h"
 
-#include "Events/Event.h"
+#include "Odysseus/Events/Event.h"
 
 namespace Odysseus
 {

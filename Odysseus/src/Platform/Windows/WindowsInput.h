@@ -1,5 +1,5 @@
 #pragma once
-#include "Odysseus/Input.h"
+#include "Odysseus/Core/Input.h"
 
 namespace Odysseus
 {

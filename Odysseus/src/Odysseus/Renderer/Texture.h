@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "Odysseus/Core.h"
+#include "Odysseus/Core/Core.h"
 
 namespace Odysseus
 {

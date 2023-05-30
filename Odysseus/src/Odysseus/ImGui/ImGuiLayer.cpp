@@ -8,7 +8,7 @@
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_glfw.h"
 
-#include "Odysseus/Application.h"
+#include "Odysseus/Core/Application.h"
 
 #define GLFW_INCLUDE_NONE
 #include <glad/glad.h>

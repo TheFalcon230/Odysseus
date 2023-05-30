@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Odysseus/Core.h"
+#include "Odysseus/Core/Core.h"
 #include "Odysseus/Events/Event.h"
 #include "Odysseus/Core/Timestep.h"
 

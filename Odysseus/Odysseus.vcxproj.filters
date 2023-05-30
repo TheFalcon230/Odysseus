@@ -57,17 +57,41 @@
     <ClInclude Include="src\Odysseus.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Odysseus\Application.h">
-      <Filter>src\Odysseus</Filter>
+    <ClInclude Include="src\Odysseus\Core\Application.h">
+      <Filter>src\Odysseus\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Odysseus\Core.h">
-      <Filter>src\Odysseus</Filter>
+    <ClInclude Include="src\Odysseus\Core\Core.h">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Odysseus\Core\EntryPoint.h">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Odysseus\Core\Input.h">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Odysseus\Core\JoystickButtonCodes.h">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Odysseus\Core\KeyCode.h">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Odysseus\Core\Layer.h">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Odysseus\Core\LayerStack.h">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Odysseus\Core\Log.h">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Odysseus\Core\MouseButtonCodes.h">
+      <Filter>src\Odysseus\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Odysseus\Core\Timestep.h">
       <Filter>src\Odysseus\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Odysseus\EntryPoint.h">
-      <Filter>src\Odysseus</Filter>
+    <ClInclude Include="src\Odysseus\Core\Window.h">
+      <Filter>src\Odysseus\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Odysseus\Events\ApplicationEvent.h">
       <Filter>src\Odysseus\Events</Filter>
@@ -84,25 +108,7 @@
     <ClInclude Include="src\Odysseus\ImGui\ImGuiLayer.h">
       <Filter>src\Odysseus\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Odysseus\Input.h">
-      <Filter>src\Odysseus</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Odysseus\JoystickButtonCodes.h">
-      <Filter>src\Odysseus</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Odysseus\KeyCode.h">
-      <Filter>src\Odysseus</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Odysseus\Layer.h">
-      <Filter>src\Odysseus</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Odysseus\LayerStack.h">
-      <Filter>src\Odysseus</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Odysseus\Log.h">
-      <Filter>src\Odysseus</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Odysseus\MouseButtonCodes.h">
+    <ClInclude Include="src\Odysseus\OrthographicCameraController.h">
       <Filter>src\Odysseus</Filter>
     </ClInclude>
     <ClInclude Include="src\Odysseus\Renderer\Buffer.h">
@@ -131,9 +137,6 @@
     </ClInclude>
     <ClInclude Include="src\Odysseus\Renderer\VertexArray.h">
       <Filter>src\Odysseus\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Odysseus\Window.h">
-      <Filter>src\Odysseus</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h">
       <Filter>src\Platform\OpenGL</Filter>
@@ -1410,11 +1413,19 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Odysseus\OrthographicCameraController.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Odysseus\Application.cpp">
-      <Filter>src\Odysseus</Filter>
+    <ClCompile Include="src\Odysseus\Core\Application.cpp">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Odysseus\Core\Layer.cpp">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Odysseus\Core\LayerStack.cpp">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Odysseus\Core\Log.cpp">
+      <Filter>src\Odysseus\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Odysseus\Core\Timestep.cpp">
       <Filter>src\Odysseus\Core</Filter>
@@ -1425,13 +1436,7 @@
     <ClCompile Include="src\Odysseus\ImGui\ImGuiLayer.cpp">
       <Filter>src\Odysseus\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Odysseus\Layer.cpp">
-      <Filter>src\Odysseus</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Odysseus\LayerStack.cpp">
-      <Filter>src\Odysseus</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Odysseus\Log.cpp">
+    <ClCompile Include="src\Odysseus\OrthographicCameraController.cpp">
       <Filter>src\Odysseus</Filter>
     </ClCompile>
     <ClCompile Include="src\Odysseus\Renderer\Buffer.cpp">
@@ -1488,6 +1493,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Odysseus\OrthographicCameraController.cpp" />
   </ItemGroup>
 </Project>

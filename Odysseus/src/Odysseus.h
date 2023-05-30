@@ -2,17 +2,17 @@
 
 //For use by Odysseus Application
 
-#include "Odysseus/Application.h"
-#include "Odysseus/Layer.h"
-#include "Odysseus/Log.h"
+#include "Odysseus/Core/Application.h"
+#include "Odysseus/Core/Layer.h"
+#include "Odysseus/Core/Log.h"
 
 #include "Odysseus/Core/Timestep.h"
 
 //Input Codes
-#include "Odysseus/Input.h"
-#include "Odysseus/KeyCode.h"
-#include "Odysseus/JoystickButtonCodes.h"
-#include "Odysseus/MouseButtonCodes.h"
+#include "Odysseus/Core/Input.h"
+#include "Odysseus/Core/KeyCode.h"
+#include "Odysseus/Core/JoystickButtonCodes.h"
+#include "Odysseus/Core/MouseButtonCodes.h"
 #include "Odysseus/OrthographicCameraController.h"
 
 #include "Odysseus/ImGui/ImGuiLayer.h"
@@ -29,5 +29,5 @@
 // -----------------------------------
 
 // -------ENTRY POINT-------------
-#include "Odysseus/EntryPoint.h"
+#include "Odysseus/Core/EntryPoint.h"
 // -------------------------------

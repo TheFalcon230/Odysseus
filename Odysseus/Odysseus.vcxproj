@@ -153,22 +153,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Odysseus.h" />
-    <ClInclude Include="src\Odysseus\Application.h" />
-    <ClInclude Include="src\Odysseus\Core.h" />
+    <ClInclude Include="src\Odysseus\Core\Application.h" />
+    <ClInclude Include="src\Odysseus\Core\Core.h" />
+    <ClInclude Include="src\Odysseus\Core\EntryPoint.h" />
+    <ClInclude Include="src\Odysseus\Core\Input.h" />
+    <ClInclude Include="src\Odysseus\Core\JoystickButtonCodes.h" />
+    <ClInclude Include="src\Odysseus\Core\KeyCode.h" />
+    <ClInclude Include="src\Odysseus\Core\Layer.h" />
+    <ClInclude Include="src\Odysseus\Core\LayerStack.h" />
+    <ClInclude Include="src\Odysseus\Core\Log.h" />
+    <ClInclude Include="src\Odysseus\Core\MouseButtonCodes.h" />
     <ClInclude Include="src\Odysseus\Core\Timestep.h" />
-    <ClInclude Include="src\Odysseus\EntryPoint.h" />
+    <ClInclude Include="src\Odysseus\Core\Window.h" />
     <ClInclude Include="src\Odysseus\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Odysseus\Events\Event.h" />
     <ClInclude Include="src\Odysseus\Events\KeyEvent.h" />
     <ClInclude Include="src\Odysseus\Events\MouseEvent.h" />
     <ClInclude Include="src\Odysseus\ImGui\ImGuiLayer.h" />
-    <ClInclude Include="src\Odysseus\Input.h" />
-    <ClInclude Include="src\Odysseus\JoystickButtonCodes.h" />
-    <ClInclude Include="src\Odysseus\KeyCode.h" />
-    <ClInclude Include="src\Odysseus\Layer.h" />
-    <ClInclude Include="src\Odysseus\LayerStack.h" />
-    <ClInclude Include="src\Odysseus\Log.h" />
-    <ClInclude Include="src\Odysseus\MouseButtonCodes.h" />
     <ClInclude Include="src\Odysseus\OrthographicCameraController.h" />
     <ClInclude Include="src\Odysseus\Renderer\Buffer.h" />
     <ClInclude Include="src\Odysseus\Renderer\Camera.h" />
@@ -179,7 +180,6 @@
     <ClInclude Include="src\Odysseus\Renderer\Shader.h" />
     <ClInclude Include="src\Odysseus\Renderer\Texture.h" />
     <ClInclude Include="src\Odysseus\Renderer\VertexArray.h" />
-    <ClInclude Include="src\Odysseus\Window.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
@@ -607,13 +607,13 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Odysseus\Application.cpp" />
+    <ClCompile Include="src\Odysseus\Core\Application.cpp" />
+    <ClCompile Include="src\Odysseus\Core\Layer.cpp" />
+    <ClCompile Include="src\Odysseus\Core\LayerStack.cpp" />
+    <ClCompile Include="src\Odysseus\Core\Log.cpp" />
     <ClCompile Include="src\Odysseus\Core\Timestep.cpp" />
     <ClCompile Include="src\Odysseus\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Odysseus\ImGui\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Odysseus\Layer.cpp" />
-    <ClCompile Include="src\Odysseus\LayerStack.cpp" />
-    <ClCompile Include="src\Odysseus\Log.cpp" />
     <ClCompile Include="src\Odysseus\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\Camera.cpp" />
