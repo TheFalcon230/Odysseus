@@ -13,6 +13,7 @@
 #define GLFW_INCLUDE_NONE
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <implot.h>
 
 
 
@@ -20,11 +21,12 @@ namespace Odysseus
 {
 	Odysseus::ImGuiLayer::ImGuiLayer() : Layer("ImGui")
 	{
-
+		
 	}
 
 	ImGuiLayer::~ImGuiLayer()
 	{
+
 	}
 
 	void ImGuiLayer::OnAttach()
@@ -32,6 +34,7 @@ namespace Odysseus
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
+		ImPlot::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -95,9 +98,9 @@ namespace Odysseus
 
 	void ImGuiLayer::OnImGuiRender()
 	{
-		static bool show = true;
+		static bool show = false;
 
-		ImGui::ShowDemoWindow(&show);
+		//ImGui::ShowDemoWindow(&show);
 
 		
 	}

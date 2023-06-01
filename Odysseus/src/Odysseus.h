@@ -18,6 +18,7 @@
 #include "Odysseus/ImGui/ImGuiLayer.h"
 // ---Renderer------------------------
 #include "Odysseus/Renderer/Renderer.h"
+#include "Odysseus/Renderer/Renderer2D.h"
 #include "Odysseus/Renderer/RenderCommand.h"
 
 #include "Odysseus/Renderer/Buffer.h"
@@ -28,6 +29,4 @@
 #include "Odysseus/Renderer/Camera.h"
 // -----------------------------------
 
-// -------ENTRY POINT-------------
-#include "Odysseus/Core/EntryPoint.h"
-// -------------------------------
+

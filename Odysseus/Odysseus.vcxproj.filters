@@ -10,6 +10,9 @@
     <Filter Include="src\Odysseus\Core">
       <UniqueIdentifier>{D3F91D23-3F10-1CB9-8887-A7DAF4DCEC40}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Odysseus\Debug">
+      <UniqueIdentifier>{518FE986-3D73-AADC-A6D3-A42F92D6945E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Odysseus\Events">
       <UniqueIdentifier>{1FCCA567-8B2D-8375-149B-C92780FBB934}</UniqueIdentifier>
     </Filter>
@@ -48,6 +51,9 @@
     </Filter>
     <Filter Include="vendor\glm\glm\gtx">
       <UniqueIdentifier>{B3A6A76B-9F8A-68C1-08EB-6214F4ED5243}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\implot">
+      <UniqueIdentifier>{5771DC0A-C331-5841-8C6C-A1BEF8EB9C1D}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor\stb_image">
       <UniqueIdentifier>{0DA0BA59-F998-D9AB-22CB-BE300E23B9B7}</UniqueIdentifier>
@@ -93,6 +99,9 @@
     <ClInclude Include="src\Odysseus\Core\Window.h">
       <Filter>src\Odysseus\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Odysseus\Debug\Instrumentor.h">
+      <Filter>src\Odysseus\Debug</Filter>
+    </ClInclude>
     <ClInclude Include="src\Odysseus\Events\ApplicationEvent.h">
       <Filter>src\Odysseus\Events</Filter>
     </ClInclude>
@@ -124,6 +133,9 @@
       <Filter>src\Odysseus\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Odysseus\Renderer\Renderer.h">
+      <Filter>src\Odysseus\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Odysseus\Renderer\Renderer2D.h">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Odysseus\Renderer\RendererAPI.h">
@@ -1410,6 +1422,12 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="vendor\implot\implot.h">
+      <Filter>vendor\implot</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\implot\implot_internal.h">
+      <Filter>vendor\implot</Filter>
+    </ClInclude>
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
@@ -1451,6 +1469,9 @@
     <ClCompile Include="src\Odysseus\Renderer\Renderer.cpp">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Odysseus\Renderer\Renderer2D.cpp">
+      <Filter>src\Odysseus\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Odysseus\Renderer\RendererAPI.cpp">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClCompile>
@@ -1489,6 +1510,15 @@
     </ClCompile>
     <ClCompile Include="src\odcpch.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\implot\implot.cpp">
+      <Filter>vendor\implot</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\implot\implot_demo.cpp">
+      <Filter>vendor\implot</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\implot\implot_items.cpp">
+      <Filter>vendor\implot</Filter>
     </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>

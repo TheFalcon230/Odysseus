@@ -16,6 +16,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Odysseus/vendor/GLFW/include"
 IncludeDir["GLAD"] = "Odysseus/vendor/GLAD/include"
 IncludeDir["ImGui"] = "Odysseus/vendor/imgui"
+IncludeDir["ImPlot"] = "Odysseus/vendor/implot"
 IncludeDir["glm"] = "Odysseus/vendor/glm"
 IncludeDir["stb_image"] = "Odysseus/vendor/stb_image"
 
@@ -42,6 +43,12 @@ project "Odysseus"
 		"%{prj.name}/vendor/stb_image/**.h",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
+
+		"%{prj.name}/vendor/implot/implot.h",
+		"%{prj.name}/vendor/implot/implot.cpp",
+		"%{prj.name}/vendor/implot/implot_demo.cpp",
+		"%{prj.name}/vendor/implot/implot_internal.h",
+		"%{prj.name}/vendor/implot/implot_items.cpp"
 	}
 
 	defines
@@ -56,6 +63,7 @@ project "Odysseus"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.ImPlot}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}"
 
@@ -68,6 +76,9 @@ project "Odysseus"
 		"ImGui",
 		"opengl32.lib",
 	}
+
+	filter "files:vendor/ImPlot/**.cpp"
+	flags { "NoPCH" }
 
 	filter "system:windows"
 		cppdialect "C++17"

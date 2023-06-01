@@ -18,6 +18,11 @@ namespace Odysseus
 		virtual void Bind() const  override;
 		virtual void Unbind() const override;
 
+		virtual void SetMat4(const std::string& name, const glm::mat4& value)  override;
+		virtual void SetFloat4(const std::string& name, const glm::vec4& value)  override;
+		virtual void SetFloat3(const std::string& name, const glm::vec3& value)  override;
+		virtual void SetInt(const std::string& name, const int value)  override;
+
 		virtual const std::string& GetName() const override { return m_Name; }
 
 		/// <summary>
@@ -33,7 +38,7 @@ namespace Odysseus
 		/// <param name="name">The uniform to upload.</param>
 		/// <param name="value">The value to assign to the uniform.</param>
 		void UploadUniformMat3(const std::string& name, const glm::mat3& matrix);
-		
+
 		/// <summary>
 		/// Upload an integer to a given uniform to the shader
 		/// </summary>

@@ -1,4 +1,7 @@
 #include <Odysseus.h>
+// -------ENTRY POINT-------------
+#include <Odysseus/Core/EntryPoint.h>
+// -------------------------------
 
 #include <Platform/OpenGL/OpenGLShader.h>
 
@@ -6,6 +9,8 @@
 
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include "Sandbox2D.h"
 
 class ExampleLayer : public Odysseus::Layer
 {
@@ -15,7 +20,7 @@ public:
 	{
 
 		ODC_INFO("Start creating layer.");
-		m_SquareVA.reset(Odysseus::VertexArray::Create());
+		m_SquareVA = Odysseus::VertexArray::Create();
 
 		float squareVertices[4 * 5] = {
 			//Vertices
@@ -116,7 +121,8 @@ class Sandbox : public Odysseus::Application
 public:
 	Sandbox()
 	{
-		PushLayer(new ExampleLayer());
+		//PushLayer(new ExampleLayer());
+		PushLayer(new Sandbox2D());
 	}
 
 	~Sandbox()
