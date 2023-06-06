@@ -70,6 +70,16 @@ namespace Odysseus
 		UploadUniformFloat3(name, value);
 	}
 
+	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& value)
+	{
+		UploadUniformFloat2(name, value);
+	}
+
+	void OpenGLShader::SetFloat(const std::string& name, const float value)
+	{
+		UploadUniformFloat(name, value);
+	}
+
 	void OpenGLShader::SetInt(const std::string& name, const int value)
 	{
 		UploadUniformInt(name, value);
@@ -162,7 +172,7 @@ namespace Odysseus
 	void OpenGLShader::Compile(std::unordered_map<GLenum, std::string>& shaderSources)
 	{
 		GLuint program = glCreateProgram();
-		ODC_CORE_ASSERT(shaderSources <= 2, "Only 2 shaders are supported.");
+		ODC_CORE_ASSERT(shaderSources.size() <= 2, "Only 2 shaders are supported.");
 		std::array<GLenum, 2> glShaderIDs;
 		int glShaderIDIndex = 0;
 		for (auto& kv : shaderSources)
@@ -190,7 +200,7 @@ namespace Odysseus
 
 				glDeleteShader(shader);
 
-				ODC_CORE_ERROR("{0}", infoLog.data());
+				ODC_CORE_ERROR("{0}: {1}",m_Name, infoLog.data());
 				ODC_CORE_ASSERT(false, "Shader compilation failure!");
 				break;
 			}

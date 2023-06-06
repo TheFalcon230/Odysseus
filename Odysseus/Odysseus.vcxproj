@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="src\Odysseus.h" />
     <ClInclude Include="src\Odysseus\Core\Application.h" />
+    <ClInclude Include="src\Odysseus\Core\Assert.h" />
     <ClInclude Include="src\Odysseus\Core\Core.h" />
     <ClInclude Include="src\Odysseus\Core\EntryPoint.h" />
     <ClInclude Include="src\Odysseus\Core\Input.h" />

@@ -31,7 +31,7 @@ public:
 		};
 
 		Odysseus::Ref<Odysseus::VertexBuffer> squareVB;
-		squareVB.reset(Odysseus::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+		squareVB = Odysseus::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
 		Odysseus::BufferLayout squareLayout =
 		{
 			{Odysseus::ShaderDataType::Float3, "a_Position"},
@@ -43,7 +43,7 @@ public:
 		unsigned int squareIndices[6] = { 0, 1, 2, 0, 3, 2 };
 
 		Odysseus::Ref<Odysseus::IndexBuffer> squareIB;
-		squareIB.reset(Odysseus::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+		squareIB = Odysseus::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
 		m_UnlitShader = m_ShaderLibrary.Load("assets/shaders/Unlit.glsl");

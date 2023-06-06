@@ -19,9 +19,9 @@ namespace Odysseus
 		ODC_CORE_ERROR("GLFW error {0}: {1}", error, description);
 	}
 
-	Window* Window::Create(const WindowProps& props)
+	Scope<Window> Window::Create(const WindowProps& props)
 	{
-		return new WindowsWindow(props);
+		return CreateScope<WindowsWindow>(props);
 	}
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
@@ -77,7 +77,6 @@ namespace Odysseus
 		m_Window = glfwCreateWindow((int)props.width, (int)props.height, m_Data.title.c_str(), nullptr, nullptr);
 		m_context = new OpenGLContext(m_Window);
 		m_context->Init();
-		ODC_CORE_ASSERT(success, "Could not initialize GLAD");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 

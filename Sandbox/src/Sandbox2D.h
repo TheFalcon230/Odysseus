@@ -20,6 +20,7 @@ private:
 	Odysseus::Ref<Odysseus::VertexArray> m_VertexArray;
 	Odysseus::Ref<Odysseus::Shader> m_Shader;
 	Odysseus::Ref<Odysseus::Texture2D> m_Texture;
+	Odysseus::Ref<Odysseus::QuadProperties> testQuad;
 
 	Odysseus::Timestep time;
 	struct ProfileResult

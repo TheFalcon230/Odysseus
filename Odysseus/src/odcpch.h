@@ -14,6 +14,7 @@
 #include <unordered_set>
 
 #include "Odysseus/Core/Log.h"
+#include "Odysseus/Core/Assert.h"
 #include "Odysseus/Debug/Instrumentor.h"
 
 #ifdef ODC_PLATFORM_WINDOWS

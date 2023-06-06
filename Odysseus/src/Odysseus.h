@@ -5,6 +5,7 @@
 #include "Odysseus/Core/Application.h"
 #include "Odysseus/Core/Layer.h"
 #include "Odysseus/Core/Log.h"
+#include "Odysseus/Core/Assert.h"
 
 #include "Odysseus/Core/Timestep.h"
 

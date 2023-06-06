@@ -8,6 +8,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
 #define PROFILE_SCOPE(name) Odysseus::InstrumentationTimer timer##__LINE__(name, [&](ProfileResult profileResult) { m_ProfileResults.push_back(profileResult); })
 #define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCSIG__);
 
@@ -19,6 +20,7 @@ Sandbox2D::Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
+	testQuad = Odysseus::CreateRef<Odysseus::QuadProperties>();
 	m_Texture = Odysseus::Texture2D::Create("assets/textures/TestImage.png");
 }
 
@@ -46,11 +48,10 @@ void Sandbox2D::OnUpdate(Odysseus::Timestep updateTime)
 	{
 		PROFILE_SCOPE("Renderer Draw");
 		Odysseus::Renderer2D::BeginScene(m_CameraController.GetCamera());
-		Odysseus::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 0.25f, 1.0f }, m_SquareColor);
-		Odysseus::Renderer2D::DrawQuad({ 0.0f,0.0f , -0.1f }, { 20.0f, 20.0f }, m_Texture);
+		Odysseus::Renderer2D::DrawQuad({ 0.0f,0.0f , -0.1f }, { 20.0f, 20.0f }, m_SquareColor);
 		Odysseus::Renderer2D::EndScene();
 	}
-	
+
 }
 
 void Sandbox2D::OnImGuiRender()
@@ -66,6 +67,10 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::End();
 
 	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize);
+
+	char label[50];
+	strcpy(label, "%.0f FPS ");
+	ImGui::Text(label, 1000.f / time.AsMilliseconds());
 
 	if (ImPlot::BeginPlot("Graph", ImVec2(-1, -1)))
 	{

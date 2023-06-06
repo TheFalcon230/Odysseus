@@ -1,6 +1,6 @@
 #include "odcpch.h"
 #include "OpenGLVertexArray.h"
-
+#include "Odysseus/Core/Assert.h"
 #include <glad/glad.h>
 
 namespace Odysseus
@@ -49,7 +49,7 @@ namespace Odysseus
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) 
 	{
-		ODC_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size, "Vertex buffer has no layout!");
+		ODC_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex buffer has no layout!");
 
 		glBindVertexArray(m_RendererID);
 		vertexBuffer->Bind();
