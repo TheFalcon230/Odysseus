@@ -181,6 +181,7 @@
     <ClInclude Include="src\Odysseus\Renderer\Renderer2D.h" />
     <ClInclude Include="src\Odysseus\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Odysseus\Renderer\Shader.h" />
+    <ClInclude Include="src\Odysseus\Renderer\Sprite.h" />
     <ClInclude Include="src\Odysseus\Renderer\Texture.h" />
     <ClInclude Include="src\Odysseus\Renderer\VertexArray.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
@@ -627,6 +628,7 @@
     <ClCompile Include="src\Odysseus\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Odysseus\Renderer\Sprite.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\Texture.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />

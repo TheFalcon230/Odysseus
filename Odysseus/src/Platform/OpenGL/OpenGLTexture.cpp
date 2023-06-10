@@ -10,6 +10,7 @@ namespace Odysseus
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
 		:m_Path(path)
 	{
+		ODC_CORE_INFO("Start loading texture at path: '{0}'", m_Path);
 		int width, height, channels;
 		stbi_set_flip_vertically_on_load(1);
 		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
@@ -46,6 +47,7 @@ namespace Odysseus
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+		ODC_CORE_INFO("Texture loaded successfully!");
 
 		stbi_image_free(data);
 	}

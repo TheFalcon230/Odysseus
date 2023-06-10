@@ -20,9 +20,20 @@ private:
 	Odysseus::Ref<Odysseus::VertexArray> m_VertexArray;
 	Odysseus::Ref<Odysseus::Shader> m_Shader;
 	Odysseus::Ref<Odysseus::Texture2D> m_Texture;
+	Odysseus::Ref<Odysseus::Texture2D> T_Spritesheet;
+	Odysseus::Ref<Odysseus::Sprite> Sp_Bush_01;
 	Odysseus::Ref<Odysseus::QuadProperties> testQuad;
 
 	Odysseus::Timestep time;
+
+	std::unordered_map<char, Odysseus::Ref<Odysseus::Sprite>> s_TextureMap;
+	uint32_t mapWidth = 24, mapHeight = 12;
+
+
+
+
+
+
 	struct ProfileResult
 	{
 		const char* Name;

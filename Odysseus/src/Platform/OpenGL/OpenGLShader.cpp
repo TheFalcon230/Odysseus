@@ -30,7 +30,6 @@ namespace Odysseus
 	{
 		std::string source = ReadFile(path);
 		auto shaderSources = PreProcess(source);
-		Compile(shaderSources);
 
 		//assets/shaders/newShader.glsl
 		auto lastSlash = path.find_last_of("/\\");
@@ -38,6 +37,8 @@ namespace Odysseus
 		auto lastDot = path.rfind(".");
 		auto count = lastDot == std::string::npos ? path.size() - lastSlash : lastDot - lastSlash;
 		m_Name = path.substr(lastSlash, count);
+		
+		Compile(shaderSources);
 	}
 
 	OpenGLShader::~OpenGLShader()
@@ -75,14 +76,19 @@ namespace Odysseus
 		UploadUniformFloat2(name, value);
 	}
 
-	void OpenGLShader::SetFloat(const std::string& name, const float value)
+	void OpenGLShader::SetFloat(const std::string& name, float value)
 	{
 		UploadUniformFloat(name, value);
 	}
 
-	void OpenGLShader::SetInt(const std::string& name, const int value)
+	void OpenGLShader::SetInt(const std::string& name, int value)
 	{
 		UploadUniformInt(name, value);
+	}
+
+	void OpenGLShader::SetIntArray(const std::string& name, int* values, uint32_t count)
+	{
+		UploadUniformIntArray(name, values, count);
 	}
 
 	void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
@@ -101,6 +107,12 @@ namespace Odysseus
 	{
 		GLint location = glGetUniformLocation(m_rendererID, name.c_str());
 		glUniform1i(location, value);
+	}
+
+	void OpenGLShader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count)
+	{
+		GLint location = glGetUniformLocation(m_rendererID, name.c_str());
+		glUniform1iv(location, count, values);
 	}
 
 	void OpenGLShader::UploadUniformFloat(const std::string& name, const float value)
@@ -200,7 +212,7 @@ namespace Odysseus
 
 				glDeleteShader(shader);
 
-				ODC_CORE_ERROR("{0}: {1}",m_Name, infoLog.data());
+				ODC_CORE_ERROR("{0}: {1}", m_Name, infoLog.data());
 				ODC_CORE_ASSERT(false, "Shader compilation failure!");
 				break;
 			}
@@ -235,6 +247,8 @@ namespace Odysseus
 			ODC_CORE_ASSERT(false, "Shader link failure!");
 			return;
 		}
+
+		ODC_CORE_INFO("Complied shader {0} successfully !", m_Name);
 
 		for (auto id : glShaderIDs)
 			glDetachShader(program, id);

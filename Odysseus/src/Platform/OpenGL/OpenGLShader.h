@@ -22,8 +22,9 @@ namespace Odysseus
 		virtual void SetFloat4(const std::string& name, const glm::vec4& value)  override;
 		virtual void SetFloat3(const std::string& name, const glm::vec3& value)  override;
 		virtual void SetFloat2(const std::string& name, const glm::vec2& value) override;
-		virtual void SetFloat(const std::string& name, const float value) override;
-		virtual void SetInt(const std::string& name, const int value)  override;
+		virtual void SetFloat(const std::string& name,  float value) override;
+		virtual void SetInt(const std::string& name,  int value)  override;
+		virtual void SetIntArray(const std::string& name, int* values, uint32_t count)  override;
 
 		virtual const std::string& GetName() const override { return m_Name; }
 
@@ -47,6 +48,14 @@ namespace Odysseus
 		/// <param name="name">The uniform to upload.</param>
 		/// <param name="value">The value to assign to the uniform.</param>
 		void UploadUniformInt(const std::string& name, const int value);
+
+		/// <summary>
+		/// Upload an integer to a given uniform to the shader
+		/// </summary>
+		/// <param name="name">The uniform to upload.</param>
+		/// <param name="value">The value to assign to the uniform.</param>
+		void UploadUniformIntArray(const std::string& name, int* values, uint32_t count);
+
 		/// <summary>
 		/// Upload a float to a given uniform to the shader
 		/// </summary>
