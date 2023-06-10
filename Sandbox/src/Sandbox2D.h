@@ -23,6 +23,7 @@ private:
 	Odysseus::Ref<Odysseus::Texture2D> T_Spritesheet;
 	Odysseus::Ref<Odysseus::Sprite> Sp_Bush_01;
 	Odysseus::Ref<Odysseus::QuadProperties> testQuad;
+	Odysseus::Ref<Odysseus::Framebuffer> m_Framebuffer;
 
 	Odysseus::Timestep time;
 

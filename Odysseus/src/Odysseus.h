@@ -24,6 +24,7 @@
 
 #include "Odysseus/Renderer/Buffer.h"
 #include "Odysseus/Renderer/Shader.h"
+#include "Odysseus/Renderer/Framebuffer.h"
 #include "Odysseus/Renderer/Texture.h"
 #include "Odysseus/Renderer/Sprite.h"
 #include "Odysseus/Renderer/VertexArray.h"

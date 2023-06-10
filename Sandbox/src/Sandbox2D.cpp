@@ -49,6 +49,10 @@ void Sandbox2D::OnAttach()
 	s_TextureMap['W'] = Odysseus::Sprite::CreateFromCoords(T_Spritesheet, glm::vec2{ 11, 11 }, glm::vec2(128.f));
 	testQuad->sprite = Sp_Bush_01;
 
+	Odysseus::FramebufferSpecification fbSpec;
+	fbSpec.Width = 1280;
+	fbSpec.Height = 720;
+	m_Framebuffer = Odysseus::Framebuffer::Create(fbSpec);
 	m_CameraController.SetZoomLevel(5.0f);
 }
 
@@ -70,6 +74,7 @@ void Sandbox2D::OnUpdate(Odysseus::Timestep updateTime)
 	Odysseus::Renderer2D::ResetStats();
 	{
 		PROFILE_SCOPE("Renderer Prep");
+		m_Framebuffer->Bind();
 		Odysseus::RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 		Odysseus::RenderCommand::Clear();
 	}
@@ -88,11 +93,12 @@ void Sandbox2D::OnUpdate(Odysseus::Timestep updateTime)
 				else
 					sprite = Sp_Bush_01;
 				testQuad->sprite = sprite;
-				testQuad->position = glm::vec3({ (x ), (y ) , 0.0f});
+				testQuad->position = glm::vec3({ (x), (y) , 0.0f });
 				Odysseus::Renderer2D::DrawQuad(*testQuad);
 			}
 		}
 		Odysseus::Renderer2D::EndScene();
+		m_Framebuffer->Unbind();
 	}
 
 }
@@ -103,46 +109,127 @@ void Sandbox2D::OnImGuiRender()
 	t += time;
 
 	PROFILE_FUNCTION();
-	ImGui::Begin("Details");
-	ImGui::ColorEdit4("Base Color", glm::value_ptr(m_SquareColor));
 
-
-	ImGui::End();
-
-	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize);
-
-	ImGui::Separator();
-	ImGui::Text("STATS");
-	char label[50];
-	strcpy(label, "%.0f FPS ");
-	ImGui::Text(label, 1000.f / time.AsMilliseconds());
-	ImGui::Text("Draw calls: %d", Odysseus::Renderer2D::GetStats().DrawCalls);
-	ImGui::Text("Quads: %d", Odysseus::Renderer2D::GetStats().QuadCount);
-	ImGui::Text("Vertices: %d", Odysseus::Renderer2D::GetStats().GetTotalVertexCount());
-	ImGui::Text("Tris: %d", Odysseus::Renderer2D::GetStats().GetTotalTrisCount());
-	ImGui::Separator();
-
-	if (ImPlot::BeginPlot("Graph", ImVec2(-1, -1)))
+	bool isDockSpaceEnabled = true;
+	//DOCKSPACE THINGS
+	if (isDockSpaceEnabled)
 	{
-		ImPlot::SetupAxes("Time (s)", "Execution time (ms)");
-		ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 10);
-		ImPlot::SetupAxisLimits(ImAxis_X1, t - 10, t, ImGuiCond_Always);
-		const int resultSize = m_ProfileResults.size();
 
-		static std::vector<ScrollingBuffer> sbDatas;
-		sbDatas.resize(resultSize);
+		static bool isDockspaceOpen = true;
+		static bool opt_fullscreen = true;
+		static bool opt_padding = false;
+		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
-		for (int i = 0; i < resultSize; i++)
+		// We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
+		// because it would be confusing to have two docking targets within each others.
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		if (opt_fullscreen)
 		{
-			sbDatas[i].AddPoint(t, m_ProfileResults[i].Time);
-			ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 1.0f);
-			ImPlot::PlotShaded(m_ProfileResults[i].Name, &sbDatas[i].Data[0].x, &sbDatas[i].Data[0].y, sbDatas[i].Data.size(), -INFINITY, 0, sbDatas[i].Offset, 2 * sizeof(float));
+			const ImGuiViewport* viewport = ImGui::GetMainViewport();
+			ImGui::SetNextWindowPos(viewport->WorkPos);
+			ImGui::SetNextWindowSize(viewport->WorkSize);
+			ImGui::SetNextWindowViewport(viewport->ID);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+			window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+			window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+		}
+		else
+		{
+			dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
 		}
 
-		m_ProfileResults.clear();
-		ImPlot::EndPlot();
+		// When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background
+		// and handle the pass-thru hole, so we ask Begin() to not render a background.
+		if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+			window_flags |= ImGuiWindowFlags_NoBackground;
+
+		// Important: note that we proceed even if Begin() returns false (aka window is collapsed).
+		// This is because we want to keep our DockSpace() active. If a DockSpace() is inactive,
+		// all active windows docked into it will lose their parent and become undocked.
+		// We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
+		// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
+		if (!opt_padding)
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		ImGui::Begin("DockSpace Demo", &isDockspaceOpen, window_flags);
+		if (!opt_padding)
+			ImGui::PopStyleVar();
+
+		if (opt_fullscreen)
+			ImGui::PopStyleVar(2);
+
+		// Submit the DockSpace
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+		{
+			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+		}
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Close", "ESCAPE", false))
+					Odysseus::Application::Get().QuitApplication();
+				ImGui::EndMenu();
+			}
+
+
+			ImGui::EndMenuBar();
+		}
+
+		ImGui::Begin("Details");
+		ImGui::ColorEdit4("Base Color", glm::value_ptr(m_SquareColor));
+
+
+		ImGui::End();
+
+		ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize);
+
+		ImGui::Separator();
+		ImGui::Text("STATS");
+		char label[50];
+		strcpy(label, "%.0f FPS ");
+		ImGui::Text(label, 1000.f / time.AsMilliseconds());
+		ImGui::Text("Draw calls: %d", Odysseus::Renderer2D::GetStats().DrawCalls);
+		ImGui::Text("Quads: %d", Odysseus::Renderer2D::GetStats().QuadCount);
+		ImGui::Text("Vertices: %d", Odysseus::Renderer2D::GetStats().GetTotalVertexCount());
+		ImGui::Text("Tris: %d", Odysseus::Renderer2D::GetStats().GetTotalTrisCount());
+		ImGui::Separator();
+
+		//Profiling graph
+		if (ImPlot::BeginPlot("Graph", ImVec2(-1, -1)))
+		{
+			ImPlot::SetupAxes("Time (s)", "Execution time (ms)");
+			ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 10);
+			ImPlot::SetupAxisLimits(ImAxis_X1, t - 10, t, ImGuiCond_Always);
+			const int resultSize = m_ProfileResults.size();
+
+			static std::vector<ScrollingBuffer> sbDatas;
+			sbDatas.resize(resultSize);
+
+			for (int i = 0; i < resultSize; i++)
+			{
+				sbDatas[i].AddPoint(t, m_ProfileResults[i].Time);
+				ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 1.0f);
+				ImPlot::PlotShaded(m_ProfileResults[i].Name, &sbDatas[i].Data[0].x, &sbDatas[i].Data[0].y, sbDatas[i].Data.size(), -INFINITY, 0, sbDatas[i].Offset, 2 * sizeof(float));
+			}
+
+			m_ProfileResults.clear();
+			ImPlot::EndPlot();
+		}
+		ImGui::End();
+
+		if (ImGui::Begin("Viewport"))
+		{
+			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+			ImGui::Image((void*)textureID, ImVec2(1280, 720));
+			ImGui::End();
+		}
+
+		ImGui::End();
 	}
-	ImGui::End();
 }
 
 void Sandbox2D::OnEvent(Odysseus::Event& e)
