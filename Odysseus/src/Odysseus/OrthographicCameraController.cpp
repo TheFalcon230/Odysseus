@@ -13,30 +13,36 @@ namespace Odysseus
 
 	}
 
+	void OrthographicCameraController::OnResize(float width, float height)
+	{
+		m_AspectRatio = width / height;
+		CalculateView();
+	}
+
 	void OrthographicCameraController::OnUpdate(Odysseus::Timestep time)
 	{
-		if (Input::IsKeyPressed(ODC_KEY_A))
+		if (Input::IsKeyPressed(KeyCode::A))
 		{
 			m_CameraPosition.x -= m_CameraMoveSpeed * time.AsSeconds() * m_ZoomLevel;
 		}
-		else if (Input::IsKeyPressed(ODC_KEY_D))
+		else if (Input::IsKeyPressed(KeyCode::D))
 		{
 			m_CameraPosition.x += m_CameraMoveSpeed * time.AsSeconds() * m_ZoomLevel;
 		}
-		if (Input::IsKeyPressed(ODC_KEY_W))
+		if (Input::IsKeyPressed(KeyCode::W))
 		{
 			m_CameraPosition.y += m_CameraMoveSpeed * time.AsSeconds() * m_ZoomLevel;
 		}
-		else if (Input::IsKeyPressed(ODC_KEY_S))
+		else if (Input::IsKeyPressed(KeyCode::S))
 		{
 			m_CameraPosition.y -= m_CameraMoveSpeed * time.AsSeconds() * m_ZoomLevel;
 		}
 
 		if (m_Rotation)
 		{
-			if (Input::IsKeyPressed(ODC_KEY_Q))
+			if (Input::IsKeyPressed(KeyCode::Q))
 				m_CameraRotation += m_CameraRotationSpeed * time.AsSeconds();
-			else if (Input::IsKeyPressed(ODC_KEY_E))
+			else if (Input::IsKeyPressed(KeyCode::E))
 				m_CameraRotation -= m_CameraRotationSpeed * time.AsSeconds();
 
 			m_Camera.SetRotation(m_CameraRotation);
@@ -67,7 +73,7 @@ namespace Odysseus
 
 	bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
 	{
-		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
+		OnResize((float)e.GetWidth() , (float)e.GetHeight());
 		CalculateView();
 		return false;
 	}

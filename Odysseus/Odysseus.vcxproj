@@ -192,7 +192,6 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
-    <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\odcpch.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
@@ -616,6 +615,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Odysseus\Core\Application.cpp" />
+    <ClCompile Include="src\Odysseus\Core\Input.cpp" />
     <ClCompile Include="src\Odysseus\Core\Layer.cpp" />
     <ClCompile Include="src\Odysseus\Core\LayerStack.cpp" />
     <ClCompile Include="src\Odysseus\Core\Log.cpp" />
@@ -641,7 +641,6 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
-    <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\odcpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

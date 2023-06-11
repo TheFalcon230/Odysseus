@@ -66,6 +66,9 @@
     <ClInclude Include="src\Odysseus\Core\Application.h">
       <Filter>src\Odysseus\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Odysseus\Core\Assert.h">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Odysseus\Core\Core.h">
       <Filter>src\Odysseus\Core</Filter>
     </ClInclude>
@@ -126,6 +129,9 @@
     <ClInclude Include="src\Odysseus\Renderer\Camera.h">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Odysseus\Renderer\Framebuffer.h">
+      <Filter>src\Odysseus\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Odysseus\Renderer\GraphicsContext.h">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClInclude>
@@ -144,6 +150,9 @@
     <ClInclude Include="src\Odysseus\Renderer\Shader.h">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Odysseus\Renderer\Sprite.h">
+      <Filter>src\Odysseus\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Odysseus\Renderer\Texture.h">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClInclude>
@@ -154,6 +163,9 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h">
@@ -167,9 +179,6 @@
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
       <Filter>src\Platform\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\Windows\WindowsInput.h">
-      <Filter>src\Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>src\Platform\Windows</Filter>
@@ -1431,10 +1440,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Odysseus\Core\Assert.h" />
-    <ClInclude Include="src\Odysseus\Renderer\Sprite.h" />
-    <ClInclude Include="src\Odysseus\Renderer\Framebuffer.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Odysseus\Core\Application.cpp">
@@ -1444,9 +1449,6 @@
       <Filter>src\Odysseus\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Odysseus\Core\LayerStack.cpp">
-      <Filter>src\Odysseus\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Odysseus\Core\Log.cpp">
       <Filter>src\Odysseus\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Odysseus\Core\Timestep.cpp">
@@ -1467,6 +1469,9 @@
     <ClCompile Include="src\Odysseus\Renderer\Camera.cpp">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Odysseus\Renderer\Framebuffer.cpp">
+      <Filter>src\Odysseus\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Odysseus\Renderer\RenderCommand.cpp">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClCompile>
@@ -1482,6 +1487,9 @@
     <ClCompile Include="src\Odysseus\Renderer\Shader.cpp">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Odysseus\Renderer\Sprite.cpp">
+      <Filter>src\Odysseus\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Odysseus\Renderer\Texture.cpp">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClCompile>
@@ -1492,6 +1500,9 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp">
@@ -1505,9 +1516,6 @@
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>src\Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
-      <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>src\Platform\Windows</Filter>
@@ -1527,8 +1535,7 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Odysseus\Renderer\Sprite.cpp" />
-    <ClCompile Include="src\Odysseus\Renderer\Framebuffer.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />
+    <ClCompile Include="src\Odysseus\Core\Input.cpp" />
+    <ClCompile Include="src\Odysseus\Core\Log.cpp" />
   </ItemGroup>
 </Project>

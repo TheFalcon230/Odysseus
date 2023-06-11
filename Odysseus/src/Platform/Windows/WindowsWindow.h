@@ -18,8 +18,8 @@ namespace Odysseus
 
 		void Update() override;
 
-		inline unsigned int GetWidth() const override { return m_Data.width; }
-		inline unsigned int GetHeight() const override { return m_Data.height; }
+		inline uint32_t GetWidth() const override { return m_Data.width; }
+		inline uint32_t GetHeight() const override { return m_Data.height; }
 
 		// Window attributes
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }

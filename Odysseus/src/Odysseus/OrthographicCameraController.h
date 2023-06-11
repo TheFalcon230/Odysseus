@@ -18,6 +18,8 @@ namespace Odysseus
 		void OnUpdate(Timestep time);
 		void OnEvent(Event& e);
 
+		void OnResize(float width, float height);
+
 		void SetZoomLevel(float level) { m_ZoomLevel = level; CalculateView(); }
 		float GetZoomLevel() { return m_ZoomLevel; }
 	private:

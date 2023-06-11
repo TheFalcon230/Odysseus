@@ -20,9 +20,12 @@ IncludeDir["ImPlot"] = "Odysseus/vendor/implot"
 IncludeDir["glm"] = "Odysseus/vendor/glm"
 IncludeDir["stb_image"] = "Odysseus/vendor/stb_image"
 
-include "Odysseus/vendor/GLFW"
-include "Odysseus/vendor/GLAD"
-include "Odysseus/vendor/imgui"
+group "Dependencies"
+	include "Odysseus/vendor/GLFW"
+	include "Odysseus/vendor/GLAD"
+	include "Odysseus/vendor/imgui"
+
+group ""
 
 project "Odysseus"
 	location "Odysseus"
@@ -130,7 +133,7 @@ project "Sandbox"
 	{
 		"Odysseus/vendor/spdlog/include",
 		"Odysseus/src",
-		"Hazel/vendor",
+		"Odysseus/vendor",
 		"%{IncludeDir.glm}"
 	}
 
@@ -163,3 +166,58 @@ project "Sandbox"
 		defines "ODC_DIST"
 		buildoptions  "/MD"
 		optimize "On"
+
+
+project "OdysseusEngine"
+		location "OdysseusEngine"
+		kind "ConsoleApp"
+		language "C++"
+		cppdialect "C++17"
+		staticruntime "on"
+	
+		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	
+		files
+		{
+			"%{prj.name}/src/**.h",
+			"%{prj.name}/src/**.cpp"
+		}
+	
+		includedirs
+		{
+			"Odysseus/vendor/spdlog/include",
+			"Odysseus/src",
+			"Odysseus/vendor",
+			"%{IncludeDir.glm}"
+		}
+	
+		links
+		{
+			"Odysseus"
+		}
+	
+		filter "system:windows"
+			cppdialect "C++17"
+			staticruntime "On"
+			systemversion "latest"
+	
+			defines
+			{
+				"ODC_PLATFORM_WINDOWS",
+			}
+	
+		filter "configurations:Debug"
+			defines "ODC_DEBUG"
+			buildoptions "/MDd"
+			symbols "On"
+	
+		filter "configurations:Release"
+			defines "ODC_RELEASE"
+			buildoptions "/MD"
+			optimize "On"
+	
+		filter "configurations:Dist"
+			defines "ODC_DIST"
+			buildoptions  "/MD"
+			optimize "On"

@@ -9,12 +9,12 @@ namespace Odysseus
 	struct WindowProps
 	{
 		std::string Title;
-		unsigned int width;
-		unsigned int height;
+		uint32_t width;
+		uint32_t height;
 
 		WindowProps(const std::string& title = "Odysseus Engine",
-			unsigned int pWidth = 1280,
-			unsigned int pHeight = 720)
+			uint32_t pWidth = 1280,
+			uint32_t pHeight = 720)
 			: Title(title), width(pWidth), height(pHeight) {}
 	};
 
@@ -28,8 +28,8 @@ namespace Odysseus
 
 		virtual void Update() = 0;
 
-		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int GetHeight() const = 0;
+		virtual uint32_t GetWidth() const = 0;
+		virtual uint32_t GetHeight() const = 0;
 
 		// Window attributes
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;

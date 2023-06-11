@@ -12,9 +12,9 @@ namespace Odysseus
 		m_TexCoords[3] = { min.x, max.y };
 	}
 
-	Ref<Sprite> Sprite::CreateFromCoords(const Ref<Texture2D>& texture, float x, float y, float spriteWidth, float spriteHeight)
+	Ref<Sprite> Sprite::CreateFromCoords(const Ref<Texture2D>& texture, float x, float y, float spriteWidth, float spriteHeight,glm::vec2 spriteSize)
 	{
-		return CreateFromCoords(texture, glm::vec2{ x, y }, glm::vec2{ spriteWidth, spriteHeight });
+		return CreateFromCoords(texture, glm::vec2{ x, y }, glm::vec2{ spriteWidth, spriteHeight }, spriteSize);
 	}
 
 	Ref<Sprite> Sprite::CreateFromCoords(const Ref<Texture2D>& texture, glm::vec2& coords, glm::vec2 cellSize, glm::vec2 spriteSize)
