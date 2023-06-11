@@ -210,7 +210,10 @@ namespace Odysseus
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-		if (ImGui::Begin("Viewport"))
+		ImGuiWindowClass window_class;
+		window_class.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_AutoHideTabBar;
+		ImGui::SetNextWindowClass(&window_class);
+		if (ImGui::Begin("Viewport", (bool*)true))
 		{
 			bIsViewportFocused = ImGui::IsWindowFocused();
 			bIsViewportHovered = ImGui::IsWindowHovered();

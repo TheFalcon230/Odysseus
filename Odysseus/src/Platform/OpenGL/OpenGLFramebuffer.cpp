@@ -5,6 +5,8 @@
 
 namespace Odysseus
 {
+	static const uint32_t MaxFrameBufferSize = 8192;
+
 	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
 		:m_Specification(spec)
 	{
@@ -63,6 +65,12 @@ namespace Odysseus
 
 	void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height)
 	{
+		if (width == 0 || height == 0 || width > MaxFrameBufferSize || height > MaxFrameBufferSize)
+		{
+			ODC_CORE_ERROR("Invalid framebuffer size: Size should be greater than 0 and less than {0} (Size is {1},{2})", MaxFrameBufferSize, width, height);
+			return;
+		}
+
 		m_Specification.Width = width;
 		m_Specification.Height = height;
 
