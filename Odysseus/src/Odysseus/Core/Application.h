@@ -33,6 +33,9 @@ namespace Odysseus
 
 		inline static Application& Get() { return *s_Instance; }
 		inline void QuitApplication() { m_Running = false; }
+
+		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
+
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);

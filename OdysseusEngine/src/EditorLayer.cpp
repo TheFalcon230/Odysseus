@@ -64,7 +64,8 @@ namespace Odysseus
 
 		{
 			PROFILE_SCOPE("Camera OnUpdate");
-			m_CameraController.OnUpdate(updateTime);
+			if (bIsViewportFocused )
+				m_CameraController.OnUpdate(updateTime);
 		}
 
 		Renderer2D::ResetStats();
@@ -211,6 +212,10 @@ namespace Odysseus
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		if (ImGui::Begin("Viewport"))
 		{
+			bIsViewportFocused = ImGui::IsWindowFocused();
+			bIsViewportHovered = ImGui::IsWindowHovered();
+			Application::Get().GetImGuiLayer()->SetCanBlockEvents(!bIsViewportFocused || !bIsViewportHovered);
+
 			ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 			if (vec_ViewportSize != *((glm::vec2*)&viewportSize))
 			{

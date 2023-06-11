@@ -20,7 +20,10 @@ namespace Odysseus
 
 		void Begin();
 		void End();
+
+		void SetCanBlockEvents(bool pValue) { bCanBlockImGuiEvents = pValue; };
 	private:
+		bool bCanBlockImGuiEvents = true;
 		float m_Time = 0.0f;
 	};
 
