@@ -1,11 +1,10 @@
-[20:32:19] [info] HAZEL: Creating window name 1280, 720
-[20:32:19] [info] HAZEL: OpenGL Info:
-[20:32:19] [info] HAZEL:   Vendor: NVIDIA Corporation
-[20:32:19] [info] HAZEL:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
-[20:32:19] [info] HAZEL:   Version: 4.5.0 NVIDIA 531.79
-[20:32:19] [info] HAZEL: Complied shader Unlit successfully !
-[20:32:19] [info] HAZEL: Start loading texture at path: 'assets/textures/TestImage.png'
-[20:32:19] [info] HAZEL: Texture loaded successfully!
-[20:32:19] [info] HAZEL: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
-[20:32:19] [info] HAZEL: Texture loaded successfully!
-[20:32:19] [info] HAZEL: Creating a map of size 24;12
+[23:38:22] [info] HAZEL: Creating window name 1280, 720
+[23:38:22] [info] HAZEL: OpenGL Info:
+[23:38:22] [info] HAZEL:   Vendor: NVIDIA Corporation
+[23:38:22] [info] HAZEL:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
+[23:38:22] [info] HAZEL:   Version: 4.5.0 NVIDIA 531.79
+[23:38:22] [info] HAZEL: Complied shader Unlit successfully !
+[23:38:22] [info] HAZEL: Start loading texture at path: 'assets/textures/TestImage.png'
+[23:38:22] [info] HAZEL: Texture loaded successfully!
+[23:38:22] [info] HAZEL: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
+[23:38:23] [info] HAZEL: Texture loaded successfully!

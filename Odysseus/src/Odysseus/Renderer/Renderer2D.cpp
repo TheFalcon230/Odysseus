@@ -48,7 +48,7 @@ namespace Odysseus
 	};
 
 	static Renderer2DData s_Data;
-
+	static glm::vec2 defaultTexCoord[] = { {0.0, 0.0},{1.0, 0.0},{1.0, 1.0},{0.0, 1.0}, };
 
 	void Renderer2D::Init()
 	{
@@ -112,6 +112,20 @@ namespace Odysseus
 	void Renderer2D::Shutdown()
 	{
 
+	}
+
+
+	void Renderer2D::BeginScene(const Camera& camera, glm::mat4 transform)
+	{
+		glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
+
+		s_Data.unlitShader->Bind();
+		s_Data.unlitShader->SetMat4("u_ViewProjection", viewProj);
+
+		s_Data.QuadIndexCount = 0;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
+		s_Data.TextureSlotIndex = 1;
 	}
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
@@ -284,21 +298,24 @@ namespace Odysseus
 		glm::vec4 color = quad.baseColor;
 		float textureIndex = 0.0f;
 
-
-		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
+		if (quad.sprite != nullptr || quad.texture != nullptr)
 		{
-			if (*s_Data.TextureSlots[i].get() == *(texture).get())
+
+			for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
 			{
-				textureIndex = (float)i;
-				break;
+				if (*s_Data.TextureSlots[i].get() == *(texture).get())
+				{
+					textureIndex = (float)i;
+					break;
+				}
 			}
-		}
 
-		if (textureIndex == 0.0f)
-		{
-			textureIndex = (float)s_Data.TextureSlotIndex;
-			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
-			s_Data.TextureSlotIndex++;
+			if (textureIndex == 0.0f)
+			{
+				textureIndex = (float)s_Data.TextureSlotIndex;
+				s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
+				s_Data.TextureSlotIndex++;
+			}
 		}
 
 
@@ -311,7 +328,7 @@ namespace Odysseus
 		{
 			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.VertexPosition[i];
 			s_Data.QuadVertexBufferPtr->Color = color;
-			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
+			s_Data.QuadVertexBufferPtr->TexCoord = quad.sprite == nullptr ? defaultTexCoord[i]: textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = quad.tilingFactor;
 			s_Data.QuadVertexBufferPtr++;

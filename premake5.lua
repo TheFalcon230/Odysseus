@@ -19,6 +19,7 @@ IncludeDir["ImGui"] = "Odysseus/vendor/imgui"
 IncludeDir["ImPlot"] = "Odysseus/vendor/implot"
 IncludeDir["glm"] = "Odysseus/vendor/glm"
 IncludeDir["stb_image"] = "Odysseus/vendor/stb_image"
+IncludeDir["entt"] = "Odysseus/vendor/entt/include"
 
 group "Dependencies"
 	include "Odysseus/vendor/GLFW"
@@ -68,7 +69,8 @@ project "Odysseus"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImPlot}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}"
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.entt}"
 
 	}
 
@@ -135,7 +137,8 @@ project "Sandbox"
 		"Odysseus/vendor/spdlog/include",
 		"Odysseus/src",
 		"Odysseus/vendor",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -190,7 +193,8 @@ project "OdysseusEngine"
 			"Odysseus/vendor/spdlog/include",
 			"Odysseus/src",
 			"Odysseus/vendor",
-			"%{IncludeDir.glm}"
+			"%{IncludeDir.glm}",
+			"%{IncludeDir.entt}"
 		}
 	
 		links

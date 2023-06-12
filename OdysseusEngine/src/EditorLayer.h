@@ -27,6 +27,9 @@ namespace Odysseus
 		Ref<QuadProperties> testQuad;
 		Ref<Framebuffer> m_Framebuffer;
 
+		Ref<Scene> activeScene;
+		Entity ETestSquare, ECamera;
+
 		Timestep time;
 
 		std::unordered_map<char, Ref<Sprite>> s_TextureMap;

@@ -35,4 +35,15 @@ namespace Odysseus
 		float m_Rotation = 0.0f;
 	};
 
+	class Camera
+	{
+	public:
+		Camera(const glm::mat4 pProjection): projectionMaxtrix(pProjection){}
+
+		const glm::mat4& GetProjection() const { return projectionMaxtrix; }
+
+	private:
+		glm::mat4 projectionMaxtrix;
+	};
+
 }

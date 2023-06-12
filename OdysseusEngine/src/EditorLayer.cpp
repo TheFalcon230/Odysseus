@@ -2,25 +2,12 @@
 
 #include "../imgui/imgui.h"
 #include "../implot/implot.h"
+#include <glm/gtc/type_ptr.hpp>
 
 #define PROFILE_SCOPE(name) InstrumentationTimer timer##__LINE__(name, [&](ProfileResult profileResult) { m_ProfileResults.push_back(profileResult); })
 #define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCSIG__);
 
 
-static const char* L_TestMap =
-"WWWWWWWWWWWWWWWWWWWWWWWW"
-"WWWWWWWWWWWWDDWWWWWWWWWW"
-"WWWWWWWWWWDDDDDDWWWWWWWW"
-"WWWWWWWWWWDDDDDDWWWWWWWW"
-"WWWWWWWDDDDDDDDDDDDWWWWW"
-"WWWWWDDDDDDDDDDDDDDDWWWW"
-"WWWWDDDDDDDDDDDDDDDDDWWW"
-"WWWWWDDDDDDDDDDDDDDDWWWW"
-"WWWWWWWDDDDDDDDDDWWWWWWW"
-"WWWWWWWWDDDDDDDWWWWWWWWW"
-"WWWWWWWWWDDDDWWWWWWWWWWW"
-"WWWWWWWWWWWWWWWWWWWWWWWW"
-;
 
 namespace Odysseus
 {
@@ -36,10 +23,6 @@ namespace Odysseus
 		m_Texture = Texture2D::Create("assets/textures/TestImage.png");
 		T_Spritesheet = Texture2D::Create("assets/textures/RPG_Sheet.png");
 
-		mapWidth = 24;
-		mapHeight = strlen(L_TestMap) / mapWidth;
-		ODC_CORE_INFO("Creating a map of size {0};{1}", mapWidth, mapHeight);
-
 		Sp_Bush_01 = Sprite::CreateFromCoords(T_Spritesheet, glm::vec2{ 2, 3 }, glm::vec2(128.f));
 		s_TextureMap['D'] = Sprite::CreateFromCoords(T_Spritesheet, glm::vec2{ 6, 11 }, glm::vec2(128.f));
 		s_TextureMap['W'] = Sprite::CreateFromCoords(T_Spritesheet, glm::vec2{ 11, 11 }, glm::vec2(128.f));
@@ -50,6 +33,14 @@ namespace Odysseus
 		fbSpec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(fbSpec);
 		m_CameraController.SetZoomLevel(5.0f);
+
+		activeScene = CreateRef<Scene>();
+		auto square = activeScene->CreateEntity("Test Square");
+		square.AddComponent<SpriteRendererComponent>(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
+		ETestSquare = square;
+
+		ECamera = activeScene->CreateEntity("Main Camera");
+		ECamera.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
 	}
 
 	void EditorLayer::OnDetach()
@@ -64,7 +55,7 @@ namespace Odysseus
 
 		{
 			PROFILE_SCOPE("Camera OnUpdate");
-			if (bIsViewportFocused )
+			if (bIsViewportFocused)
 				m_CameraController.OnUpdate(updateTime);
 		}
 
@@ -75,26 +66,9 @@ namespace Odysseus
 			RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 			RenderCommand::Clear();
 		}
-
 		{
 			PROFILE_SCOPE("Renderer Draw");
-			Renderer2D::BeginScene(m_CameraController.GetCamera());
-			for (uint32_t y = 0; y < mapHeight; y++)
-			{
-				for (uint32_t x = 0; x < mapWidth; x++)
-				{
-					char tile = L_TestMap[x + y * mapWidth];
-					Ref<Sprite> sprite;
-					if (s_TextureMap.find(tile) != s_TextureMap.end())
-						sprite = s_TextureMap[tile];
-					else
-						sprite = Sp_Bush_01;
-					testQuad->sprite = sprite;
-					testQuad->position = glm::vec3({ (x), (y) , 0.0f });
-					Renderer2D::DrawQuad(*testQuad);
-				}
-			}
-			Renderer2D::EndScene();
+			activeScene->Update(updateTime);
 			m_Framebuffer->Unbind();
 		}
 
@@ -231,6 +205,19 @@ namespace Odysseus
 			ImGui::Image((void*)textureID, ImVec2(vec_ViewportSize.x, vec_ViewportSize.y), ImVec2(0, 1), ImVec2(1, 0));
 			ImGui::End();
 			ImGui::PopStyleVar();
+		}
+
+		if (ImGui::Begin("Details"))
+		{
+			auto& tag = ETestSquare.GetComponent<TagComponent>().Tag;
+			ImGui::Text("%s", tag.c_str());
+			ImGui::Separator();
+			auto& squareColor = ETestSquare.GetComponent<SpriteRendererComponent>().Color;
+			auto& squarePosition = ETestSquare.GetComponent<TransformComponent>().Position;
+			//ImGui::DragFloat3("Position", { squarePosition.x, squarePosition.y, squarePosition.z });
+			ImGui::ColorEdit4("Base Color", glm::value_ptr(squareColor));
+			ImGui::Separator();
+			ImGui::End();
 		}
 
 		ImGui::End();

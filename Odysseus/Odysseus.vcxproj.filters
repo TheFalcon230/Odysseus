@@ -1440,15 +1440,24 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="src\Odysseus\Scene\Scene.h" />
+    <ClInclude Include="src\Odysseus\Scene\Components.h" />
+    <ClInclude Include="src\Odysseus\Scene\Entity.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Odysseus\Core\Application.cpp">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Odysseus\Core\Input.cpp">
       <Filter>src\Odysseus\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Odysseus\Core\Layer.cpp">
       <Filter>src\Odysseus\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Odysseus\Core\LayerStack.cpp">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Odysseus\Core\Log.cpp">
       <Filter>src\Odysseus\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Odysseus\Core\Timestep.cpp">
@@ -1535,7 +1544,7 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Odysseus\Core\Input.cpp" />
-    <ClCompile Include="src\Odysseus\Core\Log.cpp" />
+    <ClCompile Include="src\Odysseus\Scene\Scene.cpp" />
+    <ClCompile Include="src\Odysseus\Scene\Entity.cpp" />
   </ItemGroup>
 </Project>

@@ -17,6 +17,10 @@
 #include "Odysseus/OrthographicCameraController.h"
 
 #include "Odysseus/ImGui/ImGuiLayer.h"
+
+#include "Odysseus/Scene/Scene.h"
+#include "Odysseus/Scene/Entity.h"
+#include "Odysseus/Scene/Components.h"
 // ---Renderer------------------------
 #include "Odysseus/Renderer/Renderer.h"
 #include "Odysseus/Renderer/Renderer2D.h"
