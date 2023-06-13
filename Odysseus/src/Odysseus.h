@@ -20,6 +20,7 @@
 
 #include "Odysseus/Scene/Scene.h"
 #include "Odysseus/Scene/Entity.h"
+#include "Odysseus/Scene/ScriptableObject.h"
 #include "Odysseus/Scene/Components.h"
 // ---Renderer------------------------
 #include "Odysseus/Renderer/Renderer.h"

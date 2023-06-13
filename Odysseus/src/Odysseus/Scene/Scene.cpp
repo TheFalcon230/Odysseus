@@ -2,6 +2,7 @@
 #include "Scene.h"
 
 #include "Odysseus/Renderer/Renderer2D.h"
+#include "Components.h"
 #include "Entity.h"
 
 namespace Odysseus
@@ -9,8 +10,6 @@ namespace Odysseus
 
 	Scene::Scene()
 	{
-		entt::entity entity = registry.create();
-		registry.emplace<TransformComponent>(entity);
 	}
 
 	Scene::~Scene()
@@ -30,14 +29,30 @@ namespace Odysseus
 
 	void Scene::Update(Timestep time)
 	{
-		//Render Sprites
+		// Update scripts
+		{
+			registry.view<NativeScriptComponent>().each([=](auto entity, NativeScriptComponent& nsc)
+			{
+					//TODO: Move to Scene::OnPlay
+				if (!nsc.Instance)
+				{
+					nsc.Instance = nsc.InstanciateScript();
+					nsc.Instance->object = Object{ entity, this };
+					nsc.Instance->Start();
+				}
+			nsc.Instance->Update(time);
+			});
+		}
+
+
+		//Get all the cameras in the scene
 		Camera* mainCamera = nullptr;
 		glm::mat4* cameraTransform = nullptr;
 		{
 			auto group = registry.group<TransformComponent, CameraComponent>();
 			for (auto entity : group)
 			{
-				auto& [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
+				auto [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
 				if (camera.bIsMainCamera)
 				{
 					mainCamera = &camera.Camera;
@@ -47,6 +62,8 @@ namespace Odysseus
 			}
 		}
 
+
+		//Render sprites
 		if (mainCamera)
 		{
 			Renderer2D::BeginScene(mainCamera->GetProjection(), *cameraTransform);
@@ -54,7 +71,7 @@ namespace Odysseus
 			auto view = registry.view<TransformComponent, SpriteRendererComponent>();
 			for (auto entity : view)
 			{
-				auto& [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
+				auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
 				QuadProperties quad;
 				quad.baseColor = sprite.Color;
 				quad.position = transform.Position;

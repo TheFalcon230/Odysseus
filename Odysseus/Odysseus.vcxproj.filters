@@ -1444,6 +1444,7 @@
     <ClInclude Include="src\Odysseus\Scene\Components.h" />
     <ClInclude Include="src\Odysseus\Scene\Entity.h" />
     <ClInclude Include="src\Odysseus\Scene\SceneCamera.h" />
+    <ClInclude Include="src\Odysseus\Scene\ScriptableObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Odysseus\Core\Application.cpp">

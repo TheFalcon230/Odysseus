@@ -192,6 +192,7 @@ IF EXIST ..\bin\Dist-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..
     <ClInclude Include="src\Odysseus\Scene\Components.h" />
     <ClInclude Include="src\Odysseus\Scene\Entity.h" />
     <ClInclude Include="src\Odysseus\Scene\Scene.h" />
+    <ClInclude Include="src\Odysseus\Scene\ScriptableObject.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.h" />

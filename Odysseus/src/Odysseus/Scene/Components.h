@@ -4,6 +4,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include "Odysseus/Renderer/Camera.h"
 #include "SceneCamera.h"
+#include "ScriptableObject.h"
 
 namespace Odysseus
 {
@@ -13,7 +14,7 @@ namespace Odysseus
 
 		TagComponent() = default;
 		TagComponent(const TagComponent&) = default;
-		TagComponent(const std::string& tag) 
+		TagComponent(const std::string& tag)
 			: Tag(tag) {}
 	};
 
@@ -56,5 +57,21 @@ namespace Odysseus
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
+	};
+
+	struct NativeScriptComponent
+	{
+		ScriptableObject* Instance = nullptr;
+
+		ScriptableObject* (*InstanciateScript)();
+		void (*DestroyScript)(NativeScriptComponent*);
+
+
+		template<typename T>
+		void Bind()
+		{
+			InstanciateScript = []() { return static_cast<ScriptableObject*>(new T()); };
+			DestroyScript = [](NativeScriptComponent* nsc) {delete nsc->Instance; nsc->Instance = nullptr; };
+		}
 	};
 }
