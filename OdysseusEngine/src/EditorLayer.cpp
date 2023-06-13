@@ -40,7 +40,7 @@ namespace Odysseus
 		ETestSquare = square;
 
 		ECamera = activeScene->CreateEntity("Main Camera");
-		ECamera.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+		ECamera.AddComponent<CameraComponent>();
 	}
 
 	void EditorLayer::OnDetach()
@@ -52,6 +52,16 @@ namespace Odysseus
 	{
 		PROFILE_FUNCTION();
 		time = updateTime;
+
+		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
+			vec_ViewportSize.x > 0.0f && vec_ViewportSize.y > 0.0f &&
+			(spec.Width != vec_ViewportSize.x || spec.Height != vec_ViewportSize.y))
+		{
+			m_Framebuffer->Resize((uint32_t)vec_ViewportSize.x, (uint32_t)vec_ViewportSize.y);
+			m_CameraController.OnResize(vec_ViewportSize.x, vec_ViewportSize.y);
+
+			activeScene->OnViewportResize((uint32_t)vec_ViewportSize.x, (uint32_t)vec_ViewportSize.y);
+		}
 
 		{
 			PROFILE_SCOPE("Camera OnUpdate");
@@ -146,42 +156,44 @@ namespace Odysseus
 
 			ImGui::EndMenuBar();
 		}
-
-		ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize);
-
-		ImGui::Separator();
-		ImGui::Text("STATS");
-		char label[50];
-		strcpy(label, "%.0f FPS ");
-		ImGui::Text(label, 1000.f / time.AsMilliseconds());
-		ImGui::Text("Draw calls: %d", Renderer2D::GetStats().DrawCalls);
-		ImGui::Text("Quads: %d", Renderer2D::GetStats().QuadCount);
-		ImGui::Text("Vertices: %d", Renderer2D::GetStats().GetTotalVertexCount());
-		ImGui::Text("Tris: %d", Renderer2D::GetStats().GetTotalTrisCount());
-		ImGui::Separator();
-
-		//Profiling graph
-		if (ImPlot::BeginPlot("Graph", ImVec2(-1, -1)))
+				
+		if (ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize))
 		{
-			ImPlot::SetupAxes("Time (s)", "Execution time (ms)");
-			ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 10);
-			ImPlot::SetupAxisLimits(ImAxis_X1, t - 10, t, ImGuiCond_Always);
-			const int resultSize = m_ProfileResults.size();
 
-			static std::vector<ScrollingBuffer> sbDatas;
-			sbDatas.resize(resultSize);
+			ImGui::Separator();
+			ImGui::Text("STATS");
+			char label[50];
+			strcpy(label, "%.0f FPS ");
+			ImGui::Text(label, 1000.f / time.AsMilliseconds());
+			ImGui::Text("Draw calls: %d", Renderer2D::GetStats().DrawCalls);
+			ImGui::Text("Quads: %d", Renderer2D::GetStats().QuadCount);
+			ImGui::Text("Vertices: %d", Renderer2D::GetStats().GetTotalVertexCount());
+			ImGui::Text("Tris: %d", Renderer2D::GetStats().GetTotalTrisCount());
+			ImGui::Separator();
 
-			for (int i = 0; i < resultSize; i++)
+			//Profiling graph
+			if (ImPlot::BeginPlot("Graph", ImVec2(-1, -1)))
 			{
-				sbDatas[i].AddPoint(t, m_ProfileResults[i].Time);
-				ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 1.0f);
-				ImPlot::PlotShaded(m_ProfileResults[i].Name, &sbDatas[i].Data[0].x, &sbDatas[i].Data[0].y, sbDatas[i].Data.size(), -INFINITY, 0, sbDatas[i].Offset, 2 * sizeof(float));
-			}
+				ImPlot::SetupAxes("Time (s)", "Execution time (ms)");
+				ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 10);
+				ImPlot::SetupAxisLimits(ImAxis_X1, t - 10, t, ImGuiCond_Always);
+				const int resultSize = m_ProfileResults.size();
 
-			m_ProfileResults.clear();
-			ImPlot::EndPlot();
+				static std::vector<ScrollingBuffer> sbDatas;
+				sbDatas.resize(resultSize);
+
+				for (int i = 0; i < resultSize; i++)
+				{
+					sbDatas[i].AddPoint(t, m_ProfileResults[i].Time);
+					ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 1.0f);
+					ImPlot::PlotShaded(m_ProfileResults[i].Name, &sbDatas[i].Data[0].x, &sbDatas[i].Data[0].y, sbDatas[i].Data.size(), -INFINITY, 0, sbDatas[i].Offset, 2 * sizeof(float));
+				}
+
+				m_ProfileResults.clear();
+				ImPlot::EndPlot();
+			}
+			ImGui::End();
 		}
-		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGuiWindowClass window_class;
@@ -194,16 +206,10 @@ namespace Odysseus
 			Application::Get().GetImGuiLayer()->SetCanBlockEvents(!bIsViewportFocused || !bIsViewportHovered);
 
 			ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-			if (vec_ViewportSize != *((glm::vec2*)&viewportSize))
-			{
-				m_Framebuffer->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
-				vec_ViewportSize = { viewportSize.x, viewportSize.y };
+			vec_ViewportSize = { viewportSize.x, viewportSize.y };
 
-				m_CameraController.OnResize(vec_ViewportSize.x, vec_ViewportSize.y);
-			}
 			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-			ImGui::Image((void*)textureID, ImVec2(vec_ViewportSize.x, vec_ViewportSize.y), ImVec2(0, 1), ImVec2(1, 0));
-			ImGui::End();
+			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });			ImGui::End();
 			ImGui::PopStyleVar();
 		}
 
@@ -217,6 +223,14 @@ namespace Odysseus
 			//ImGui::DragFloat3("Position", { squarePosition.x, squarePosition.y, squarePosition.z });
 			ImGui::ColorEdit4("Base Color", glm::value_ptr(squareColor));
 			ImGui::Separator();
+
+			{
+				auto& camera = ECamera.GetComponent<CameraComponent>().Camera;
+				float orthoSize = camera.GetOrthographicSize();
+				if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
+					camera.SetOrthographicSize(orthoSize);
+			}
+
 			ImGui::End();
 		}
 

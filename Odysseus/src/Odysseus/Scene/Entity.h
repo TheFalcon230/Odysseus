@@ -4,12 +4,12 @@
 
 namespace Odysseus
 {
-	class ODYSSEUS_API Entity
+	class ODYSSEUS_API Object
 	{
 	public:
-		Entity() = default;
-		Entity(entt::entity handle, Scene* pScene);
-		Entity(const Entity& other) = default;
+		Object() = default;
+		Object(entt::entity handle, Scene* pScene);
+		Object(const Object& other) = default;
 
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)

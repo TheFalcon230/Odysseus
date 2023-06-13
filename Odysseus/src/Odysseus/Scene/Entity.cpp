@@ -3,7 +3,7 @@
 
 namespace Odysseus
 {
-	Entity::Entity(entt::entity handle, Scene* pScene)
+	Object::Object(entt::entity handle, Scene* pScene)
 		:entityHandle(handle), scene(pScene)
 	{
 

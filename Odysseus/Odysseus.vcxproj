@@ -155,6 +155,7 @@ IF EXIST ..\bin\Dist-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Odysseus\Scene\SceneCamera.h" />
     <ClInclude Include="src\Odysseus.h" />
     <ClInclude Include="src\Odysseus\Core\Application.h" />
     <ClInclude Include="src\Odysseus\Core\Assert.h" />
@@ -620,6 +621,7 @@ IF EXIST ..\bin\Dist-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Odysseus\Scene\SceneCamera.cpp" />
     <ClCompile Include="src\Odysseus\Core\Application.cpp" />
     <ClCompile Include="src\Odysseus\Core\Input.cpp" />
     <ClCompile Include="src\Odysseus\Core\Layer.cpp" />

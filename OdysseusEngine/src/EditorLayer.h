@@ -28,7 +28,7 @@ namespace Odysseus
 		Ref<Framebuffer> m_Framebuffer;
 
 		Ref<Scene> activeScene;
-		Entity ETestSquare, ECamera;
+		Object ETestSquare, ECamera;
 
 		Timestep time;
 

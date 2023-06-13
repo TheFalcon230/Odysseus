@@ -38,12 +38,14 @@ namespace Odysseus
 	class Camera
 	{
 	public:
-		Camera(const glm::mat4 pProjection): projectionMaxtrix(pProjection){}
+		Camera() = default;
+		Camera(const glm::mat4 pProjection): projectionMatrix(pProjection){}
 
-		const glm::mat4& GetProjection() const { return projectionMaxtrix; }
+		const glm::mat4& GetProjection() const { return projectionMatrix; }
 
-	private:
-		glm::mat4 projectionMaxtrix;
+		virtual ~Camera() = default;
+	protected:
+		glm::mat4 projectionMatrix = glm::mat4(1.0f);
 	};
 
 }

@@ -18,9 +18,9 @@ namespace Odysseus
 
 	}
 
-	Entity Scene::CreateEntity(std::string name)
+	Object Scene::CreateEntity(std::string name)
 	{
-		Entity entity = { registry.create() , this };
+		Object entity = { registry.create() , this };
 		entity.AddComponent<TransformComponent>();
 
 		auto& tag = entity.AddComponent<TagComponent>();
@@ -63,6 +63,21 @@ namespace Odysseus
 				Renderer2D::DrawQuad(quad);
 			}
 			Renderer2D::EndScene();
+		}
+	}
+
+	void Scene::OnViewportResize(uint32_t newWidth, uint32_t newHeight)
+	{
+		viewportWidth = newWidth;
+		viewportHeight = newHeight;
+		auto view = registry.view<CameraComponent>();
+		for (auto entity : view)
+		{
+			auto& camera = view.get<CameraComponent>(entity);
+			if (!camera.bHasFixedAspectRatio)
+			{
+				camera.Camera.SetViewportSize(newWidth, newHeight);
+			}
 		}
 	}
 }

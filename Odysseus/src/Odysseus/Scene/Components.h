@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include "Odysseus/Renderer/Camera.h"
+#include "SceneCamera.h"
 
 namespace Odysseus
 {
@@ -49,12 +50,11 @@ namespace Odysseus
 
 	struct CameraComponent
 	{
-		Odysseus::Camera Camera;
+		SceneCamera Camera;
 		bool bIsMainCamera = true;
+		bool bHasFixedAspectRatio = false;
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
-		CameraComponent(const glm::mat4& pProjection)
-			: Camera(pProjection) {}
 	};
 }
