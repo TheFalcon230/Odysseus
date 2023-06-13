@@ -1,5 +1,6 @@
 #pragma once
 #include <Odysseus.h>
+#include "Panels/HierarchyPanel.h"
 
 namespace Odysseus
 {
@@ -39,7 +40,9 @@ namespace Odysseus
 		bool bIsViewportFocused = true;
 		bool bIsViewportHovered = true;
 
+		HierarchyPanel hierarchyPanel;
 
+		/*--------------------------------------------------------*/
 
 		struct ProfileResult
 		{

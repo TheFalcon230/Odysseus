@@ -41,6 +41,8 @@ namespace Odysseus
 
 		ECamera = activeScene->CreateEntity("Main Camera");
 		ECamera.AddComponent<CameraComponent>();
+
+		hierarchyPanel.SetContext(activeScene);
 	}
 
 	void EditorLayer::OnDetach()
@@ -233,6 +235,8 @@ namespace Odysseus
 
 			ImGui::End();
 		}
+
+		hierarchyPanel.OnImGuiRender();
 
 		ImGui::End();
 

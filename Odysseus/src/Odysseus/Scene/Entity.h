@@ -15,32 +15,36 @@ namespace Odysseus
 		T& AddComponent(Args&&... args)
 		{
 			ODC_CORE_ASSERT(!HasComponent<T>(), "Entity already has this type of component.");
-			return scene->registry.emplace<T>(entityHandle, std::forward<Args>(args)...);
+			return scene->registry.emplace<T>(objectID, std::forward<Args>(args)...);
 		}
 
 		template<typename T>
 		T& GetComponent()
 		{
 			ODC_CORE_ASSERT(HasComponent<T>(), "Entity doesn't have this type of component.");
-			return scene->registry.get<T>(entityHandle);
+			return scene->registry.get<T>(objectID);
 		}
 
 		template<typename T>
 		bool HasComponent()
 		{
-			return scene->registry.all_of<T>(entityHandle);
+			return scene->registry.all_of<T>(objectID);
 		}
 
 		template<typename T>
 		void RemoveComponent()
 		{
 			ODC_CORE_ASSERT(HasComponent<T>(), "Entity doesn't have this type of component.");
-			scene->registry.remove<T>(entityHandle);
+			scene->registry.remove<T>(objectID);
 		}
 
-		operator bool() const { return entityHandle != entt::null; }
+		operator bool() const { return objectID != entt::null; }
+		operator uint32_t() const { return (uint32_t)objectID; }
+
+		bool operator==(const Object& other) const { return objectID == other.objectID && scene == other.scene; }
+		bool operator!=(const Object& other) const { return !(*this == other); }
 	private:
-		entt::entity entityHandle = entt::null;
+		entt::entity objectID = entt::null;
 		Scene* scene = nullptr;
 	};
 }

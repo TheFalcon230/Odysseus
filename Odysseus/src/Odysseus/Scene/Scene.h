@@ -23,5 +23,6 @@ namespace Odysseus
 		entt::registry registry;
 
 		friend class Object;
+		friend class HierarchyPanel;
 	};
 }
