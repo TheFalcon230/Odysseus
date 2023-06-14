@@ -39,6 +39,10 @@ namespace Odysseus
 		square.AddComponent<SpriteRendererComponent>(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
 		ETestSquare = square;
 
+		auto square1 = activeScene->CreateEntity("Red Square");
+		square1.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		ETestSquare = square1;
+
 		ECamera = activeScene->CreateEntity("Main Camera");
 		ECamera.AddComponent<CameraComponent>();
 
@@ -215,7 +219,7 @@ namespace Odysseus
 			ImGui::PopStyleVar();
 		}
 
-		if (ImGui::Begin("Details"))
+		if (ImGui::Begin("Debug Panel"))
 		{
 			auto& tag = ETestSquare.GetComponent<TagComponent>().Tag;
 			ImGui::Text("%s", tag.c_str());

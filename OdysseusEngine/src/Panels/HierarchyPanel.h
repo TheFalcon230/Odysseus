@@ -14,6 +14,7 @@ namespace Odysseus
 		void OnImGuiRender();
 	private:
 		void DrawObjectNode(Object object);
+		void DrawComponents(Object object);
 	private:
 		Ref<Scene> Context;
 		Object OSelectionContext;

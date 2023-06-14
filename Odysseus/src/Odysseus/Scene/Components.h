@@ -27,14 +27,15 @@ namespace Odysseus
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(const glm::vec3& pPosition, float pRotation, glm::vec2 pScale)
+		TransformComponent(const glm::mat4& transform) : Transform(transform) {}
+		/*TransformComponent(const glm::vec3& pPosition, float pRotation, glm::vec2 pScale)
 			:Position(pPosition), Rotation(pRotation), Scale(pScale)
 		{
 			glm::mat4 location = glm::translate(glm::mat4(1.0f), pPosition);
 			glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(pRotation), { 0.f, 0.f, 1.0f });
 			glm::mat4 scale = glm::scale(glm::mat4(1.0f), { pScale.x, pScale.y, 1.0f });
 			Transform = pRotation == 0.0f ? location * scale : location * rotation * scale;
-		}
+		}*/
 
 		operator const glm::mat4& () const { return Transform; }
 	};

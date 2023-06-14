@@ -19,10 +19,9 @@ namespace Odysseus
 
 	Object Scene::CreateEntity(std::string name)
 	{
-		Object entity = { registry.create() , this };
-		entity.AddComponent<TransformComponent>();
-
-		auto& tag = entity.AddComponent<TagComponent>();
+		Object entity = { registry.create(), this };
+		entity.AddComponent<TransformComponent>(glm::mat4(1.0f));
+		auto& tag = entity.AddComponent<TagComponent>(name);
 		tag.Tag = name.empty() ? "Entity" : name;
 		return entity;
 	}
@@ -74,9 +73,9 @@ namespace Odysseus
 				auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
 				QuadProperties quad;
 				quad.baseColor = sprite.Color;
-				quad.position = transform.Position;
-				quad.rotation = transform.Rotation;
-				quad.scale = transform.Scale;
+				quad.position = transform.Transform[3];
+				quad.rotation = transform.Transform[2][2];
+				quad.scale = glm::vec2(transform.Transform[1][0], transform.Transform[1][1]);
 				Renderer2D::DrawQuad(quad);
 			}
 			Renderer2D::EndScene();

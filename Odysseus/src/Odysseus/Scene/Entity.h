@@ -43,6 +43,7 @@ namespace Odysseus
 
 		bool operator==(const Object& other) const { return objectID == other.objectID && scene == other.scene; }
 		bool operator!=(const Object& other) const { return !(*this == other); }
+
 	private:
 		entt::entity objectID = entt::null;
 		Scene* scene = nullptr;
