@@ -35,15 +35,15 @@ namespace Odysseus
 		m_CameraController.SetZoomLevel(5.0f);
 
 		activeScene = CreateRef<Scene>();
-		auto square = activeScene->CreateEntity("Test Square");
+		auto square = activeScene->CreateObject("Test Square");
 		square.AddComponent<SpriteRendererComponent>(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
 		ETestSquare = square;
 
-		auto square1 = activeScene->CreateEntity("Red Square");
+		auto square1 = activeScene->CreateObject("Red Square");
 		square1.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		ETestSquare = square1;
 
-		ECamera = activeScene->CreateEntity("Main Camera");
+		ECamera = activeScene->CreateObject("Main Camera");
 		ECamera.AddComponent<CameraComponent>();
 
 		hierarchyPanel.SetContext(activeScene);
@@ -144,11 +144,14 @@ namespace Odysseus
 
 		// Submit the DockSpace
 		ImGuiIO& io = ImGui::GetIO();
+		ImGuiStyle& style = ImGui::GetStyle();
+		style.WindowMinSize.x = 370.0f;
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
+		style.WindowMinSize.x = 32.0f;
 
 		if (ImGui::BeginMenuBar())
 		{
@@ -166,8 +169,8 @@ namespace Odysseus
 		if (ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize))
 		{
 
+			ImGui::Text("Render Stats");
 			ImGui::Separator();
-			ImGui::Text("STATS");
 			char label[50];
 			strcpy(label, "%.0f FPS ");
 			ImGui::Text(label, 1000.f / time.AsMilliseconds());
@@ -217,27 +220,6 @@ namespace Odysseus
 			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
 			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });			ImGui::End();
 			ImGui::PopStyleVar();
-		}
-
-		if (ImGui::Begin("Debug Panel"))
-		{
-			auto& tag = ETestSquare.GetComponent<TagComponent>().Tag;
-			ImGui::Text("%s", tag.c_str());
-			ImGui::Separator();
-			auto& squareColor = ETestSquare.GetComponent<SpriteRendererComponent>().Color;
-			auto& squarePosition = ETestSquare.GetComponent<TransformComponent>().Position;
-			//ImGui::DragFloat3("Position", { squarePosition.x, squarePosition.y, squarePosition.z });
-			ImGui::ColorEdit4("Base Color", glm::value_ptr(squareColor));
-			ImGui::Separator();
-
-			{
-				auto& camera = ECamera.GetComponent<CameraComponent>().Camera;
-				float orthoSize = camera.GetOrthographicSize();
-				if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
-					camera.SetOrthographicSize(orthoSize);
-			}
-
-			ImGui::End();
 		}
 
 		hierarchyPanel.OnImGuiRender();

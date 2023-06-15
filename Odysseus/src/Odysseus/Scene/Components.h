@@ -20,14 +20,13 @@ namespace Odysseus
 
 	struct TransformComponent
 	{
-		glm::mat4 Transform = glm::mat4(1.0f);
-		glm::vec3 Position = glm::vec3(1.0f);
-		float Rotation = 0.0f;
-		glm::vec2 Scale = glm::vec2(1.0f);
+		glm::vec3 Position = glm::vec3(0.0f);
+		glm::vec3 Rotation = glm::vec3(0.0f);
+		glm::vec3 Scale = glm::vec3(1.0f);
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(const glm::mat4& transform) : Transform(transform) {}
+		TransformComponent(const glm::vec3& position) : Position(position) {}
 		/*TransformComponent(const glm::vec3& pPosition, float pRotation, glm::vec2 pScale)
 			:Position(pPosition), Rotation(pRotation), Scale(pScale)
 		{
@@ -37,7 +36,16 @@ namespace Odysseus
 			Transform = pRotation == 0.0f ? location * scale : location * rotation * scale;
 		}*/
 
-		operator const glm::mat4& () const { return Transform; }
+		glm::mat4 Transform() const
+		{
+			glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), Rotation.x, { 1,0,0 })
+				* glm::rotate(glm::mat4(1.0f), Rotation.y, { 0,1,0 })
+				* glm::rotate(glm::mat4(1.0f), Rotation.z, { 0,0,1 });
+
+			return glm::translate(glm::mat4(1.0f), Position) 
+				* rotation 
+				* glm::scale(glm::mat4(1.0f), Scale);
+		}
 	};
 
 	struct SpriteRendererComponent

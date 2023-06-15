@@ -35,7 +35,7 @@ namespace Odysseus
 		float m_Rotation = 0.0f;
 	};
 
-	class Camera
+	class ODYSSEUS_API Camera
 	{
 	public:
 		Camera() = default;

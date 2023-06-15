@@ -8,7 +8,7 @@ namespace Odysseus
 	struct QuadProperties
 	{
 		glm::vec3 position = glm::vec3(0.0f);
-		float rotation = 0.0f;
+		glm::vec3 rotation = glm::vec3(0.0f);
 		glm::vec2 scale = glm::vec2(1.0f);
 		Ref<Texture2D> texture;
 		Ref<Sprite> sprite;

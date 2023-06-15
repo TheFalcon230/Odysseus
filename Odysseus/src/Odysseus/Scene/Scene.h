@@ -13,10 +13,14 @@ namespace Odysseus
 		Scene();
 		~Scene();
 
-		Object CreateEntity(std::string name = "");
+		Object CreateObject(std::string name = "");
+		void DestroyObject(Object object);
 
 		void Update(Timestep time);
 		void OnViewportResize(uint32_t newWidth, uint32_t newHeight);
+	private:
+		template<typename T>
+		void OnComponentAdded(Object object, T& component);
 	private:
 		uint32_t viewportWidth = 0, viewportHeight = 0;
 

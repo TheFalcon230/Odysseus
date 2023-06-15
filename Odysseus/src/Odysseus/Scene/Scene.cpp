@@ -17,13 +17,18 @@ namespace Odysseus
 
 	}
 
-	Object Scene::CreateEntity(std::string name)
+	Object Scene::CreateObject(std::string name)
 	{
 		Object entity = { registry.create(), this };
-		entity.AddComponent<TransformComponent>(glm::mat4(1.0f));
+		entity.AddComponent<TransformComponent>(glm::vec3(0.0f));
 		auto& tag = entity.AddComponent<TagComponent>(name);
 		tag.Tag = name.empty() ? "Entity" : name;
 		return entity;
+	}
+
+	void Scene::DestroyObject(Object object)
+	{
+		registry.destroy(object);
 	}
 
 	void Scene::Update(Timestep time)
@@ -46,7 +51,7 @@ namespace Odysseus
 
 		//Get all the cameras in the scene
 		Camera* mainCamera = nullptr;
-		glm::mat4* cameraTransform = nullptr;
+		glm::mat4 cameraTransform;
 		{
 			auto group = registry.group<TransformComponent, CameraComponent>();
 			for (auto entity : group)
@@ -55,7 +60,7 @@ namespace Odysseus
 				if (camera.bIsMainCamera)
 				{
 					mainCamera = &camera.Camera;
-					cameraTransform = &transform.Transform;
+					cameraTransform = transform.Transform();
 					break;
 				}
 			}
@@ -65,7 +70,7 @@ namespace Odysseus
 		//Render sprites
 		if (mainCamera)
 		{
-			Renderer2D::BeginScene(mainCamera->GetProjection(), *cameraTransform);
+			Renderer2D::BeginScene(mainCamera->GetProjection(), cameraTransform);
 
 			auto view = registry.view<TransformComponent, SpriteRendererComponent>();
 			for (auto entity : view)
@@ -73,9 +78,9 @@ namespace Odysseus
 				auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
 				QuadProperties quad;
 				quad.baseColor = sprite.Color;
-				quad.position = transform.Transform[3];
-				quad.rotation = transform.Transform[2][2];
-				quad.scale = glm::vec2(transform.Transform[1][0], transform.Transform[1][1]);
+				quad.position = transform.Position;
+				quad.rotation = transform.Rotation;
+				quad.scale = glm::vec2(transform.Scale.x, transform.Scale.y);
 				Renderer2D::DrawQuad(quad);
 			}
 			Renderer2D::EndScene();
@@ -95,5 +100,41 @@ namespace Odysseus
 				camera.Camera.SetViewportSize(newWidth, newHeight);
 			}
 		}
+	}
+
+	template<typename T>
+	void Scene::OnComponentAdded(Object object, T& component)
+	{
+		static_assert(sizeof(T) == 0);
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TransformComponent>(Object object, TransformComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<SpriteRendererComponent>(Object object, SpriteRendererComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<NativeScriptComponent>(Object object, NativeScriptComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TagComponent>(Object object, TagComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<CameraComponent>(Object object, CameraComponent& component)
+	{
+		component.Camera.SetViewportSize(viewportWidth, viewportHeight);
 	}
 }

@@ -21,7 +21,7 @@ namespace Odysseus
 	{
 	public:
 		OdysseusEditor()
-			: Application()
+			: Application("Odysseus Engine 0.0.1")
 		{
 			PushLayer(new EditorLayer());
 		}

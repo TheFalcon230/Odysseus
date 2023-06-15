@@ -23,6 +23,8 @@ namespace Odysseus
 
 		void SetCanBlockEvents(bool pValue) { bCanBlockImGuiEvents = pValue; };
 	private:
+		void SetDarkThemeColors();
+	private:
 		bool bCanBlockImGuiEvents = true;
 		float m_Time = 0.0f;
 	};

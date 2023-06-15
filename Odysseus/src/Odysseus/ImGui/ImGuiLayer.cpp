@@ -21,7 +21,7 @@ namespace Odysseus
 {
 	Odysseus::ImGuiLayer::ImGuiLayer() : Layer("ImGui")
 	{
-		
+
 	}
 
 	ImGuiLayer::~ImGuiLayer()
@@ -43,6 +43,9 @@ namespace Odysseus
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
+		io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto/Roboto-Bold.ttf", 14.0f);
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto/Roboto-Regular.ttf", 14.0f);
+
 		// Setup Dear ImGui style (Dark Theme >>> white theme)
 		ImGui::StyleColorsDark();
 		//ImGui::StyleColorsClassic();
@@ -54,6 +57,8 @@ namespace Odysseus
 			style.WindowRounding = 0.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
+
+		SetDarkThemeColors();
 
 		Application& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
@@ -96,13 +101,47 @@ namespace Odysseus
 		}
 	}
 
+	void ImGuiLayer::SetDarkThemeColors()
+	{
+		auto& colors = ImGui::GetStyle().Colors;
+
+		colors[ImGuiCol_WindowBg] = ImVec4(0.14f, 0.14f, 0.14f, 1.0f);
+
+		//Headers
+		colors[ImGuiCol_Header] = ImVec4(0.18f, 0.18f, 0.18f, 1.0f);
+		colors[ImGuiCol_HeaderHovered] = ImVec4{ 0.28f, 0.28f, 0.28f, 1.0f };
+		colors[ImGuiCol_HeaderActive] = ImVec4{ 0.08f, 0.08f, 0.08f, 1.0f };
+
+		// Buttons
+		colors[ImGuiCol_Button] = ImVec4(0.18f, 0.18f, 0.18f, 1.0f);
+		colors[ImGuiCol_ButtonHovered] = ImVec4{ 0.28f, 0.28f, 0.28f, 1.0f };
+		colors[ImGuiCol_ButtonActive] = ImVec4(0.0f, 0.44f, 0.87f, 1.0f);
+
+		// Frame BG
+		colors[ImGuiCol_FrameBg] = ImVec4(0.08f, 0.08f, 0.08f, 1.0f);
+		colors[ImGuiCol_FrameBgHovered] = ImVec4(0.08f, 0.08f, 0.08f, 1.0f);
+		colors[ImGuiCol_FrameBgActive] = ImVec4(0.08f, 0.08f, 0.08f, 1.0f);
+
+		// Tabs
+		colors[ImGuiCol_Tab] = ImVec4(0.18f, 0.18f, 0.18f, 1.0f);
+		colors[ImGuiCol_TabHovered] = ImVec4{ 0.28f, 0.28f, 0.28f, 1.0f };
+		colors[ImGuiCol_TabActive] = ImVec4(0.18f, 0.18f, 0.18f, 1.0f);
+		colors[ImGuiCol_TabUnfocused] = ImVec4(0.18f, 0.18f, 0.18f, 1.0f);
+		colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.28f, 0.28f, 0.28f, 1.0f };
+
+		// Title
+		colors[ImGuiCol_TitleBg] = ImVec4(0.18f, 0.18f, 0.18f, 1.0f);
+		colors[ImGuiCol_TitleBgActive] = ImVec4(0.18f, 0.18f, 0.18f, 1.0f);
+		colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.18f, 0.18f, 0.18f, 1.0f);
+	}
+
 	void ImGuiLayer::OnImGuiRender()
 	{
 		static bool show = false;
 
 		//ImGui::ShowDemoWindow(&show);
 
-		
+
 	}
 
 	void ImGuiLayer::OnEvent(Event& e)

@@ -320,9 +320,11 @@ namespace Odysseus
 
 
 		glm::mat4 location = glm::translate(glm::mat4(1.0f), quad.position);
-		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(quad.rotation), { 0.f, 0.f, 1.0f });
+		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), quad.rotation.x, { 1.f, 0.f, 0.0f }) 
+			* glm::rotate(glm::mat4(1.0f), quad.rotation.y, { 0.f, 1.f, 0.0f })
+			* glm::rotate(glm::mat4(1.0f), quad.rotation.z, { 0.f, 0.f, 1.0f });
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), { quad.scale.x, quad.scale.y, 1.0f });
-		glm::mat4 transform = quad.rotation == 0.0f ? location * scale : location * rotation * scale;
+		glm::mat4 transform = quad.rotation == glm::vec3(0.0f) ? location * scale : location * rotation * scale;
 
 		for (size_t i = 0; i < quadVertexCount; i++)
 		{

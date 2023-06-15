@@ -17,7 +17,7 @@ namespace Odysseus
 	class ODYSSEUS_API Application
 	{
 	public:
-		Application();
+		Application(const std::string& appName = "Odysseus Editor");
 		virtual ~Application();
 
 		void Run();
