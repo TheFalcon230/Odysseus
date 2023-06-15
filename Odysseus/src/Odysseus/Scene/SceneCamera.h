@@ -20,8 +20,8 @@ namespace Odysseus
 		void SetPerspective(float fov, float nearClip, float farClip);
 		void SetViewportSize(uint32_t newWidth, uint32_t newHeight);
 
-		float GetPerspectiveSize() const { return fPerspectiveFOV; }
-		void SetPerspectiveSize(float newFOV) { fPerspectiveFOV = newFOV; RecalculateProjection(); }
+		float GetPerspectiveFOV() const { return fPerspectiveFOV; }
+		void SetPerspectiveFOV(float newFOV) { fPerspectiveFOV = newFOV; RecalculateProjection(); }
 
 		float GetPerspectiveNearClip() const { return fPerspectiveNear; }
 		void SetPerspectiveNear(float newNearClip) { fPerspectiveNear = newNearClip; RecalculateProjection(); }

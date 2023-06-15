@@ -20,12 +20,13 @@ IncludeDir["ImPlot"] = "Odysseus/vendor/implot"
 IncludeDir["glm"] = "Odysseus/vendor/glm"
 IncludeDir["stb_image"] = "Odysseus/vendor/stb_image"
 IncludeDir["entt"] = "Odysseus/vendor/entt/include"
+IncludeDir["yaml_cpp"] = "Odysseus/vendor/yaml-cpp/include"
 
 group "Dependencies"
 	include "Odysseus/vendor/GLFW"
 	include "Odysseus/vendor/GLAD"
 	include "Odysseus/vendor/imgui"
-
+	include "Odysseus/vendor/yaml-cpp"
 group ""
 
 project "Odysseus"
@@ -70,7 +71,8 @@ project "Odysseus"
 		"%{IncludeDir.ImPlot}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.yaml_cpp}"
 
 	}
 
@@ -79,6 +81,7 @@ project "Odysseus"
 		"GLFW",
 		"GLAD",
 		"ImGui",
+		"yaml-cpp",
 		"opengl32.lib",
 	}
 

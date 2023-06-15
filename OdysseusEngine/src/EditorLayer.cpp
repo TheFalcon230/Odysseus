@@ -4,6 +4,9 @@
 #include "../implot/implot.h"
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Odysseus/Scene/SceneSerializer.h"
+#include "Odysseus/Utils/PlatformUtils.h"
+
 #define PROFILE_SCOPE(name) InstrumentationTimer timer##__LINE__(name, [&](ProfileResult profileResult) { m_ProfileResults.push_back(profileResult); })
 #define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCSIG__);
 
@@ -35,7 +38,7 @@ namespace Odysseus
 		m_CameraController.SetZoomLevel(5.0f);
 
 		activeScene = CreateRef<Scene>();
-		auto square = activeScene->CreateObject("Test Square");
+		/*auto square = activeScene->CreateObject("Test Square");
 		square.AddComponent<SpriteRendererComponent>(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
 		ETestSquare = square;
 
@@ -44,9 +47,12 @@ namespace Odysseus
 		ETestSquare = square1;
 
 		ECamera = activeScene->CreateObject("Main Camera");
-		ECamera.AddComponent<CameraComponent>();
+		ECamera.AddComponent<CameraComponent>();*/
 
 		hierarchyPanel.SetContext(activeScene);
+
+
+
 	}
 
 	void EditorLayer::OnDetach()
@@ -157,7 +163,22 @@ namespace Odysseus
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("Close", "ESCAPE", false))
+				if (ImGui::MenuItem("New Scene", "Ctrl+N"))
+				{
+					NewScene();
+				}
+
+				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+				{
+					SaveAs();
+				}
+
+				if (ImGui::MenuItem("Open...", "Ctrl+O"))
+				{
+					OpenScene();
+				}
+
+				if (ImGui::MenuItem("Close", "Escape", false))
 					Application::Get().QuitApplication();
 				ImGui::EndMenu();
 			}
@@ -165,7 +186,7 @@ namespace Odysseus
 
 			ImGui::EndMenuBar();
 		}
-				
+
 		if (ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize))
 		{
 
@@ -239,6 +260,77 @@ namespace Odysseus
 			float zoom = (float)re.GetWidth() / 1280.f;
 
 			m_CameraController.SetZoomLevel(zoom);
+		}
+
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<KeyPressedEvent>(ODC_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+	}
+
+	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
+	{
+		if (e.GetRepeatCount() > 0)
+			return false;
+
+		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
+
+		switch (e.GetKeyCode())
+		{
+		case (int)Key::S: // Save
+		{
+			if (control && shift)
+			{
+				SaveAs();
+			}
+			break;
+		}
+		case (int)Key::O:// Open
+		{
+			if (control)
+			{
+				OpenScene();
+			}
+			break;
+		}
+		case (int)Key::N:// Open
+		{
+			if (control)
+			{
+				NewScene();
+			}
+			break;
+		}
+		}
+	}
+
+	void EditorLayer::NewScene()
+	{
+		activeScene = CreateRef<Scene>();
+		activeScene->OnViewportResize((uint32_t)vec_ViewportSize.x, (uint32_t)vec_ViewportSize.y);
+		hierarchyPanel.SetContext(activeScene);
+	}
+
+	void EditorLayer::OpenScene()
+	{
+		std::string openPath = FileDialogs::OpenFile("Odysseus Scene (*.odcmap)\0*.odcmap\0");
+		if (!openPath.empty())
+		{
+			activeScene = CreateRef<Scene>();
+			activeScene->OnViewportResize((uint32_t)vec_ViewportSize.x, (uint32_t)vec_ViewportSize.y);
+			hierarchyPanel.SetContext(activeScene);
+
+			SceneSerializer serializer(activeScene);
+			serializer.Deserialize(openPath);
+		}
+	}
+
+	void EditorLayer::SaveAs()
+	{
+		std::string savePath = FileDialogs::SaveFile("Odysseus Scene (*.odcmap)\0*.odcmap\0");
+		if (!savePath.empty())
+		{
+			SceneSerializer serializer(activeScene);
+			serializer.Serialize(savePath);
 		}
 	}
 

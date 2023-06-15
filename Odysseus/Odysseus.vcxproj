@@ -80,7 +80,7 @@
       <PrecompiledHeaderFile>odcpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ODC_PLATFORM_WINDOWS;ODC_BUILD_DLL;GLFW_INCLUDE_NONE;ODC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\imgui;vendor\implot;vendor\glm;vendor\stb_image;vendor\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\imgui;vendor\implot;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -104,7 +104,7 @@ IF EXIST ..\bin\Debug-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I .
       <PrecompiledHeaderFile>odcpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ODC_PLATFORM_WINDOWS;ODC_BUILD_DLL;GLFW_INCLUDE_NONE;ODC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\imgui;vendor\implot;vendor\glm;vendor\stb_image;vendor\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\imgui;vendor\implot;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -132,7 +132,7 @@ IF EXIST ..\bin\Release-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I
       <PrecompiledHeaderFile>odcpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ODC_PLATFORM_WINDOWS;ODC_BUILD_DLL;GLFW_INCLUDE_NONE;ODC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\imgui;vendor\implot;vendor\glm;vendor\stb_image;vendor\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\imgui;vendor\implot;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -155,7 +155,6 @@ IF EXIST ..\bin\Dist-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Odysseus\Scene\SceneCamera.h" />
     <ClInclude Include="src\Odysseus.h" />
     <ClInclude Include="src\Odysseus\Core\Application.h" />
     <ClInclude Include="src\Odysseus\Core\Assert.h" />
@@ -192,7 +191,10 @@ IF EXIST ..\bin\Dist-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..
     <ClInclude Include="src\Odysseus\Scene\Components.h" />
     <ClInclude Include="src\Odysseus\Scene\Entity.h" />
     <ClInclude Include="src\Odysseus\Scene\Scene.h" />
+    <ClInclude Include="src\Odysseus\Scene\SceneCamera.h" />
+    <ClInclude Include="src\Odysseus\Scene\SceneSerializer.h" />
     <ClInclude Include="src\Odysseus\Scene\ScriptableObject.h" />
+    <ClInclude Include="src\Odysseus\Utils\PlatformUtils.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.h" />
@@ -622,7 +624,6 @@ IF EXIST ..\bin\Dist-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Odysseus\Scene\SceneCamera.cpp" />
     <ClCompile Include="src\Odysseus\Core\Application.cpp" />
     <ClCompile Include="src\Odysseus\Core\Input.cpp" />
     <ClCompile Include="src\Odysseus\Core\Layer.cpp" />
@@ -645,6 +646,8 @@ IF EXIST ..\bin\Dist-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..
     <ClCompile Include="src\Odysseus\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Odysseus\Scene\Entity.cpp" />
     <ClCompile Include="src\Odysseus\Scene\Scene.cpp" />
+    <ClCompile Include="src\Odysseus\Scene\SceneCamera.cpp" />
+    <ClCompile Include="src\Odysseus\Scene\SceneSerializer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />
@@ -652,6 +655,7 @@ IF EXIST ..\bin\Dist-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsPlatformUtils.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\odcpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -670,6 +674,9 @@ IF EXIST ..\bin\Dist-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..
     </ProjectReference>
     <ProjectReference Include="vendor\imgui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
+    </ProjectReference>
+    <ProjectReference Include="vendor\yaml-cpp\yaml-cpp.vcxproj">
+      <Project>{88F1A057-74BE-FB62-9DD7-E90A890331F1}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -14,6 +14,7 @@ namespace Odysseus
 	void HierarchyPanel::SetContext(const Ref<Scene>& context)
 	{
 		Context = context;
+		OSelectionContext = {};
 	}
 
 	void HierarchyPanel::OnImGuiRender()
@@ -273,9 +274,9 @@ namespace Odysseus
 
 		if (cameraProjectionType == SceneCamera::EProjectionType::Perspective)
 		{
-			float perspectiveSize = glm::degrees(camera.GetPerspectiveSize());
+			float perspectiveSize = glm::degrees(camera.GetPerspectiveFOV());
 			if (ImGui::DragFloat("Vertical FOV", &perspectiveSize))
-				camera.SetPerspectiveSize(glm::radians(perspectiveSize));
+				camera.SetPerspectiveFOV(glm::radians(perspectiveSize));
 
 			float perspectiveNearClip = camera.GetPerspectiveNearClip();
 			if (ImGui::DragFloat("Near clip", &perspectiveNearClip))

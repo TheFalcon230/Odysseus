@@ -1,10 +1,14 @@
-[22:20:53] [info] HAZEL: Creating window Odysseus Engine 0.0.1 1280, 720
-[22:20:54] [info] HAZEL: OpenGL Info:
-[22:20:54] [info] HAZEL:   Vendor: NVIDIA Corporation
-[22:20:54] [info] HAZEL:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
-[22:20:54] [info] HAZEL:   Version: 4.5.0 NVIDIA 531.79
-[22:20:54] [info] HAZEL: Complied shader Unlit successfully !
-[22:20:54] [info] HAZEL: Start loading texture at path: 'assets/textures/TestImage.png'
-[22:20:54] [info] HAZEL: Texture loaded successfully!
-[22:20:54] [info] HAZEL: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
-[22:20:54] [info] HAZEL: Texture loaded successfully!
+[01:08:25] [info] HAZEL: Creating window Odysseus Engine 0.0.1 1280, 720
+[01:08:25] [info] HAZEL: OpenGL Info:
+[01:08:25] [info] HAZEL:   Vendor: NVIDIA Corporation
+[01:08:25] [info] HAZEL:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
+[01:08:25] [info] HAZEL:   Version: 4.5.0 NVIDIA 531.79
+[01:08:25] [info] HAZEL: Complied shader Unlit successfully !
+[01:08:25] [info] HAZEL: Start loading texture at path: 'assets/textures/TestImage.png'
+[01:08:25] [info] HAZEL: Texture loaded successfully!
+[01:08:25] [info] HAZEL: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
+[01:08:25] [info] HAZEL: Texture loaded successfully!
+[01:08:32] [trace] HAZEL: Deserializing scene 'New Scene'
+[01:08:32] [trace] HAZEL: Deserialized entity with ID = 184563512379, name = Test Square
+[01:08:32] [trace] HAZEL: Deserialized entity with ID = 184563512379, name = Red Square
+[01:08:32] [trace] HAZEL: Deserialized entity with ID = 184563512379, name = Main Camera

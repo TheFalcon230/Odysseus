@@ -28,5 +28,6 @@ namespace Odysseus
 
 		friend class Object;
 		friend class HierarchyPanel;
+		friend class SceneSerializer;
 	};
 }
