@@ -1,7 +1,7 @@
 #pragma once
 #include "entt.hpp"
 #include <Odysseus/Core/Timestep.h>
-
+#include "Odysseus/Renderer/EditorCamera.h"
 
 
 namespace Odysseus
@@ -16,8 +16,12 @@ namespace Odysseus
 		Object CreateObject(std::string name = "");
 		void DestroyObject(Object object);
 
-		void Update(Timestep time);
+		void UpdateEditor(Timestep time, EditorCamera& camera);
+		void UpdateRuntime(Timestep time);
 		void OnViewportResize(uint32_t newWidth, uint32_t newHeight);
+
+		Object GetMainCamera();
+
 	private:
 		template<typename T>
 		void OnComponentAdded(Object object, T& component);

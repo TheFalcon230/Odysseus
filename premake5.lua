@@ -21,6 +21,7 @@ IncludeDir["glm"] = "Odysseus/vendor/glm"
 IncludeDir["stb_image"] = "Odysseus/vendor/stb_image"
 IncludeDir["entt"] = "Odysseus/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "Odysseus/vendor/yaml-cpp/include"
+IncludeDir["ImGuizmo"] = "Odysseus/vendor/imguizmo"
 
 group "Dependencies"
 	include "Odysseus/vendor/GLFW"
@@ -34,8 +35,8 @@ project "Odysseus"
 	kind "SharedLib"
 	language "C++"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "odcpch.h"
 	pchsource "Odysseus/src/odcpch.cpp"
@@ -48,6 +49,8 @@ project "Odysseus"
 		"%{prj.name}/vendor/stb_image/**.h",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
+		"%{prj.name}/vendor/imguizmo/ImGuizmo.h",
+		"%{prj.name}/vendor/imguizmo/ImGuizmo.cpp",
 
 		"%{prj.name}/vendor/implot/implot.h",
 		"%{prj.name}/vendor/implot/implot.cpp",
@@ -72,7 +75,8 @@ project "Odysseus"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.yaml_cpp}"
+		"%{IncludeDir.yaml_cpp}",
+		"%{IncludeDir.ImGuizmo}"
 
 	}
 
@@ -85,7 +89,10 @@ project "Odysseus"
 		"opengl32.lib",
 	}
 
-	filter "files:vendor/ImPlot/**.cpp"
+
+	filter "files:%{wks.location}/vendor/ImPlot/**.cpp"
+	flags { "NoPCH" }
+	filter "files:files:vendor/imguizmo/**.cpp"
 	flags { "NoPCH" }
 
 	filter "system:windows"
@@ -197,7 +204,8 @@ project "OdysseusEngine"
 			"Odysseus/src",
 			"Odysseus/vendor",
 			"%{IncludeDir.glm}",
-			"%{IncludeDir.entt}"
+			"%{IncludeDir.entt}",
+			"%{IncludeDir.ImGuizmo}"
 		}
 	
 		links

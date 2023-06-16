@@ -14,6 +14,8 @@ namespace Odysseus
 
 		void OnUpdate(Timestep updateTime) override;
 		virtual void OnImGuiRender() override;
+
+
 		void OnEvent(Event& e) override;
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
@@ -37,6 +39,8 @@ namespace Odysseus
 		Ref<Scene> activeScene;
 		Object ETestSquare, ECamera;
 
+		EditorCamera mainCameraEditor;
+
 		Timestep time;
 
 		std::unordered_map<char, Ref<Sprite>> s_TextureMap;
@@ -45,6 +49,8 @@ namespace Odysseus
 		glm::vec2 vec_ViewportSize = {0,0};
 		bool bIsViewportFocused = true;
 		bool bIsViewportHovered = true;
+
+		int iGizmoType = -1;
 
 		HierarchyPanel hierarchyPanel;
 

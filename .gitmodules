@@ -13,3 +13,6 @@
 [submodule "Odysseus/vendor/yaml-cpp"]
 	path = Odysseus/vendor/yaml-cpp
 	url = https://github.com/TheCherno/yaml-cpp
+[submodule "Odysseus/vendor/imguizmo"]
+	path = Odysseus/vendor/imguizmo
+	url = https://github.com/TheCherno/ImGuizmo

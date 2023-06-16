@@ -1,7 +1,9 @@
 #pragma once
-#include "Camera.h"
-#include "Texture.h"
-#include "Sprite.h"
+#include "Odysseus/Renderer/Texture.h"
+#include "Odysseus/Renderer/Sprite.h"
+
+#include "Odysseus/Renderer/Camera.h"
+#include "Odysseus/Renderer/EditorCamera.h"
 
 namespace Odysseus
 {
@@ -30,6 +32,7 @@ namespace Odysseus
 
 		static void BeginScene(const Camera& camera, glm::mat4 transform);
 		static void BeginScene(const OrthographicCamera& camera);
+		static void BeginScene(const EditorCamera& camera);
 		static void EndScene();
 		static void Flush();
 
@@ -89,6 +92,7 @@ namespace Odysseus
 		static void ResetStats();
 		
 	private:
-		static void StartNewBatch();
+		static void NextBatch();
+		static void NewBatch();
 	};
 }

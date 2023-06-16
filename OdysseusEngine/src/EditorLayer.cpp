@@ -7,6 +7,10 @@
 #include "Odysseus/Scene/SceneSerializer.h"
 #include "Odysseus/Utils/PlatformUtils.h"
 
+#include <imguizmo/ImGuizmo.h>
+
+#include "Odysseus/Math/Math.h"
+
 #define PROFILE_SCOPE(name) InstrumentationTimer timer##__LINE__(name, [&](ProfileResult profileResult) { m_ProfileResults.push_back(profileResult); })
 #define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCSIG__);
 
@@ -26,18 +30,15 @@ namespace Odysseus
 		m_Texture = Texture2D::Create("assets/textures/TestImage.png");
 		T_Spritesheet = Texture2D::Create("assets/textures/RPG_Sheet.png");
 
-		Sp_Bush_01 = Sprite::CreateFromCoords(T_Spritesheet, glm::vec2{ 2, 3 }, glm::vec2(128.f));
-		s_TextureMap['D'] = Sprite::CreateFromCoords(T_Spritesheet, glm::vec2{ 6, 11 }, glm::vec2(128.f));
-		s_TextureMap['W'] = Sprite::CreateFromCoords(T_Spritesheet, glm::vec2{ 11, 11 }, glm::vec2(128.f));
-		testQuad->sprite = Sp_Bush_01;
-
 		FramebufferSpecification fbSpec;
 		fbSpec.Width = 1280;
 		fbSpec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(fbSpec);
-		m_CameraController.SetZoomLevel(5.0f);
 
 		activeScene = CreateRef<Scene>();
+
+		mainCameraEditor = EditorCamera(45.0f, 16.0f / 9.0f, 0.1f, 1000.0f);
+
 		/*auto square = activeScene->CreateObject("Test Square");
 		square.AddComponent<SpriteRendererComponent>(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
 		ETestSquare = square;
@@ -71,14 +72,17 @@ namespace Odysseus
 		{
 			m_Framebuffer->Resize((uint32_t)vec_ViewportSize.x, (uint32_t)vec_ViewportSize.y);
 			m_CameraController.OnResize(vec_ViewportSize.x, vec_ViewportSize.y);
-
+			mainCameraEditor.SetViewportSize(vec_ViewportSize.x, vec_ViewportSize.y);
 			activeScene->OnViewportResize((uint32_t)vec_ViewportSize.x, (uint32_t)vec_ViewportSize.y);
 		}
 
 		{
 			PROFILE_SCOPE("Camera OnUpdate");
 			if (bIsViewportFocused)
+			{
 				m_CameraController.OnUpdate(updateTime);
+			}
+				mainCameraEditor.Update(updateTime);
 		}
 
 		Renderer2D::ResetStats();
@@ -90,7 +94,7 @@ namespace Odysseus
 		}
 		{
 			PROFILE_SCOPE("Renderer Draw");
-			activeScene->Update(updateTime);
+			activeScene->UpdateEditor(updateTime, mainCameraEditor);
 			m_Framebuffer->Unbind();
 		}
 
@@ -239,7 +243,49 @@ namespace Odysseus
 			vec_ViewportSize = { viewportSize.x, viewportSize.y };
 
 			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });			ImGui::End();
+			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+
+			Object selectedObject = hierarchyPanel.GetSelectedObject();
+			if (selectedObject && iGizmoType != -1)
+			{
+				ImGuizmo::SetOrthographic(false);
+				ImGuizmo::SetDrawlist();
+				ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
+
+				/*auto mainCameraObject = activeScene->GetMainCamera();
+				const auto& mainCamera = mainCameraObject.GetComponent<CameraComponent>().Camera;
+				const glm::mat4& cameraProj = mainCamera.GetProjection();
+				glm::mat4 cameraView = glm::inverse(mainCameraObject.GetComponent<TransformComponent>().Transform());*/
+
+				const glm::mat4& cameraProj = mainCameraEditor.GetProjection();
+				glm::mat4 cameraView = mainCameraEditor.GetViewMatrix();
+
+				auto& transformComponent = selectedObject.GetComponent<TransformComponent>();
+				glm::mat4 transform = transformComponent.Transform();
+
+				float snapValue = 0.5f;
+				if (iGizmoType == ImGuizmo::ROTATE)
+					snapValue = 10.0f;
+
+				float snapValues[3] = { snapValue,snapValue,snapValue };
+
+				ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProj)
+					, (ImGuizmo::OPERATION)iGizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform), nullptr, snapValues);
+
+				if (ImGuizmo::IsUsing())
+				{
+					glm::vec3 position, rotation, scale;
+					Math::DecomposeTransform(transform, position, rotation, scale);
+
+					glm::vec3 deltaRotation = rotation - transformComponent.Rotation;// Using delta rotation instead of new rotation to avoid Gimbal-Lock
+					transformComponent.Position = position;
+					transformComponent.Rotation += deltaRotation;
+					transformComponent.Scale = scale;
+				}
+			}
+
+			ImGui::End();
 			ImGui::PopStyleVar();
 		}
 
@@ -252,6 +298,7 @@ namespace Odysseus
 	void EditorLayer::OnEvent(Event& e)
 	{
 		m_CameraController.OnEvent(e);
+		mainCameraEditor.OnEvent(e);
 
 		if (e.GetEventType() == EventType::WindowResize)
 		{
@@ -261,7 +308,6 @@ namespace Odysseus
 
 			m_CameraController.SetZoomLevel(zoom);
 		}
-
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(ODC_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
 	}
@@ -298,6 +344,43 @@ namespace Odysseus
 			{
 				NewScene();
 			}
+			break;
+		}
+
+		// Gizmos shortcuts
+		case (int)Key::Space: // Switching between gizmos
+		{
+			if (iGizmoType == ImGuizmo::SCALE)
+			{
+				iGizmoType = ImGuizmo::TRANSLATE;
+			}
+			else if (iGizmoType == ImGuizmo::TRANSLATE)
+			{
+				iGizmoType = ImGuizmo::ROTATE;
+			}
+			else if (iGizmoType == ImGuizmo::ROTATE)
+			{
+				iGizmoType = ImGuizmo::SCALE;
+			}
+			break;
+		}
+		case (int)Key::A: // No gizmo
+		{
+			iGizmoType = -1;
+			break;
+		}case (int)Key::W: // Position
+		{
+			iGizmoType = ImGuizmo::TRANSLATE;
+			break;
+		}
+		case (int)Key::E: // Rotation
+		{
+			iGizmoType = ImGuizmo::ROTATE;
+			break;
+		}
+		case (int)Key::R: // Scale
+		{
+			iGizmoType = ImGuizmo::SCALE;
 			break;
 		}
 		}

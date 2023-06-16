@@ -25,6 +25,9 @@
     <Filter Include="src\Odysseus\Scene">
       <UniqueIdentifier>{F8F1F787-E4D5-B8DD-4D36-B3303939A35F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Odysseus\Utils">
+      <UniqueIdentifier>{3B862588-276A-E6DD-90CA-E0307CCDD05F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Platform">
       <UniqueIdentifier>{21CA02E5-0D2D-9289-B6B2-CA3FA2F45D0C}</UniqueIdentifier>
     </Filter>
@@ -54,6 +57,9 @@
     </Filter>
     <Filter Include="vendor\glm\glm\gtx">
       <UniqueIdentifier>{B3A6A76B-9F8A-68C1-08EB-6214F4ED5243}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\imguizmo">
+      <UniqueIdentifier>{B36F5F1F-1FFB-CCE3-280C-50D8941629E4}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor\implot">
       <UniqueIdentifier>{5771DC0A-C331-5841-8C6C-A1BEF8EB9C1D}</UniqueIdentifier>
@@ -174,8 +180,14 @@
     <ClInclude Include="src\Odysseus\Scene\SceneCamera.h">
       <Filter>src\Odysseus\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\Odysseus\Scene\SceneSerializer.h">
+      <Filter>src\Odysseus\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="src\Odysseus\Scene\ScriptableObject.h">
       <Filter>src\Odysseus\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Odysseus\Utils\PlatformUtils.h">
+      <Filter>src\Odysseus\Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h">
       <Filter>src\Platform\OpenGL</Filter>
@@ -1449,6 +1461,9 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="vendor\imguizmo\ImGuizmo.h">
+      <Filter>vendor\imguizmo</Filter>
+    </ClInclude>
     <ClInclude Include="vendor\implot\implot.h">
       <Filter>vendor\implot</Filter>
     </ClInclude>
@@ -1458,8 +1473,8 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Odysseus\Scene\SceneSerializer.h" />
-    <ClInclude Include="src\Odysseus\Utils\PlatformUtils.h" />
+    <ClInclude Include="src\Odysseus\Math\Math.h" />
+    <ClInclude Include="src\Odysseus\Renderer\EditorCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Odysseus\Core\Application.cpp">
@@ -1531,6 +1546,9 @@
     <ClCompile Include="src\Odysseus\Scene\SceneCamera.cpp">
       <Filter>src\Odysseus\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Odysseus\Scene\SceneSerializer.cpp">
+      <Filter>src\Odysseus\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
@@ -1552,11 +1570,17 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsPlatformUtils.cpp">
+      <Filter>src\Platform\Windows</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\odcpch.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imguizmo\ImGuizmo.cpp">
+      <Filter>vendor\imguizmo</Filter>
     </ClCompile>
     <ClCompile Include="vendor\implot\implot.cpp">
       <Filter>vendor\implot</Filter>
@@ -1570,7 +1594,7 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Odysseus\Scene\SceneSerializer.cpp" />
-    <ClCompile Include="src\Platform\Windows\WindowsPlatformUtils.cpp" />
+    <ClCompile Include="src\Odysseus\Math\Math.cpp" />
+    <ClCompile Include="src\Odysseus\Renderer\EditorCamera.cpp" />
   </ItemGroup>
 </Project>

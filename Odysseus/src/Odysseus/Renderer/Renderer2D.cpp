@@ -1,11 +1,14 @@
 #include "odcpch.h"
-#include "Renderer2D.h"
-#include "VertexArray.h"
-#include "Shader.h"
-#include "RenderCommand.h"
+#include "Odysseus/Renderer/Renderer2D.h"
+
+#include "Odysseus/Renderer/VertexArray.h"
+#include "Odysseus/Renderer/Shader.h"
+#include "Odysseus/Renderer/RenderCommand.h"
+
 
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 namespace Odysseus
 {
@@ -122,10 +125,7 @@ namespace Odysseus
 		s_Data.unlitShader->Bind();
 		s_Data.unlitShader->SetMat4("u_ViewProjection", viewProj);
 
-		s_Data.QuadIndexCount = 0;
-		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-
-		s_Data.TextureSlotIndex = 1;
+		NewBatch();
 	}
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
@@ -134,10 +134,15 @@ namespace Odysseus
 		s_Data.unlitShader->Bind();
 		s_Data.unlitShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 
-		s_Data.QuadIndexCount = 0;
-		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+		NewBatch();
+	}
 
-		s_Data.TextureSlotIndex = 1;
+	void Renderer2D::BeginScene(const EditorCamera& camera)
+	{
+		s_Data.unlitShader->Bind();
+		s_Data.unlitShader->SetMat4("u_ViewProjection", camera.GetViewProjection());
+
+		NewBatch();
 	}
 
 	void Renderer2D::EndScene()
@@ -159,10 +164,18 @@ namespace Odysseus
 		s_Data.Stats.DrawCalls++;
 	}
 
-	void Renderer2D::StartNewBatch()
+	void Renderer2D::NextBatch()
 	{
 		EndScene();
 
+		s_Data.QuadIndexCount = 0;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
+		s_Data.TextureSlotIndex = 1;
+	}
+
+	void Renderer2D::NewBatch()
+	{
 		s_Data.QuadIndexCount = 0;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 
@@ -292,7 +305,7 @@ namespace Odysseus
 
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndicesPerDrawCall)
 		{
-			StartNewBatch();
+			NextBatch();
 		}
 
 		glm::vec4 color = quad.baseColor;
@@ -320,11 +333,9 @@ namespace Odysseus
 
 
 		glm::mat4 location = glm::translate(glm::mat4(1.0f), quad.position);
-		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), quad.rotation.x, { 1.f, 0.f, 0.0f }) 
-			* glm::rotate(glm::mat4(1.0f), quad.rotation.y, { 0.f, 1.f, 0.0f })
-			* glm::rotate(glm::mat4(1.0f), quad.rotation.z, { 0.f, 0.f, 1.0f });
+		glm::mat4 rotation = glm::toMat4(glm::quat(quad.rotation));
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), { quad.scale.x, quad.scale.y, 1.0f });
-		glm::mat4 transform = quad.rotation == glm::vec3(0.0f) ? location * scale : location * rotation * scale;
+		glm::mat4 transform = location * rotation * scale;
 
 		for (size_t i = 0; i < quadVertexCount; i++)
 		{

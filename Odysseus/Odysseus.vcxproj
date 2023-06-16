@@ -80,7 +80,7 @@
       <PrecompiledHeaderFile>odcpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ODC_PLATFORM_WINDOWS;ODC_BUILD_DLL;GLFW_INCLUDE_NONE;ODC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\imgui;vendor\implot;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\imgui;vendor\implot;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\yaml-cpp\include;vendor\imguizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -104,7 +104,7 @@ IF EXIST ..\bin\Debug-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I .
       <PrecompiledHeaderFile>odcpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ODC_PLATFORM_WINDOWS;ODC_BUILD_DLL;GLFW_INCLUDE_NONE;ODC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\imgui;vendor\implot;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\imgui;vendor\implot;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\yaml-cpp\include;vendor\imguizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -132,7 +132,7 @@ IF EXIST ..\bin\Release-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I
       <PrecompiledHeaderFile>odcpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ODC_PLATFORM_WINDOWS;ODC_BUILD_DLL;GLFW_INCLUDE_NONE;ODC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\imgui;vendor\implot;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\imgui;vendor\implot;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\yaml-cpp\include;vendor\imguizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -175,9 +175,11 @@ IF EXIST ..\bin\Dist-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..
     <ClInclude Include="src\Odysseus\Events\KeyEvent.h" />
     <ClInclude Include="src\Odysseus\Events\MouseEvent.h" />
     <ClInclude Include="src\Odysseus\ImGui\ImGuiLayer.h" />
+    <ClInclude Include="src\Odysseus\Math\Math.h" />
     <ClInclude Include="src\Odysseus\OrthographicCameraController.h" />
     <ClInclude Include="src\Odysseus\Renderer\Buffer.h" />
     <ClInclude Include="src\Odysseus\Renderer\Camera.h" />
+    <ClInclude Include="src\Odysseus\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Odysseus\Renderer\Framebuffer.h" />
     <ClInclude Include="src\Odysseus\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Odysseus\Renderer\RenderCommand.h" />
@@ -619,6 +621,7 @@ IF EXIST ..\bin\Dist-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..
     <ClInclude Include="vendor\glm\glm\vec3.hpp" />
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
+    <ClInclude Include="vendor\imguizmo\ImGuizmo.h" />
     <ClInclude Include="vendor\implot\implot.h" />
     <ClInclude Include="vendor\implot\implot_internal.h" />
     <ClInclude Include="vendor\stb_image\stb_image.h" />
@@ -632,9 +635,11 @@ IF EXIST ..\bin\Dist-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..
     <ClCompile Include="src\Odysseus\Core\Timestep.cpp" />
     <ClCompile Include="src\Odysseus\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Odysseus\ImGui\ImGuiLayer.cpp" />
+    <ClCompile Include="src\Odysseus\Math\Math.cpp" />
     <ClCompile Include="src\Odysseus\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\Camera.cpp" />
+    <ClCompile Include="src\Odysseus\Renderer\EditorCamera.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\Framebuffer.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\Renderer.cpp" />
@@ -660,6 +665,7 @@ IF EXIST ..\bin\Dist-windows-x86_64\Odysseus\Odysseus.dll\ (xcopy /Q /E /Y /I ..
     <ClCompile Include="src\odcpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="vendor\imguizmo\ImGuizmo.cpp" />
     <ClCompile Include="vendor\implot\implot.cpp" />
     <ClCompile Include="vendor\implot\implot_demo.cpp" />
     <ClCompile Include="vendor\implot\implot_items.cpp" />

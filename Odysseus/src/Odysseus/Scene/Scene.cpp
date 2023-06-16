@@ -31,13 +31,28 @@ namespace Odysseus
 		registry.destroy(object);
 	}
 
-	void Scene::Update(Timestep time)
+	Object Scene::GetMainCamera()
+	{
+		auto view = registry.view<CameraComponent>();
+		for (auto object : view)
+		{
+			const 	auto& cameraComponent = view.get<CameraComponent>(object);
+			if (cameraComponent.bIsMainCamera)
+			{
+				return Object{object, this};
+			}
+		}
+		ODC_CORE_ERROR("Error: no main camera found!");
+		return {};
+	}
+
+	void Scene::UpdateRuntime(Timestep time)
 	{
 		// Update scripts
 		{
 			registry.view<NativeScriptComponent>().each([=](auto entity, NativeScriptComponent& nsc)
 			{
-					//TODO: Move to Scene::OnPlay
+				//TODO: Move to Scene::OnPlay
 				if (!nsc.Instance)
 				{
 					nsc.Instance = nsc.InstanciateScript();
@@ -85,6 +100,24 @@ namespace Odysseus
 			}
 			Renderer2D::EndScene();
 		}
+	}
+
+	void Scene::UpdateEditor(Timestep time, EditorCamera& camera)
+	{
+		Renderer2D::BeginScene(camera);
+
+		auto view = registry.view<TransformComponent, SpriteRendererComponent>();
+		for (auto entity : view)
+		{
+			auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
+			QuadProperties quad;
+			quad.baseColor = sprite.Color;
+			quad.position = transform.Position;
+			quad.rotation = transform.Rotation;
+			quad.scale = glm::vec2(transform.Scale.x, transform.Scale.y);
+			Renderer2D::DrawQuad(quad);
+		}
+		Renderer2D::EndScene();
 	}
 
 	void Scene::OnViewportResize(uint32_t newWidth, uint32_t newHeight)
