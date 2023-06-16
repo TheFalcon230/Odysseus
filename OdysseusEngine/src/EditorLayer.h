@@ -49,6 +49,7 @@ namespace Odysseus
 		glm::vec2 vec_ViewportSize = {0,0};
 		bool bIsViewportFocused = true;
 		bool bIsViewportHovered = true;
+		bool bIsUsingGizmo;
 
 		int iGizmoType = -1;
 

@@ -82,7 +82,10 @@ namespace Odysseus
 			{
 				m_CameraController.OnUpdate(updateTime);
 			}
+			if (!bIsUsingGizmo)
+			{
 				mainCameraEditor.Update(updateTime);
+			}
 		}
 
 		Renderer2D::ResetStats();
@@ -245,7 +248,7 @@ namespace Odysseus
 			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
 			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
-
+			bIsUsingGizmo = false;
 			Object selectedObject = hierarchyPanel.GetSelectedObject();
 			if (selectedObject && iGizmoType != -1)
 			{
@@ -273,7 +276,8 @@ namespace Odysseus
 				ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProj)
 					, (ImGuizmo::OPERATION)iGizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform), nullptr, snapValues);
 
-				if (ImGuizmo::IsUsing())
+				bIsUsingGizmo = ImGuizmo::IsUsing();
+				if (bIsUsingGizmo)
 				{
 					glm::vec3 position, rotation, scale;
 					Math::DecomposeTransform(transform, position, rotation, scale);
@@ -298,7 +302,10 @@ namespace Odysseus
 	void EditorLayer::OnEvent(Event& e)
 	{
 		m_CameraController.OnEvent(e);
-		mainCameraEditor.OnEvent(e);
+		if (!bIsUsingGizmo)
+		{
+			mainCameraEditor.OnEvent(e);
+		}
 
 		if (e.GetEventType() == EventType::WindowResize)
 		{

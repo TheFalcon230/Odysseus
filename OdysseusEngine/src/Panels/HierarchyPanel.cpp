@@ -37,6 +37,11 @@ namespace Odysseus
 				{
 					Context->CreateObject("New Gameobject");
 				}
+				ImGui::Separator();
+				if (ImGui::MenuItem("Square"))
+				{
+					Context->CreateSquare("Square");
+				}
 
 				ImGui::EndPopup();
 			}

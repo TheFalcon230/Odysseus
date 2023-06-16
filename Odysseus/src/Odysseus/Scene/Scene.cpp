@@ -26,6 +26,16 @@ namespace Odysseus
 		return entity;
 	}
 
+	Object Scene::CreateSquare(std::string name)
+	{
+		Object entity = { registry.create(), this };
+		entity.AddComponent<TransformComponent>(glm::vec3(0.0f));
+		auto& tag = entity.AddComponent<TagComponent>(name);
+		entity.AddComponent<SpriteRendererComponent>();
+		tag.Tag = name.empty() ? "Entity" : name;
+		return entity;
+	}
+
 	void Scene::DestroyObject(Object object)
 	{
 		registry.destroy(object);
