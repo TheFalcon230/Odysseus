@@ -49,7 +49,7 @@ namespace Odysseus
 			const 	auto& cameraComponent = view.get<CameraComponent>(object);
 			if (cameraComponent.bIsMainCamera)
 			{
-				return Object{object, this};
+				return Object{ object, this };
 			}
 		}
 		ODC_CORE_ERROR("Error: no main camera found!");
@@ -106,7 +106,7 @@ namespace Odysseus
 				quad.position = transform.Position;
 				quad.rotation = transform.Rotation;
 				quad.scale = glm::vec2(transform.Scale.x, transform.Scale.y);
-				Renderer2D::DrawQuad(quad);
+				Renderer2D::DrawQuad(quad, (int)entity);
 			}
 			Renderer2D::EndScene();
 		}
@@ -125,7 +125,7 @@ namespace Odysseus
 			quad.position = transform.Position;
 			quad.rotation = transform.Rotation;
 			quad.scale = glm::vec2(transform.Scale.x, transform.Scale.y);
-			Renderer2D::DrawQuad(quad);
+			Renderer2D::DrawQuad(quad, (int)entity);
 		}
 		Renderer2D::EndScene();
 	}

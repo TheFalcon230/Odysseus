@@ -19,6 +19,9 @@ namespace Odysseus
 		glm::vec2 TexCoord;
 		float TexIndex;
 		float TilingFactor;
+
+		// Editor only
+		int EntityID;
 	};
 
 	struct Renderer2DData
@@ -64,7 +67,8 @@ namespace Odysseus
 			{ ShaderDataType::Float4, "a_Color" },
 			{ ShaderDataType::Float2, "a_TexCoord" },
 			{ ShaderDataType::Float, "a_TexIndex" },
-			{ ShaderDataType::Float, "a_TilingFactor" }
+			{ ShaderDataType::Float, "a_TilingFactor" },
+			{ ShaderDataType::Int, "a_EntityID"}
 			});
 		s_Data.vertexArray->AddVertexBuffer(s_Data.vertexBuffer);
 
@@ -297,7 +301,7 @@ namespace Odysseus
 		s_Data.vertexArray->Bind();
 		RenderCommand::DrawIndexed(s_Data.vertexArray);*/
 	}
-	void Renderer2D::DrawQuad(const QuadProperties& quad)
+	void Renderer2D::DrawQuad(const QuadProperties& quad, int entityID)
 	{
 		constexpr size_t quadVertexCount = 4;
 		const glm::vec2* textureCoords = quad.sprite->GetTexCoord();
@@ -344,6 +348,7 @@ namespace Odysseus
 			s_Data.QuadVertexBufferPtr->TexCoord = quad.sprite == nullptr ? defaultTexCoord[i]: textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = quad.tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
 

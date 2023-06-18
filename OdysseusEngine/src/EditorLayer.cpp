@@ -31,6 +31,7 @@ namespace Odysseus
 		T_Spritesheet = Texture2D::Create("assets/textures/RPG_Sheet.png");
 
 		FramebufferSpecification fbSpec;
+		fbSpec.Attachments = { FramebufferTextureFormat::RBGA8,FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		fbSpec.Width = 1280;
 		fbSpec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(fbSpec);
@@ -94,10 +95,30 @@ namespace Odysseus
 			m_Framebuffer->Bind();
 			RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 			RenderCommand::Clear();
+
+			// Clear enity ID attachment to -1
+			m_Framebuffer->ClearAttachment(1, -1);
 		}
+
 		{
 			PROFILE_SCOPE("Renderer Draw");
 			activeScene->UpdateEditor(updateTime, mainCameraEditor);
+
+			auto [mx, my] = ImGui::GetMousePos();
+			mx -= vec_ViewportBounds[0].x;
+			my -= vec_ViewportBounds[0].y;
+			glm::vec2 viewportSize = vec_ViewportBounds[1] - vec_ViewportBounds[0];
+			my = viewportSize.y - my;
+
+			int mouseX = (int)mx;
+			int mouseY = (int)my;
+
+			if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+			{
+				int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+				hoveredObject = pixelData == -1 ? Object() : Object((entt::entity)pixelData, activeScene.get());
+			}
+
 			m_Framebuffer->Unbind();
 		}
 
@@ -238,8 +259,15 @@ namespace Odysseus
 		ImGui::SetNextWindowClass(&window_class);
 		if (ImGui::Begin("Viewport", (bool*)true))
 		{
+			auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+			auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+			auto viewportOffset = ImGui::GetWindowPos();
+			vec_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+			vec_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+
 			bIsViewportFocused = ImGui::IsWindowFocused();
 			bIsViewportHovered = ImGui::IsWindowHovered();
+
 			Application::Get().GetImGuiLayer()->SetCanBlockEvents(!bIsViewportFocused || !bIsViewportHovered);
 
 			ImVec2 viewportSize = ImGui::GetContentRegionAvail();
@@ -247,6 +275,7 @@ namespace Odysseus
 
 			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
 			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
 
 			bIsUsingGizmo = false;
 			Object selectedObject = hierarchyPanel.GetSelectedObject();
@@ -317,6 +346,7 @@ namespace Odysseus
 		}
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(ODC_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(ODC_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
 	}
 
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
@@ -391,6 +421,16 @@ namespace Odysseus
 			break;
 		}
 		}
+	}
+
+	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+	{
+		if (e.GetMouseButton() == (int)Mouse::ButtonLeft)
+		{
+			if (bIsViewportHovered && !ImGuizmo::IsOver())
+				hierarchyPanel.SetSelectedObject(hoveredObject);
+		}
+		return false;
 	}
 
 	void EditorLayer::NewScene()

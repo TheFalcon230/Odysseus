@@ -19,6 +19,7 @@ namespace Odysseus
 		void OnEvent(Event& e) override;
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
 		void NewScene();
 		void OpenScene();
@@ -46,9 +47,13 @@ namespace Odysseus
 		std::unordered_map<char, Ref<Sprite>> s_TextureMap;
 		uint32_t mapWidth = 24, mapHeight = 12;
 
-		glm::vec2 vec_ViewportSize = {0,0};
 		bool bIsViewportFocused = true;
 		bool bIsViewportHovered = true;
+		glm::vec2 vec_ViewportSize = {0,0};
+		glm::vec2 vec_ViewportBounds[2];
+
+		Object hoveredObject;
+
 		bool bIsUsingGizmo;
 
 		int iGizmoType = -1;

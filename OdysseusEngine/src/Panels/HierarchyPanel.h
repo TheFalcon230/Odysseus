@@ -14,6 +14,7 @@ namespace Odysseus
 		void OnImGuiRender();
 
 		Object GetSelectedObject() const { return OSelectionContext; }
+		void SetSelectedObject(Object selectedObject) { OSelectionContext = selectedObject; }
 	private:
 		void DrawObjectNode(Object object);
 		void DrawComponents(Object object);

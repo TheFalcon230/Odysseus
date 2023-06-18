@@ -76,7 +76,8 @@ namespace Odysseus
 		/// Draw a quad with given properties.
 		/// </summary>
 		/// <param name="Quad">The quad properties.</param>
-		static void DrawQuad(const QuadProperties& Quad);
+		/// <param name="entityID">The entity ID (if = -1 it's considered as invalid).</param>
+		static void DrawQuad(const QuadProperties& Quad, int entityID = -1);
 
 		//Stats
 		struct Statistics
