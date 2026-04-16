@@ -1,8 +1,18 @@
 #include "HierarchyPanel.h"
+#include "Odysseus/Scene/Components.h"
+
 #include <imgui/imgui.h>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/matrix_decompose.hpp>
 #include <imgui/imgui_internal.h>
+#include <imgui/misc/cpp/imgui_stdlib.h>
+
+#include <glm/gtc/type_ptr.hpp>
+
+/* The Microsoft C++ compiler is non-compliant with the C++ standard and needs
+ * the following definition to disable a security warning on std::strncpy().
+ */
+#ifdef _MSVC_LANG
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 
 namespace Odysseus
 {
@@ -21,29 +31,32 @@ namespace Odysseus
 	{
 		if (ImGui::Begin("Hierarchy"))
 		{
-			Context->registry.each([&](auto objectID)
+			if (Context)
 			{
-				Object object = Object(objectID, Context.get());
-			DrawObjectNode(object);
-			}
-			);
-
-			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
-				OSelectionContext = {};
-
-			if (ImGui::BeginPopupContextWindow(0, 1, false))
-			{
-				if (ImGui::MenuItem("Add Empty Gameobject"))
+				Context->registry.each([&](auto objectID)
 				{
-					Context->CreateObject("New Gameobject");
+					Object object = Object(objectID, Context.get());
+					DrawObjectNode(object);
 				}
-				ImGui::Separator();
-				if (ImGui::MenuItem("Square"))
-				{
-					Context->CreateSquare("Square");
-				}
+				);
 
-				ImGui::EndPopup();
+				if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+					OSelectionContext = {};
+
+				if (ImGui::BeginPopupContextWindow(0, 1))
+				{
+					if (ImGui::MenuItem("Add Empty Gameobject"))
+					{
+						Context->CreateObject("New Gameobject");
+					}
+					ImGui::Separator();
+					if (ImGui::MenuItem("Square"))
+					{
+						Context->CreateSquare("Square");
+					}
+
+					ImGui::EndPopup();
+				}
 			}
 
 			ImGui::End();
@@ -107,12 +120,12 @@ namespace Odysseus
 		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0,0 });
 
-		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2;
+		float lineHeight = GImGui->Font->LegacySize + GImGui->Style.FramePadding.y * 2;
 		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.15f, 0.015f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9f, 0.25f, 0.025f, 1.0f));
-		ImGui::PushFont(boldFont);
+		ImGui::PushFont(boldFont, 0.0f);
 		if (ImGui::Button("X", buttonSize))
 		{
 			values.x = resetValues;
@@ -128,7 +141,7 @@ namespace Odysseus
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.43f, 0.65f, 0.0f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.53f, 0.75f, 0.1f, 1.0f));
-		ImGui::PushFont(boldFont);
+		ImGui::PushFont(boldFont, 0.0f);
 		if (ImGui::Button("Y", buttonSize))
 		{
 			values.x = resetValues;
@@ -143,7 +156,7 @@ namespace Odysseus
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.12f, 0.51f, 0.96f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.63f, 0.85f, 0.2f, 1.0f));
-		ImGui::PushFont(boldFont);
+		ImGui::PushFont(boldFont, 0.0f);
 		if (ImGui::Button("Z", buttonSize))
 		{
 			values.x = resetValues;
@@ -164,15 +177,15 @@ namespace Odysseus
 	template<typename T, typename UIFunction>
 	static void DrawComponent(const std::string& name, Object object, UIFunction function)
 	{
-		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed 
-			| ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
+		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed
+			| ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowOverlap | ImGuiTreeNodeFlags_FramePadding;
 
 		if (object.HasComponent<T>())
 		{
 			ImVec2 contentRegionAvail = ImGui::GetContentRegionAvail();
 			auto& component = object.GetComponent<T>();
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-			float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+			float lineHeight = GImGui->Font->LegacySize + GImGui->Style.FramePadding.y * 2.0f;
 			ImGui::Separator();
 			bool opened = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags, name.c_str());
 			ImGui::PopStyleVar();
@@ -244,10 +257,10 @@ namespace Odysseus
 		DrawComponent<TransformComponent>("Transform", object, [](auto& component)
 		{
 			DrawVec3Controls("Position", component.Position);
-		glm::vec3 rotation = glm::degrees(component.Rotation);
-		DrawVec3Controls("Rotation", rotation);
-		component.Rotation = glm::radians(rotation);
-		DrawVec3Controls("Scale", component.Scale, 1.0f);
+			glm::vec3 rotation = glm::degrees(component.Rotation);
+			DrawVec3Controls("Rotation", rotation);
+			component.Rotation = glm::radians(rotation);
+			DrawVec3Controls("Scale", component.Scale, 1.0f);
 		});
 
 		DrawComponent<SpriteRendererComponent>("Sprite Renderer", object, [](auto& component) {ImGui::ColorEdit4("Color", glm::value_ptr(component.Color)); });
@@ -256,57 +269,57 @@ namespace Odysseus
 		{
 			auto& camera = component.Camera;
 
-		const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
-		const char* currentProjectionTypeString = projectionTypeStrings[(int)component.Camera.GetProjectionType()];
-		if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
-		{
-			for (int i = 0; i < 2; i++)
+			const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
+			const char* currentProjectionTypeString = projectionTypeStrings[(int)component.Camera.GetProjectionType()];
+			if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
 			{
-				bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
-				if (ImGui::Selectable(projectionTypeStrings[i], isSelected))
+				for (int i = 0; i < 2; i++)
 				{
-					currentProjectionTypeString = projectionTypeStrings[i];
-					component.Camera.SetProjectionType((SceneCamera::EProjectionType)i);
+					bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
+					if (ImGui::Selectable(projectionTypeStrings[i], isSelected))
+					{
+						currentProjectionTypeString = projectionTypeStrings[i];
+						component.Camera.SetProjectionType((SceneCamera::EProjectionType)i);
+					}
+
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
 				}
-
-				if (isSelected)
-					ImGui::SetItemDefaultFocus();
+				ImGui::EndCombo();
 			}
-			ImGui::EndCombo();
-		}
-		SceneCamera::EProjectionType cameraProjectionType = component.Camera.GetProjectionType();
+			SceneCamera::EProjectionType cameraProjectionType = component.Camera.GetProjectionType();
 
 
-		if (cameraProjectionType == SceneCamera::EProjectionType::Perspective)
-		{
-			float perspectiveSize = glm::degrees(camera.GetPerspectiveFOV());
-			if (ImGui::DragFloat("Vertical FOV", &perspectiveSize))
-				camera.SetPerspectiveFOV(glm::radians(perspectiveSize));
+			if (cameraProjectionType == SceneCamera::EProjectionType::Perspective)
+			{
+				float perspectiveSize = glm::degrees(camera.GetPerspectiveFOV());
+				if (ImGui::DragFloat("Vertical FOV", &perspectiveSize))
+					camera.SetPerspectiveFOV(glm::radians(perspectiveSize));
 
-			float perspectiveNearClip = camera.GetPerspectiveNearClip();
-			if (ImGui::DragFloat("Near clip", &perspectiveNearClip))
-				camera.SetPerspectiveNear(perspectiveNearClip);
+				float perspectiveNearClip = camera.GetPerspectiveNearClip();
+				if (ImGui::DragFloat("Near clip", &perspectiveNearClip))
+					camera.SetPerspectiveNear(perspectiveNearClip);
 
-			float perspectiveFarClip = camera.GetPerspectiveFarClip();
-			if (ImGui::DragFloat(" ", &perspectiveFarClip))
-				camera.SetPerspectiveFar(perspectiveFarClip);
-		}
+				float perspectiveFarClip = camera.GetPerspectiveFarClip();
+				if (ImGui::DragFloat(" ", &perspectiveFarClip))
+					camera.SetPerspectiveFar(perspectiveFarClip);
+			}
 
-		if (cameraProjectionType == SceneCamera::EProjectionType::Orthographic)
-		{
-			float orthoSize = camera.GetOrthographicSize();
-			if (ImGui::DragFloat("Size", &orthoSize))
-				camera.SetOrthographicSize(orthoSize);
+			if (cameraProjectionType == SceneCamera::EProjectionType::Orthographic)
+			{
+				float orthoSize = camera.GetOrthographicSize();
+				if (ImGui::DragFloat("Size", &orthoSize))
+					camera.SetOrthographicSize(orthoSize);
 
-			float orthoNearClip = camera.GetOrthographicNearClip();
-			if (ImGui::DragFloat("Near clip", &orthoNearClip))
-				camera.SetOrthographicNear(orthoNearClip);
+				float orthoNearClip = camera.GetOrthographicNearClip();
+				if (ImGui::DragFloat("Near clip", &orthoNearClip))
+					camera.SetOrthographicNear(orthoNearClip);
 
-			float orthoFarClip = camera.GetOrthographicFarClip();
-			if (ImGui::DragFloat(" ", &orthoFarClip))
-				camera.SetOrthographicFar(orthoFarClip);
+				float orthoFarClip = camera.GetOrthographicFarClip();
+				if (ImGui::DragFloat(" ", &orthoFarClip))
+					camera.SetOrthographicFar(orthoFarClip);
 
-		}
+			}
 		});
 	}
 

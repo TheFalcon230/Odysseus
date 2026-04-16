@@ -1,12 +1,13 @@
 
 #include "odcpch.h"
-#include "ImGuiLayer.h"
+#include "Odysseus/ImGui/ImGuiLayer.h"
 
-#include "imgui.h"
+#include <imgui.h>
+#include <imgui_internal.h>
 
 #define IMGUI_IMPL_API
-#include "backends/imgui_impl_opengl3.h"
-#include "backends/imgui_impl_glfw.h"
+#include <backends/imgui_impl_opengl3.h>
+#include <backends/imgui_impl_glfw.h>
 
 #include "Odysseus/Core/Application.h"
 
@@ -14,7 +15,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <implot.h>
-#include <ImGuizmo.h>
+
+#include "ImGuizmo.h"
 
 
 namespace Odysseus
@@ -43,8 +45,8 @@ namespace Odysseus
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
-		io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto/Roboto-Bold.ttf", 14.0f);
-		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto/Roboto-Regular.ttf", 14.0f);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto/Roboto-Bold.ttf");
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto/Roboto-Regular.ttf");
 
 		// Setup Dear ImGui style (Dark Theme >>> white theme)
 		ImGui::StyleColorsDark();
@@ -52,6 +54,9 @@ namespace Odysseus
 
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 		ImGuiStyle& style = ImGui::GetStyle();
+
+		style.FontSizeBase = 14.0f;
+
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			style.WindowRounding = 0.0f;

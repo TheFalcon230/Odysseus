@@ -5,16 +5,6 @@
 
 #include "EditorLayer.h"
 
-//
-//#include <Platform/OpenGL/OpenGLShader.h>
-//
-//#include "../imgui/imgui.h"
-//
-//#include <glm/ext/matrix_transform.hpp>
-//#include <glm/gtc/type_ptr.hpp>
-//
-
-
 namespace Odysseus
 {
 	class OdysseusEditor : public Application
@@ -29,9 +19,6 @@ namespace Odysseus
 		~OdysseusEditor()
 		{
 		}
-
-	private:
-
 	};
 
 	Application* CreateApplication()

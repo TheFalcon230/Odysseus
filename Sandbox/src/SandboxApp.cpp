@@ -5,6 +5,10 @@
 
 #include <Platform/OpenGL/OpenGLShader.h>
 
+#ifndef IMGUI_DEFINE_MATH_OPERATORS
+#define IMGUI_DEFINE_MATH_OPERATORS
+#endif // IMGUI_DEFINE_MATH_OPERATORS
+
 #include "../imgui/imgui.h"
 
 #include <glm/ext/matrix_transform.hpp>
@@ -120,6 +124,7 @@ class Sandbox : public Odysseus::Application
 {
 public:
 	Sandbox()
+		: Application("Sandbox")
 	{
 		//PushLayer(new ExampleLayer());
 		PushLayer(new Sandbox2D());

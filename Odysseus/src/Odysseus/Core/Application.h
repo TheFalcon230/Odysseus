@@ -14,27 +14,27 @@
 
 namespace Odysseus
 {
-	class ODYSSEUS_API Application
+	class  Application
 	{
 	public:
-		Application(const std::string& appName = "Odysseus Editor");
-		virtual ~Application();
+		ODYSSEUS_API Application(const std::string& appName = "Odysseus Editor");
+		ODYSSEUS_API virtual ~Application();
 
-		void Run();
+		ODYSSEUS_API void Run();
 
-		void OnEvent(Event& e);
+		ODYSSEUS_API void OnEvent(Event& e);
 
 		//Layers 
 
-		void PushLayer(Layer* layer);
-		void PushOverlay(Layer* Overlay);
+		ODYSSEUS_API void PushLayer(Layer* layer);
+		ODYSSEUS_API void PushOverlay(Layer* Overlay);
 
-		inline Window& GetWindow() { return *m_Window; }
+		ODYSSEUS_API inline Window& GetWindow() { return *m_Window; }
 
-		inline static Application& Get() { return *s_Instance; }
-		inline void QuitApplication() { m_Running = false; }
+		ODYSSEUS_API inline static Application& Get() { return *s_Instance; }
+		ODYSSEUS_API inline void QuitApplication() { m_Running = false; }
 
-		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
+		ODYSSEUS_API ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);

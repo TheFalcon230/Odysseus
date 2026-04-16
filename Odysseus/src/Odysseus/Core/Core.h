@@ -37,6 +37,7 @@
 
 
 #ifdef ODC_PLATFORM_WINDOWS
+	#if ODC_DYNAMIC_LINK
 		#ifdef ODC_BUILD_DLL
 			#define ODYSSEUS_API __declspec(dllexport)
 			#define IMGUI_API __declspec(dllexport)
@@ -45,7 +46,13 @@
 			#define ODYSSEUS_API __declspec(dllimport)
 			#define IMGUI_API __declspec(dllimport)
 			#define IMPLOT_API __declspec(dllimport)
-		#endif // ODC_BUILD_DLL
+		#endif // ODC_BUILD_DLL  
+	#else
+		#define ODYSSEUS_API
+		#define IMGUI_API
+		#define IMPLOT_API
+	#endif // ODC_DYNAMIC_LINK
+
 #else
 		#error Odysseus only support Winwdow!
 #endif // ODC_PLATFORM_WINDOWS

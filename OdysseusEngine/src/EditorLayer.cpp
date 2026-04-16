@@ -240,12 +240,12 @@ namespace Odysseus
 				static std::vector<ScrollingBuffer> sbDatas;
 				sbDatas.resize(resultSize);
 
-				for (int i = 0; i < resultSize; i++)
+				/*for (int i = 0; i < resultSize; i++)
 				{
 					sbDatas[i].AddPoint(t, m_ProfileResults[i].Time);
 					ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 1.0f);
 					ImPlot::PlotShaded(m_ProfileResults[i].Name, &sbDatas[i].Data[0].x, &sbDatas[i].Data[0].y, sbDatas[i].Data.size(), -INFINITY, 0, sbDatas[i].Offset, 2 * sizeof(float));
-				}
+				}*/
 
 				m_ProfileResults.clear();
 				ImPlot::EndPlot();
@@ -274,7 +274,7 @@ namespace Odysseus
 			vec_ViewportSize = { viewportSize.x, viewportSize.y };
 
 			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+			ImGui::Image((ImTextureID)(intptr_t)textureID, ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 
 			bIsUsingGizmo = false;
@@ -359,68 +359,69 @@ namespace Odysseus
 
 		switch (e.GetKeyCode())
 		{
-		case (int)Key::S: // Save
-		{
-			if (control && shift)
+			case (int)Key::S: // Save
 			{
-				SaveAs();
+				if (control && shift)
+				{
+					SaveAs();
+				}
+				break;
 			}
-			break;
-		}
-		case (int)Key::O:// Open
-		{
-			if (control)
+			case (int)Key::O:// Open
 			{
-				OpenScene();
+				if (control)
+				{
+					OpenScene();
+				}
+				break;
 			}
-			break;
-		}
-		case (int)Key::N:// Open
-		{
-			if (control)
+			case (int)Key::N:// Open
 			{
-				NewScene();
+				if (control)
+				{
+					NewScene();
+				}
+				break;
 			}
-			break;
-		}
 
-		// Gizmos shortcuts
-		case (int)Key::Space: // Switching between gizmos
-		{
-			if (iGizmoType == ImGuizmo::SCALE)
+			// Gizmos shortcuts
+			case (int)Key::Space: // Switching between gizmos
+			{
+				if (iGizmoType == ImGuizmo::SCALE)
+				{
+					iGizmoType = ImGuizmo::TRANSLATE;
+				}
+				else if (iGizmoType == ImGuizmo::TRANSLATE)
+				{
+					iGizmoType = ImGuizmo::ROTATE;
+				}
+				else if (iGizmoType == ImGuizmo::ROTATE)
+				{
+					iGizmoType = ImGuizmo::SCALE;
+				}
+				break;
+			}
+			case (int)Key::A: // No gizmo
+			{
+				iGizmoType = -1;
+				break;
+			}case (int)Key::W: // Position
 			{
 				iGizmoType = ImGuizmo::TRANSLATE;
+				break;
 			}
-			else if (iGizmoType == ImGuizmo::TRANSLATE)
+			case (int)Key::E: // Rotation
 			{
 				iGizmoType = ImGuizmo::ROTATE;
+				break;
 			}
-			else if (iGizmoType == ImGuizmo::ROTATE)
+			case (int)Key::R: // Scale
 			{
 				iGizmoType = ImGuizmo::SCALE;
+				break;
 			}
-			break;
 		}
-		case (int)Key::A: // No gizmo
-		{
-			iGizmoType = -1;
-			break;
-		}case (int)Key::W: // Position
-		{
-			iGizmoType = ImGuizmo::TRANSLATE;
-			break;
-		}
-		case (int)Key::E: // Rotation
-		{
-			iGizmoType = ImGuizmo::ROTATE;
-			break;
-		}
-		case (int)Key::R: // Scale
-		{
-			iGizmoType = ImGuizmo::SCALE;
-			break;
-		}
-		}
+		return true;
 	}
 
 	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)

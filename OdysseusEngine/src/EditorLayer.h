@@ -2,6 +2,8 @@
 #include <Odysseus.h>
 #include "Panels/HierarchyPanel.h"
 
+#include "Odysseus/Renderer/EditorCamera.h"
+
 namespace Odysseus
 {
 	class EditorLayer : public Layer

@@ -4,7 +4,8 @@
 #include "Odysseus/Core/Log.h"
 #include "Odysseus/Renderer/Renderer.h"
 
-#include "Input.h"
+#include "Odysseus/Core/Input.h"
+
 #include <glfw/glfw3.h>
 
 namespace Odysseus
@@ -13,10 +14,10 @@ namespace Odysseus
 
 	Application* Application::s_Instance = nullptr;
 
-
-
 	Application::Application(const std::string& appName)
 	{
+		//ODC_PROFILE_FUNCTION();
+
 		ODC_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
@@ -31,6 +32,7 @@ namespace Odysseus
 
 	Application::~Application()
 	{
+		Renderer::Shutdown();
 	}
 
 	void Application::Run()

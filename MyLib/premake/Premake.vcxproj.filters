@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="..">
+      <UniqueIdentifier>{61705900-4DFC-870B-B6AA-880BA255880B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Odysseus">
+      <UniqueIdentifier>{4F9C831B-BB51-FC10-4446-F6E7B0FAF214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Odysseus\vendor">
+      <UniqueIdentifier>{CC63C0EC-B847-8142-21A8-7B950DAB6BC4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Odysseus\vendor\GLAD">
+      <UniqueIdentifier>{D35DCDB2-3F95-154A-489F-796DB4553C43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Odysseus\vendor\GLFW">
+      <UniqueIdentifier>{8B5ECDB2-F795-154A-00A0-796D6C563C43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Odysseus\vendor\imgui">
+      <UniqueIdentifier>{361AF30E-223F-428F-4B8A-271F370E41AD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Odysseus\vendor\yaml-cpp">
+      <UniqueIdentifier>{FECF11D2-6ADD-3FB8-F3C3-3BA35FD00B6F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\OdysseusEngine">
+      <UniqueIdentifier>{A51EF658-1135-F4EE-5AAC-7F10C601C576}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Sandbox">
+      <UniqueIdentifier>{3F7B6B1D-2B33-AD6A-943A-86C68011485B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Odysseus\premake5.lua">
+      <Filter>..\Odysseus</Filter>
+    </None>
+    <None Include="..\..\Odysseus\vendor\GLAD\premake5.lua">
+      <Filter>..\Odysseus\vendor\GLAD</Filter>
+    </None>
+    <None Include="..\..\Odysseus\vendor\GLFW\premake5.lua">
+      <Filter>..\Odysseus\vendor\GLFW</Filter>
+    </None>
+    <None Include="..\..\Odysseus\vendor\imgui\premake5.lua">
+      <Filter>..\Odysseus\vendor\imgui</Filter>
+    </None>
+    <None Include="..\..\Odysseus\vendor\yaml-cpp\premake5.lua">
+      <Filter>..\Odysseus\vendor\yaml-cpp</Filter>
+    </None>
+    <None Include="..\..\OdysseusEngine\premake5.lua">
+      <Filter>..\OdysseusEngine</Filter>
+    </None>
+    <None Include="..\..\Sandbox\premake5.lua">
+      <Filter>..\Sandbox</Filter>
+    </None>
+    <None Include="..\..\premake5.lua">
+      <Filter>..</Filter>
+    </None>
+    <None Include="premake5.lua" />
+  </ItemGroup>
+</Project>

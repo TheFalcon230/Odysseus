@@ -8,20 +8,22 @@
 namespace Odysseus
 {
 
-	class ODYSSEUS_API Renderer
+	class  Renderer
 	{
 	public:
-		static void Init();
+		ODYSSEUS_API static void Init();
 
-		static void OnWindowResize(uint32_t width, uint32_t height);
+		ODYSSEUS_API static void Shutdown();
 
-		static void BeginScene(OrthographicCamera& camera);
+		ODYSSEUS_API static void OnWindowResize(uint32_t width, uint32_t height);
 
-		static void EndScene();
+		ODYSSEUS_API static void BeginScene(OrthographicCamera& camera);
 
-		static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));
+		ODYSSEUS_API static void EndScene();
 
-		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
+		ODYSSEUS_API static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));
+
+		ODYSSEUS_API inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 	private: 
 
 		struct SceneData
