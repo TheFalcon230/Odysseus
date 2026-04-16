@@ -240,12 +240,16 @@ namespace Odysseus
 				static std::vector<ScrollingBuffer> sbDatas;
 				sbDatas.resize(resultSize);
 
-				/*for (int i = 0; i < resultSize; i++)
+				for (int i = 0; i < resultSize; i++)
 				{
 					sbDatas[i].AddPoint(t, m_ProfileResults[i].Time);
-					ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 1.0f);
-					ImPlot::PlotShaded(m_ProfileResults[i].Name, &sbDatas[i].Data[0].x, &sbDatas[i].Data[0].y, sbDatas[i].Data.size(), -INFINITY, 0, sbDatas[i].Offset, 2 * sizeof(float));
-				}*/
+					//ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 1.0f);
+					ImPlotSpec spec;
+					spec.Offset = sbDatas[i].Offset;
+					spec.Stride = 2 * sizeof(float);
+					spec.FillAlpha = 0.5f;
+					ImPlot::PlotShaded(m_ProfileResults[i].Name, &sbDatas[i].Data[0].x, &sbDatas[i].Data[0].y, sbDatas[i].Data.size(), 0, spec);
+				}
 
 				m_ProfileResults.clear();
 				ImPlot::EndPlot();
