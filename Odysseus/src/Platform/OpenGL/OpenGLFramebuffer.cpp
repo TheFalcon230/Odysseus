@@ -125,10 +125,9 @@ namespace Odysseus
 	OpenGLFramebuffer::~OpenGLFramebuffer()
 	{
 		glDeleteFramebuffers(1, &m_RendererID);
-		glDeleteTextures(1, &m_DepthAttachment);
 		glDeleteTextures(ColorAttachments.size(), ColorAttachments.data());
+		glDeleteTextures(1, &m_DepthAttachment);
 
-		ColorAttachments.clear();
 	}
 
 	void OpenGLFramebuffer::Invalidate()
@@ -140,6 +139,7 @@ namespace Odysseus
 			glDeleteTextures(ColorAttachments.size(), ColorAttachments.data());
 
 			ColorAttachments.clear();
+			m_DepthAttachment = 0;
 		}
 
 		glCreateFramebuffers(1, &m_RendererID);

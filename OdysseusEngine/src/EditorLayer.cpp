@@ -12,14 +12,14 @@
 #include "Odysseus/Math/Math.h"
 
 #define PROFILE_SCOPE(name) InstrumentationTimer timer##__LINE__(name, [&](ProfileResult profileResult) { m_ProfileResults.push_back(profileResult); })
-#define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCSIG__);
+#define PROFILE_FUNCTION() ODC_PROFILE_SCOPE(__FUNCTION__);
 
 
 
 namespace Odysseus
 {
 	EditorLayer::EditorLayer()
-		: Layer("Editor Layer"), m_CameraController(1280.f / 720.f)
+		: Layer("Editor Layer"), m_CameraController(1920.f / 1080.f)
 	{
 
 	}
@@ -32,29 +32,23 @@ namespace Odysseus
 
 		FramebufferSpecification fbSpec;
 		fbSpec.Attachments = { FramebufferTextureFormat::RBGA8,FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
-		fbSpec.Width = 1280;
-		fbSpec.Height = 720;
+		fbSpec.Width = 1920;
+		fbSpec.Height = 1080;
 		m_Framebuffer = Framebuffer::Create(fbSpec);
 
 		activeScene = CreateRef<Scene>();
 
 		mainCameraEditor = EditorCamera(45.0f, 16.0f / 9.0f, 0.1f, 1000.0f);
 
-		/*auto square = activeScene->CreateObject("Test Square");
-		square.AddComponent<SpriteRendererComponent>(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
+		auto square = activeScene->CreateSquare("Test Square");
+		square.GetComponent<SpriteRendererComponent>().texture = m_Texture;
+		square.GetComponent<SpriteRendererComponent>().Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		ETestSquare = square;
 
-		auto square1 = activeScene->CreateObject("Red Square");
-		square1.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-		ETestSquare = square1;
-
 		ECamera = activeScene->CreateObject("Main Camera");
-		ECamera.AddComponent<CameraComponent>();*/
+		ECamera.AddComponent<CameraComponent>();
 
 		hierarchyPanel.SetContext(activeScene);
-
-
-
 	}
 
 	void EditorLayer::OnDetach()
@@ -64,7 +58,7 @@ namespace Odysseus
 
 	void EditorLayer::OnUpdate(Timestep updateTime)
 	{
-		PROFILE_FUNCTION();
+		PROFILE_SCOPE(__FUNCSIG__);
 		time = updateTime;
 
 		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
@@ -129,9 +123,7 @@ namespace Odysseus
 		static float t = 0;
 		t += time;
 
-		PROFILE_FUNCTION();
-
-
+		PROFILE_SCOPE(__FUNCSIG__);
 
 		static bool isDockspaceOpen = true;
 		static bool opt_fullscreen = true;

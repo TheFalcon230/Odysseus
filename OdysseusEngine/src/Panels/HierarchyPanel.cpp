@@ -52,7 +52,8 @@ namespace Odysseus
 					ImGui::Separator();
 					if (ImGui::MenuItem("Square"))
 					{
-						Context->CreateSquare("Square");
+						auto square = Context->CreateSquare("Square");
+						square.GetComponent<SpriteRendererComponent>().Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 					}
 
 					ImGui::EndPopup();
@@ -120,12 +121,12 @@ namespace Odysseus
 		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0,0 });
 
-		float lineHeight = GImGui->Font->LegacySize + GImGui->Style.FramePadding.y * 2;
+		float lineHeight = GImGui->Style.FontSizeBase + GImGui->Style.FramePadding.y * 2;
 		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.15f, 0.015f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9f, 0.25f, 0.025f, 1.0f));
-		ImGui::PushFont(boldFont, 0.0f);
+		ImGui::PushFont(boldFont, 14.0f);
 		if (ImGui::Button("X", buttonSize))
 		{
 			values.x = resetValues;
@@ -141,10 +142,10 @@ namespace Odysseus
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.43f, 0.65f, 0.0f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.53f, 0.75f, 0.1f, 1.0f));
-		ImGui::PushFont(boldFont, 0.0f);
+		ImGui::PushFont(boldFont, 14.0f);
 		if (ImGui::Button("Y", buttonSize))
 		{
-			values.x = resetValues;
+			values.y = resetValues;
 		}
 		ImGui::PopFont();
 
@@ -156,10 +157,10 @@ namespace Odysseus
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.12f, 0.51f, 0.96f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.63f, 0.85f, 0.2f, 1.0f));
-		ImGui::PushFont(boldFont, 0.0f);
+		ImGui::PushFont(boldFont, 14.0f);
 		if (ImGui::Button("Z", buttonSize))
 		{
-			values.x = resetValues;
+			values.z = resetValues;
 		}
 		ImGui::PopFont();
 
@@ -254,7 +255,7 @@ namespace Odysseus
 		}
 		ImGui::PopItemWidth();
 
-		DrawComponent<TransformComponent>("Transform", object, [](auto& component)
+		DrawComponent<TransformComponent>("Transform", object, [](TransformComponent& component)
 		{
 			DrawVec3Controls("Position", component.Position);
 			glm::vec3 rotation = glm::degrees(component.Rotation);
@@ -263,11 +264,32 @@ namespace Odysseus
 			DrawVec3Controls("Scale", component.Scale, 1.0f);
 		});
 
-		DrawComponent<SpriteRendererComponent>("Sprite Renderer", object, [](auto& component) {ImGui::ColorEdit4("Color", glm::value_ptr(component.Color)); });
+		DrawComponent<SpriteRendererComponent>("Sprite Renderer", object, [](SpriteRendererComponent& component)
+		{
+			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color)); 
 
-		DrawComponent<CameraComponent>("Camera", object, [](auto& component)
+			/*ImGui::Button("Texture", ImVec2(100.0f, 0.0f));
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+				{
+					const wchar_t* path = (const wchar_t*)payload->Data;
+					std::filesystem::path texturePath(path);
+					Ref<Texture2D> texture = Texture2D::Create(texturePath.string());
+					if (texture->IsLoaded())
+						component.texture = texture;
+					else
+						ODC_WARN("Could not load texture {0}", texturePath.filename().string());
+				}
+				ImGui::EndDragDropTarget();
+			}*/
+		});
+
+		DrawComponent<CameraComponent>("Camera", object, [](CameraComponent& component)
 		{
 			auto& camera = component.Camera;
+
+			ImGui::Checkbox("Use this camera as main camera", &component.bIsMainCamera);
 
 			const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
 			const char* currentProjectionTypeString = projectionTypeStrings[(int)component.Camera.GetProjectionType()];

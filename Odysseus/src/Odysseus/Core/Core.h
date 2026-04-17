@@ -71,9 +71,8 @@
 	#define HZ_DEBUGBREAK() 
 #endif // ODC_DEBUG
 
-
-
-
+#define ODC_EXPAND_MACRO(x) x
+#define ODC_STRINGIFY_MACRO(x) #x
 
 #define BIT(x) ( 1 << x )
 
@@ -97,3 +96,6 @@ namespace Odysseus
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 }
+
+#include "Odysseus/Core/Log.h"
+#include "Odysseus/Core/Assert.h"

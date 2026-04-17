@@ -91,5 +91,8 @@ namespace Odysseus
 	private:
 		uint32_t m_rendererID = 0;
 		std::string m_Name;
+		std::string m_FilePath;
+
+		std::unordered_map<GLenum, std::vector<uint32_t>> m_OpenGLSPIRV;
 	};
 }

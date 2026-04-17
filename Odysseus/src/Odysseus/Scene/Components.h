@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
+
+#include "Odysseus/Renderer/Texture.h"
 #include "Odysseus/Renderer/Camera.h"
 #include "SceneCamera.h"
 #include "ScriptableObject.h"
@@ -52,11 +54,16 @@ namespace Odysseus
 	struct SpriteRendererComponent
 	{
 		glm::vec4 Color = glm::vec4(1.0f);
+		Ref<Texture2D> texture;
+		float tilling = 1.0f;
+		float textureIndex = 0.0f;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(const glm::vec4& color)
 			: Color(color) {}
+		SpriteRendererComponent(const glm::vec4& color, const Ref<Texture2D>& texture)
+			: Color(color), texture(texture) {}
 	};
 
 	struct CameraComponent

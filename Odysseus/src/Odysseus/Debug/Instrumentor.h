@@ -123,7 +123,7 @@ namespace Odysseus
             Instrumentor::Get().WriteProfile({ m_Name, start, end, threadID });
 
             m_Stopped = true;
-            m_Func({ m_Name, (end - start) * 0.001f});
+            m_Func({ m_Name, (end - start) * 0.001f });
         }
     private:
         const char* m_Name;
@@ -131,17 +131,48 @@ namespace Odysseus
         bool m_Stopped;
         Fn m_Func;
     };
+
+    namespace InstrumentorUtils {
+
+        template <size_t N>
+        struct ChangeResult
+        {
+            char Data[N];
+        };
+
+        template <size_t N, size_t K>
+        constexpr auto CleanupOutputString(const char(&expr)[N], const char(&remove)[K])
+        {
+            ChangeResult<N> result = {};
+
+            size_t srcIndex = 0;
+            size_t dstIndex = 0;
+            while (srcIndex < N)
+            {
+                size_t matchIndex = 0;
+                while (matchIndex < K - 1 && srcIndex + matchIndex < N - 1 && expr[srcIndex + matchIndex] == remove[matchIndex])
+                    matchIndex++;
+                if (matchIndex == K - 1)
+                    srcIndex += matchIndex;
+                result.Data[dstIndex++] = expr[srcIndex] == '"' ? '\'' : expr[srcIndex];
+                srcIndex++;
+            }
+            return result;
+        }
+    }
 }
 
-#define HZ_PROFILE 1
-#if HZ_PROFILE
+
+
+#define ODC_PROFILE 1
+#if ODC_PROFILE
 #define ODC_PROFILE_BEGIN_SESSION(name, filepath) Odysseus::Instrumentor::Get().BeginSession(name, filepath)
 #define ODC_PROFILE_END_SESSION() Odysseus::Instrumentor::Get().EndSession()
-#define ODC_PROFILE_SCOPE(name) Odysseus::InstrumentationTimer timer##__LINE__(name)
+#define ODC_PROFILE_SCOPE(name) Odysseus::InstrumentationTimer timer##__LINE__(name,[&](ProfileResult profileResult) { m_ProfileResults.push_back(profileResult); })
 #define ODC_PROFILE_FUNCTION() ODC_PROFILE_SCOPE(__FUNCSIG__)
 #else
 #define ODC_PROFILE_BEGIN_SESSION(name, filepath) 
 #define ODC_PROFILE_END_SESSION()
 #define ODC_PROFILE_SCOPE(name)
 #define ODC_PROFILE_FUNCTION()
-#endif // HZ_PROFILE
+#endif // ODC_PROFILE

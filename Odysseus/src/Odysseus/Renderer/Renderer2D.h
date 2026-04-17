@@ -5,13 +5,13 @@
 #include "Odysseus/Renderer/Camera.h"
 #include "Odysseus/Renderer/EditorCamera.h"
 
+#include <Odysseus/Scene/Components.h>
+
 namespace Odysseus
 {
 	struct QuadProperties
 	{
-		glm::vec3 position = glm::vec3(0.0f);
-		glm::vec3 rotation = glm::vec3(0.0f);
-		glm::vec2 scale = glm::vec2(1.0f);
+		glm::mat4 transform = glm::mat4(1.0f);
 		Ref<Texture2D> texture;
 		Ref<Sprite> sprite;
 		glm::vec4 baseColor = glm::vec4(1.0f);
@@ -77,7 +77,9 @@ namespace Odysseus
 		/// </summary>
 		/// <param name="Quad">The quad properties.</param>
 		/// <param name="entityID">The entity ID (if = -1 it's considered as invalid).</param>
-		static void DrawQuad(const QuadProperties& Quad, int entityID = -1);
+		static void DrawQuad(const glm::mat4 & inTransform, const Ref<Texture2D>& inTexture, float inTillingFactor, const glm::vec4 & inColor, int inEntityID = -1);
+
+		static void DrawSprite(const glm::mat4 transform, SpriteRendererComponent& sprite, int entityID);
 
 		//Stats
 		struct Statistics
@@ -94,6 +96,6 @@ namespace Odysseus
 		
 	private:
 		static void NextBatch();
-		static void NewBatch();
+		static void StartBatch();
 	};
 }

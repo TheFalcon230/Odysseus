@@ -94,7 +94,7 @@ void Sandbox2D::OnUpdate(Odysseus::Timestep updateTime)
 					sprite = Sp_Bush_01;
 				testQuad->sprite = sprite;
 				testQuad->position = glm::vec3({ (x), (y) , 0.0f });
-				Odysseus::Renderer2D::DrawQuad(*testQuad);
+				Odysseus::Renderer2D::DrawQuad(*testQuad, _placeholder_, _placeholder_, _placeholder_, -1);
 			}
 		}
 		Odysseus::Renderer2D::EndScene();
@@ -144,8 +144,12 @@ void Sandbox2D::OnImGuiRender()
 		for (int i = 0; i < resultSize; i++)
 		{
 			sbDatas[i].AddPoint(t, m_ProfileResults[i].Time);
-			ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 1.0f);
-			ImPlot::PlotShaded(m_ProfileResults[i].Name, &sbDatas[i].Data[0].x, &sbDatas[i].Data[0].y, sbDatas[i].Data.size(), -INFINITY, 0, sbDatas[i].Offset, 2 * sizeof(float));
+			//ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 1.0f);
+			ImPlotSpec spec;
+			spec.Offset = sbDatas[i].Offset;
+			spec.Stride = 2 * sizeof(float);
+			spec.FillAlpha = 0.5f;
+			ImPlot::PlotShaded(m_ProfileResults[i].Name, &sbDatas[i].Data[0].x, &sbDatas[i].Data[0].y, sbDatas[i].Data.size(), 0, spec);
 		}
 
 		m_ProfileResults.clear();

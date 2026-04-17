@@ -2,6 +2,7 @@
 #include "entt.hpp"
 #include <Odysseus/Core/Timestep.h>
 #include "Odysseus/Renderer/EditorCamera.h"
+#include <Odysseus/Renderer/Texture.h>
 
 
 namespace Odysseus
@@ -29,6 +30,7 @@ namespace Odysseus
 	private:
 		uint32_t viewportWidth = 0, viewportHeight = 0;
 
+		Ref<Texture2D> m_Texture;
 		entt::registry registry;
 
 		friend class Object;

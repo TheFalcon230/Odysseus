@@ -31,7 +31,7 @@ namespace Odysseus
 		Object entity = { registry.create(), this };
 		entity.AddComponent<TransformComponent>(glm::vec3(0.0f));
 		auto& tag = entity.AddComponent<TagComponent>(name);
-		entity.AddComponent<SpriteRendererComponent>();
+		entity.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f));
 		tag.Tag = name.empty() ? "Entity" : name;
 		return entity;
 	}
@@ -95,18 +95,13 @@ namespace Odysseus
 		//Render sprites
 		if (mainCamera)
 		{
-			Renderer2D::BeginScene(mainCamera->GetProjection(), cameraTransform);
+			Renderer2D::BeginScene(*mainCamera, cameraTransform);
 
-			auto view = registry.view<TransformComponent, SpriteRendererComponent>();
-			for (auto entity : view)
+			auto sprites = registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+			for (auto entity : sprites)
 			{
-				auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
-				QuadProperties quad;
-				quad.baseColor = sprite.Color;
-				quad.position = transform.Position;
-				quad.rotation = transform.Rotation;
-				quad.scale = glm::vec2(transform.Scale.x, transform.Scale.y);
-				Renderer2D::DrawQuad(quad, (int)entity);
+				auto [transform, sprite] = sprites.get<TransformComponent, SpriteRendererComponent>(entity);
+				Renderer2D::DrawSprite(transform.Transform(), sprite, (int)entity);
 			}
 			Renderer2D::EndScene();
 		}
@@ -116,16 +111,11 @@ namespace Odysseus
 	{
 		Renderer2D::BeginScene(camera);
 
-		auto view = registry.view<TransformComponent, SpriteRendererComponent>();
-		for (auto entity : view)
+		auto sprites = registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+		for (auto entity : sprites)
 		{
-			auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
-			QuadProperties quad;
-			quad.baseColor = sprite.Color;
-			quad.position = transform.Position;
-			quad.rotation = transform.Rotation;
-			quad.scale = glm::vec2(transform.Scale.x, transform.Scale.y);
-			Renderer2D::DrawQuad(quad, (int)entity);
+			auto [transform, sprite] = sprites.get<TransformComponent, SpriteRendererComponent>(entity);
+			Renderer2D::DrawSprite(transform.Transform(), sprite, (int)entity);
 		}
 		Renderer2D::EndScene();
 	}
