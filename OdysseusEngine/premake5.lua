@@ -22,7 +22,9 @@ project "OdysseusEngine"
 			"%{IncludeDir.ImGui}",
 			"%{IncludeDir.ImPlot}",
 			"%{IncludeDir.entt}",
-			"%{IncludeDir.ImGuizmo}"
+			"%{IncludeDir.ImGuizmo}",
+			"%{IncludeDir.GLFW}",
+			"%{IncludeDir.Icons}"
 		}
 	
 		links

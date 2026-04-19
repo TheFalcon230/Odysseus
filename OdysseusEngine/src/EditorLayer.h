@@ -1,6 +1,7 @@
 #pragma once
 #include <Odysseus.h>
 #include "Panels/HierarchyPanel.h"
+#include "Panels/WindowTitleBar/WindowTitleBar.h"
 
 #include "Odysseus/Renderer/EditorCamera.h"
 
@@ -17,15 +18,19 @@ namespace Odysseus
 		void OnUpdate(Timestep updateTime) override;
 		virtual void OnImGuiRender() override;
 
-
-		void OnEvent(Event& e) override;
-	private:
-		bool OnKeyPressed(KeyPressedEvent& e);
-		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
-
 		void NewScene();
 		void OpenScene();
 		void SaveAs();
+
+		void OnEvent(Event& e) override;
+
+		bool GetCameraDebugEnabled() const { return bIsCameraDebugEnabled; }
+		void SetCameraDebugEnabled(bool enabled) { bIsCameraDebugEnabled = enabled; }
+		bool GetProfilerEnabled() const { return bIsProfilerEnabled; }
+		void SetProfilerEnabled(bool enabled) { bIsProfilerEnabled = enabled; }
+	private:
+		bool OnKeyPressed(KeyPressedEvent& e);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 	private:
 		OrthographicCameraController m_CameraController;
 
@@ -64,6 +69,7 @@ namespace Odysseus
 		int iGizmoType = -1;
 
 		HierarchyPanel hierarchyPanel;
+		WindowTitleBar windowTitleBar;
 
 		/*--------------------------------------------------------*/
 

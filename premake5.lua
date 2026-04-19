@@ -34,6 +34,7 @@ IncludeDir["stb_image"] = "%{wks.location}/Odysseus/vendor/stb_image"
 IncludeDir["entt"] = "%{wks.location}/Odysseus/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "%{wks.location}/Odysseus/vendor/yaml-cpp/include"
 IncludeDir["ImGuizmo"] = "%{wks.location}/Odysseus/vendor/imguizmo"
+IncludeDir["Icons"] = "%{wks.location}/Odysseus/vendor/Icons"
 
 group "Dependencies"
 	include "MyLib/premake"

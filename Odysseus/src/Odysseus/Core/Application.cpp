@@ -15,13 +15,14 @@ namespace Odysseus
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application(const std::string& appName)
-	{
+	{	
 		//ODC_PROFILE_FUNCTION();
 
 		ODC_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
 		m_Window = Window::Create(WindowProps(appName));
+		m_AppName = appName;
 		m_Window->SetEventCallback(ODC_BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
@@ -56,6 +57,8 @@ namespace Odysseus
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
+
+			float titleBarHeight = 0.f;
 			m_ImGuiLayer->End();
 
 			m_Window->Update();

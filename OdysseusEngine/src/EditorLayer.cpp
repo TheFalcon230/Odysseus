@@ -52,7 +52,7 @@ namespace Odysseus
 		ECamera.AddComponent<CameraComponent>();*/
 
 		hierarchyPanel.SetContext(activeScene);
-
+		windowTitleBar.SetContext(this);
 
 
 	}
@@ -131,7 +131,9 @@ namespace Odysseus
 
 		PROFILE_FUNCTION();
 
+		float yOffset = 0.0f;
 
+		windowTitleBar.OnImGuiRender();
 
 		static bool isDockspaceOpen = true;
 		static bool opt_fullscreen = true;
@@ -144,8 +146,8 @@ namespace Odysseus
 		if (opt_fullscreen)
 		{
 			const ImGuiViewport* viewport = ImGui::GetMainViewport();
-			ImGui::SetNextWindowPos(viewport->WorkPos);
-			ImGui::SetNextWindowSize(viewport->WorkSize);
+			ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + windowTitleBar.height() + yOffset));
+			ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - windowTitleBar.height()));
 			ImGui::SetNextWindowViewport(viewport->ID);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -187,7 +189,7 @@ namespace Odysseus
 		}
 		style.WindowMinSize.x = 32.0f;
 
-		if (ImGui::BeginMenuBar())
+		/*if (ImGui::BeginMenuBar())
 		{
 			if (ImGui::BeginMenu("File"))
 			{
@@ -226,7 +228,7 @@ namespace Odysseus
 			}
 
 			ImGui::EndMenuBar();
-		}
+		}*/
 
 		if (bIsProfilerEnabled && ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize))
 		{
@@ -291,6 +293,20 @@ namespace Odysseus
 		ImGui::SetNextWindowClass(&window_class);
 		if (ImGui::Begin("Viewport", (bool*)true))
 		{
+			ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+			ImGuiChildFlags viewportOptionsFlags =  ImGuiChildFlags_AutoResizeX ;
+			// Available space in current window
+			ImVec2 avail = ImGui::GetContentRegionAvail();
+			ImGui::BeginChild("ViewportOptions", ImVec2(0, 25), false, viewportOptionsFlags);
+			ImGui::SameLine(avail.x - 80);
+			ImGui::BeginGroup();
+			ImGui::Button("Camera", ImVec2(80,25));
+			ImGui::EndGroup();
+			ImGui::EndChild();
+			ImGui::PopStyleColor();
+
+			ImGuiChildFlags viewportRenderFlags =  ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY;
+			ImGui::BeginChild("ViewportRender", ImVec2(0, 0), false, viewportRenderFlags);
 			auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
 			auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
 			auto viewportOffset = ImGui::GetWindowPos();
@@ -316,11 +332,6 @@ namespace Odysseus
 				ImGuizmo::SetOrthographic(false);
 				ImGuizmo::SetDrawlist();
 				ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
-
-				/*auto mainCameraObject = activeScene->GetMainCamera();
-				const auto& mainCamera = mainCameraObject.GetComponent<CameraComponent>().Camera;
-				const glm::mat4& cameraProj = mainCamera.GetProjection();
-				glm::mat4 cameraView = glm::inverse(mainCameraObject.GetComponent<TransformComponent>().Transform());*/
 
 				const glm::mat4& cameraProj = mainCameraEditor.GetProjection();
 				glm::mat4 cameraView = mainCameraEditor.GetViewMatrix();
@@ -349,7 +360,7 @@ namespace Odysseus
 					transformComponent.Scale = scale;
 				}
 			}
-
+			ImGui::EndChild();
 			ImGui::End();
 			ImGui::PopStyleVar();
 		}

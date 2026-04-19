@@ -125,7 +125,7 @@ namespace Odysseus
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.15f, 0.015f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9f, 0.25f, 0.025f, 1.0f));
-		ImGui::PushFont(boldFont, 0.0f);
+		ImGui::PushFont(boldFont, 12.0f);
 		if (ImGui::Button("X", buttonSize))
 		{
 			values.x = resetValues;
@@ -141,7 +141,7 @@ namespace Odysseus
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.43f, 0.65f, 0.0f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.53f, 0.75f, 0.1f, 1.0f));
-		ImGui::PushFont(boldFont, 0.0f);
+		ImGui::PushFont(boldFont, 12.0f);
 		if (ImGui::Button("Y", buttonSize))
 		{
 			values.y = resetValues;
@@ -156,7 +156,7 @@ namespace Odysseus
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.12f, 0.51f, 0.96f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.63f, 0.85f, 0.2f, 1.0f));
-		ImGui::PushFont(boldFont, 0.0f);
+		ImGui::PushFont(boldFont, 12.0f);
 		if (ImGui::Button("Z", buttonSize))
 		{
 			values.z = resetValues;

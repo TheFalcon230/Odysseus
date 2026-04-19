@@ -17,6 +17,7 @@
 #include <implot.h>
 
 #include "ImGuizmo.h"
+#include <IconsFontAwesome6.h>
 
 
 namespace Odysseus
@@ -47,6 +48,13 @@ namespace Odysseus
 
 		io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto/Roboto-Bold.ttf");
 		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto/Roboto-Regular.ttf");
+
+		// Merge icon font
+		ImFontConfig config;
+		config.MergeMode = true;
+		config.GlyphMinAdvanceX = 13.0f; // Make icons monospace
+		io.Fonts->AddFontFromFileTTF("assets/fonts/FontAwesome6/FontAwesome6-Regular.ttf", 13.0f, &config);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/FontAwesome6/FontAwesome6-Solid.ttf", 13.0f, &config);
 
 		// Setup Dear ImGui style (Dark Theme >>> white theme)
 		ImGui::StyleColorsDark();

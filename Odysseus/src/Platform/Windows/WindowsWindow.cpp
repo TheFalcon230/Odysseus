@@ -53,6 +53,26 @@ namespace Odysseus
 		return m_Data.vSync;
 	}
 
+	bool WindowsWindow::IsMaximized() const
+	{
+		return glfwGetWindowAttrib(m_Window, GLFW_MAXIMIZED) == GLFW_TRUE;
+	}
+
+	void WindowsWindow::MinimizeWindow()
+	{
+		glfwIconifyWindow(m_Window);
+	}
+
+	void WindowsWindow::MaximizeWindow()
+	{
+		glfwMaximizeWindow(m_Window);
+	}
+
+	void WindowsWindow::RestoreWindow()
+	{
+		glfwRestoreWindow(m_Window);
+	}
+
 	void WindowsWindow::Init(const WindowProps& props)
 	{
 		m_Data.title = props.Title;
@@ -73,6 +93,7 @@ namespace Odysseus
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 
 		m_Window = glfwCreateWindow((int)props.width, (int)props.height, m_Data.title.c_str(), nullptr, nullptr);
 		m_context = new OpenGLContext(m_Window);

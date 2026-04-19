@@ -11,6 +11,8 @@
 
 #include "Odysseus/ImGui/ImGuiLayer.h"
 
+#include "imgui.h"
+
 
 namespace Odysseus
 {
@@ -36,6 +38,10 @@ namespace Odysseus
 
 		ODYSSEUS_API ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
+		ODYSSEUS_API bool IsMinimized() const { return m_Minimized; }
+
+		ODYSSEUS_API const std::string& GetAppName() const { return m_AppName; }
+
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
@@ -52,6 +58,8 @@ namespace Odysseus
 		bool m_Minimized = false;
 		LayerStack m_LayerStack;
 		float m_lastFrameTime = 0.f;
+
+		std::string m_AppName;
 	private:
 		static Application* s_Instance;
 	};
