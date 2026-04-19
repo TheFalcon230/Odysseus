@@ -2,6 +2,7 @@
 #include <Odysseus.h>
 #include "Panels/HierarchyPanel.h"
 #include "Panels/WindowTitleBar/WindowTitleBar.h"
+#include <imguizmo/ImGuizmo.h>
 
 #include "Odysseus/Renderer/EditorCamera.h"
 
@@ -28,9 +29,25 @@ namespace Odysseus
 		void SetCameraDebugEnabled(bool enabled) { bIsCameraDebugEnabled = enabled; }
 		bool GetProfilerEnabled() const { return bIsProfilerEnabled; }
 		void SetProfilerEnabled(bool enabled) { bIsProfilerEnabled = enabled; }
+
+		void SetSnapTranslation(bool snap) { bSnapTranslation = snap; }
+		void SetSnapRotation(bool snap) { bSnapRotation = snap; }
+		void SetSnapScale(bool snap) { bSnapScale = snap; }
+
+		bool GetSnapTranslation() const { return bSnapTranslation; }
+		bool GetSnapRotation() const { return bSnapRotation; }
+		bool GetSnapScale() const { return bSnapScale; }
+
+		void SetSelectionGizmoType() { iGizmoType = (ImGuizmo::OPERATION) - 1; }
+		void SetTranslateGizmoType() { iGizmoType = ImGuizmo::TRANSLATE; }
+		void SetRotateGizmoType() { iGizmoType = ImGuizmo::ROTATE; }
+		void SetScaleGizmoType() { iGizmoType = ImGuizmo::SCALE; }
+
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
+
+		static float DrawFloatControl(const std::string& label, float currentValue, float resetValue = 0.0f, float min = 0.0f, float max = 100.0f, float columnWidth = 100.0f);
 	private:
 		OrthographicCameraController m_CameraController;
 
@@ -66,7 +83,12 @@ namespace Odysseus
 		bool bIsCameraDebugEnabled = false;
 		bool bIsProfilerEnabled = false;
 
-		int iGizmoType = -1;
+		ImGuizmo::OPERATION iGizmoType = ImGuizmo::TRANSLATE;
+		ImGuizmo::MODE iGizmoMode = ImGuizmo::LOCAL;
+
+		bool bSnapTranslation = false;
+		bool bSnapRotation = false;
+		bool bSnapScale = false;
 
 		HierarchyPanel hierarchyPanel;
 		WindowTitleBar windowTitleBar;

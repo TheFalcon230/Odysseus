@@ -34,6 +34,12 @@ namespace Odysseus
 		float GetPitch() const { return fPitch; }
 		float GetYaw() const { return fYaw; }
 
+		float GetFOV() const { return fFOV; }
+		float GetFarClip() const { return fFarClip; }
+
+		void SetFOV(float fov) { fFOV = fov; UpdateProjection(); }
+		void SetFarClip(float farClip) { fFarClip = farClip; UpdateProjection(); }
+
 	private:
 		void UpdateProjection();
 		void UpdateView();

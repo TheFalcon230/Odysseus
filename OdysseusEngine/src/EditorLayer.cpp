@@ -7,14 +7,17 @@
 #include "Odysseus/Scene/SceneSerializer.h"
 #include "Odysseus/Utils/PlatformUtils.h"
 
-#include <imguizmo/ImGuizmo.h>
 
 #include "Odysseus/Math/Math.h"
+#include <IconsFontAwesome6.h>
+#include <imgui_internal.h>
 
 #define PROFILE_SCOPE(name) InstrumentationTimer timer##__LINE__(name, [&](ProfileResult profileResult) { m_ProfileResults.push_back(profileResult); })
 #define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCSIG__);
 
-
+#define ODYSSEUS_DEFAULT_BUTTON_COLOR ImVec4(0.14f, 0.14f, 0.14f, 1.0f)
+#define ODYSSEUS_HOVERED_BUTTON_COLOR ImVec4(0.29f, 0.29f, 0.29f, 1.0f)
+#define ODYSSEUS_ACTIVE_BUTTON_COLOR ImVec4(0.04f, 0.37f, 0.67f, 1.0f)
 
 namespace Odysseus
 {
@@ -188,48 +191,7 @@ namespace Odysseus
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 		style.WindowMinSize.x = 32.0f;
-
-		/*if (ImGui::BeginMenuBar())
-		{
-			if (ImGui::BeginMenu("File"))
-			{
-				if (ImGui::MenuItem("New Scene", "Ctrl+N"))
-				{
-					NewScene();
-				}
-
-				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
-				{
-					SaveAs();
-				}
-
-				if (ImGui::MenuItem("Open...", "Ctrl+O"))
-				{
-					OpenScene();
-				}
-
-				if (ImGui::MenuItem("Close", "Escape", false))
-					Application::Get().QuitApplication();
-				ImGui::EndMenu();
-			}
-
-			if (ImGui::BeginMenu("Tools"))
-			{
-				if (ImGui::MenuItem("Profiler", "Ctrl + Alt + P", bIsProfilerEnabled))
-				{
-					bIsProfilerEnabled = !bIsProfilerEnabled;
-				}
-				if (ImGui::MenuItem("Camera Debug", "Ctrl + Shift + D", bIsCameraDebugEnabled))
-				{
-					bIsCameraDebugEnabled = !bIsCameraDebugEnabled;
-				}
-
-				ImGui::EndMenu();
-			}
-
-			ImGui::EndMenuBar();
-		}*/
-
+		
 		if (bIsProfilerEnabled && ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize))
 		{
 			ImGui::BeginChild("Stats", ImVec2(150,0), ImGuiChildFlags_AutoResizeX);
@@ -290,77 +252,193 @@ namespace Odysseus
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGuiWindowClass window_class;
 		window_class.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_AutoHideTabBar;
-		ImGui::SetNextWindowClass(&window_class);
-		if (ImGui::Begin("Viewport", (bool*)true))
+		ImGui::SetNextWindowClass(&window_class);			
+
+		if (ImGui::Begin("##Viewport", (bool*)true))
 		{
-			ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
-			ImGuiChildFlags viewportOptionsFlags =  ImGuiChildFlags_AutoResizeX ;
+			const ImVec2 winSize = ImGui::GetWindowSize();
 			// Available space in current window
 			ImVec2 avail = ImGui::GetContentRegionAvail();
-			ImGui::BeginChild("ViewportOptions", ImVec2(0, 25), false, viewportOptionsFlags);
-			ImGui::SameLine(avail.x - 80);
-			ImGui::BeginGroup();
-			ImGui::Button("Camera", ImVec2(80,25));
-			ImGui::EndGroup();
-			ImGui::EndChild();
-			ImGui::PopStyleColor();
+			float IconSize = 16.0f;
+			if (ImGui::BeginChild("##ViewportToolbar", ImVec2(avail.x, IconSize + 2.0f), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground))
+			{
+				ImGui::SetCursorPosX(avail.x * 0.75f);
+				ImGui::PushFont(io.Fonts->Fonts[1], IconSize);
+				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ODYSSEUS_HOVERED_BUTTON_COLOR);
+				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ODYSSEUS_ACTIVE_BUTTON_COLOR);
+				
+				ImGui::PushStyleColor(ImGuiCol_Button, iGizmoType == ImGuizmo::SELECTION ? ODYSSEUS_ACTIVE_BUTTON_COLOR : ODYSSEUS_DEFAULT_BUTTON_COLOR);
+				ImGui::PushID("SelectGuizmoButton");
+				if (ImGui::Button(ICON_FA_ARROW_POINTER, ImVec2(0, 0)))//Select
+				{
+					SetSelectionGizmoType();
+				}
+				ImGui::PopID();
+				ImGui::SameLine();
+				ImGui::PopStyleColor(1);
+				
+				ImGui::PushStyleColor(ImGuiCol_Button, iGizmoType == ImGuizmo::TRANSLATE ? ODYSSEUS_ACTIVE_BUTTON_COLOR : ODYSSEUS_DEFAULT_BUTTON_COLOR);
+
+				ImGui::PushID("TranslateGuizmoButton");
+				if (ImGui::Button(ICON_FA_ARROWS_UP_DOWN_LEFT_RIGHT, ImVec2(0, 0)))//Move
+				{
+					SetTranslateGizmoType();				
+				}
+				ImGui::PopID();
+				ImGui::SameLine();
+				ImGui::PopStyleColor(1);
+				
+				ImGui::PushStyleColor(ImGuiCol_Button, iGizmoType == ImGuizmo::ROTATE ? ODYSSEUS_ACTIVE_BUTTON_COLOR : ODYSSEUS_DEFAULT_BUTTON_COLOR);
+
+				ImGui::PushID("RotateGuizmoButton");
+				if (ImGui::Button(ICON_FA_ROTATE, ImVec2(0, 0)))//Rotate
+				{
+					SetRotateGizmoType();
+				}
+				ImGui::PopStyleColor(1);
+
+				ImGui::PopID();
+				ImGui::SameLine();
+
+				ImGui::PushStyleColor(ImGuiCol_Button, iGizmoType == ImGuizmo::SCALE ? ODYSSEUS_ACTIVE_BUTTON_COLOR : ODYSSEUS_DEFAULT_BUTTON_COLOR);
+
+				ImGui::PushID("ScaleGuizmoButton");
+				if (ImGui::Button(ICON_FA_UP_RIGHT_AND_DOWN_LEFT_FROM_CENTER, ImVec2(0, 0)))//Scale
+				{
+					SetScaleGizmoType();
+				}
+				ImGui::PopID();
+				ImGui::PopStyleColor(1);
+
+				ImGui::SameLine(0, 12.0f);
+				const char* gizmoModeText = iGizmoMode == ImGuizmo::LOCAL ? ICON_FA_CUBE : ICON_FA_GLOBE;
+				if (ImGui::Button(gizmoModeText))
+				{
+					iGizmoMode = iGizmoMode == ImGuizmo::LOCAL ? ImGuizmo::WORLD : ImGuizmo::LOCAL;
+				}
+				ImGui::SameLine(0, 12.0f);
+				ImGui::PushStyleColor(ImGuiCol_Button, GetSnapTranslation() ? ODYSSEUS_ACTIVE_BUTTON_COLOR : ODYSSEUS_DEFAULT_BUTTON_COLOR);
+				if (ImGui::Button(ICON_FA_TABLE_CELLS, ImVec2(0, 0)))//Scale
+				{
+					SetSnapTranslation(!GetSnapTranslation());
+				}
+				ImGui::SameLine(0, 0);
+				ImGui::Text("50");
+				ImGui::PopStyleColor(1);
+
+				ImGui::SameLine(0, 12.0f);
+
+				ImGui::PushStyleColor(ImGuiCol_Button, GetSnapRotation() ? ODYSSEUS_ACTIVE_BUTTON_COLOR : ODYSSEUS_DEFAULT_BUTTON_COLOR);
+				if (ImGui::Button(ICON_FA_ROTATE, ImVec2(0, 0)))//Scale
+				{
+					SetSnapRotation(!GetSnapRotation());
+				}
+				ImGui::SameLine(0, 0);
+				ImGui::Text("10");
+				ImGui::PopStyleColor(1);
+
+				ImGui::SameLine(0, 12.0f);
+
+				ImGui::PushStyleColor(ImGuiCol_Button, GetSnapScale() ? ODYSSEUS_ACTIVE_BUTTON_COLOR : ODYSSEUS_DEFAULT_BUTTON_COLOR);
+				if (ImGui::Button(ICON_FA_MAXIMIZE, ImVec2(0, 0)))//Scale
+				{
+					SetSnapScale(!GetSnapScale());
+				}
+				ImGui::SameLine(0, 0);
+				ImGui::Text("0.5");
+				ImGui::PopStyleColor(3);
+
+				ImGui::SameLine(0, 12.0f);
+				if (ImGui::Button(ICON_FA_VIDEO, ImVec2(0, 0)))
+				{
+					ImGui::OpenPopup("##EditorCameraSettings");
+				}
+				ImVec2 button_pos = ImGui::GetItemRectMin();
+				ImVec2 button_size = ImGui::GetItemRectSize();
+				ImGui::SetNextWindowSize(ImVec2(200, 100));
+				if (ImGui::BeginPopupContextItem("##EditorCameraSettings"))
+				{
+					ImGui::SetWindowPos(ImVec2(button_pos.x, button_pos.y + button_size.y));
+
+					ImGui::Text("Camera settings						");
+					mainCameraEditor.SetFOV(DrawFloatControl("Field of view", mainCameraEditor.GetFOV(), 45.0f, 0.0f, 100.0f, 10));
+					mainCameraEditor.SetFarClip(DrawFloatControl("Far clip", mainCameraEditor.GetFarClip(), 1000.0f, 10.0f, 1500.0f, 10));
+					ImGui::EndPopup();
+				}
+				ImGui::PopFont();
+
+				ImGui::EndChild();
+			}
 
 			ImGuiChildFlags viewportRenderFlags =  ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY;
-			ImGui::BeginChild("ViewportRender", ImVec2(0, 0), false, viewportRenderFlags);
-			auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
-			auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
-			auto viewportOffset = ImGui::GetWindowPos();
-			vec_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
-			vec_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
-
-			bIsViewportFocused = ImGui::IsWindowFocused();
-			bIsViewportHovered = ImGui::IsWindowHovered();
-
-			Application::Get().GetImGuiLayer()->SetCanBlockEvents(!bIsViewportFocused || !bIsViewportHovered);
-
-			ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-			vec_ViewportSize = { viewportSize.x, viewportSize.y };
-
-			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-			ImGui::Image((ImTextureID)(intptr_t)textureID, ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-
-
-			bIsUsingGizmo = false;
-			Object selectedObject = hierarchyPanel.GetSelectedObject();
-			if (selectedObject && iGizmoType != -1)
+			if (ImGui::BeginChild("##ViewportRender", ImVec2(0,0)))
 			{
-				ImGuizmo::SetOrthographic(false);
-				ImGuizmo::SetDrawlist();
-				ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
+				auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+				auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+				auto viewportOffset = ImGui::GetWindowPos();
+				vec_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+				vec_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 
-				const glm::mat4& cameraProj = mainCameraEditor.GetProjection();
-				glm::mat4 cameraView = mainCameraEditor.GetViewMatrix();
+				bIsViewportFocused = ImGui::IsWindowFocused();
+				bIsViewportHovered = ImGui::IsWindowHovered();
 
-				auto& transformComponent = selectedObject.GetComponent<TransformComponent>();
-				glm::mat4 transform = transformComponent.Transform();
+				Application::Get().GetImGuiLayer()->SetCanBlockEvents(!bIsViewportFocused || !bIsViewportHovered);
 
-				float snapValue = 0.5f;
-				if (iGizmoType == ImGuizmo::ROTATE)
-					snapValue = 10.0f;
+				ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+				vec_ViewportSize = { viewportSize.x, viewportSize.y };
 
-				float snapValues[3] = { snapValue,snapValue,snapValue };
+				uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+				ImGui::Image((ImTextureID)(intptr_t)textureID, ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
-				ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProj)
-					, (ImGuizmo::OPERATION)iGizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform), nullptr, snapValues);
 
-				bIsUsingGizmo = ImGuizmo::IsUsing();
-				if (bIsUsingGizmo)
+				bIsUsingGizmo = false;
+				Object selectedObject = hierarchyPanel.GetSelectedObject();
+				if (selectedObject && iGizmoType != (ImGuizmo::OPERATION) - 1)
 				{
-					glm::vec3 position, rotation, scale;
-					Math::DecomposeTransform(transform, position, rotation, scale);
+					ImGuizmo::SetOrthographic(false);
+					ImGuizmo::SetDrawlist();
+					ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
 
-					glm::vec3 deltaRotation = rotation - transformComponent.Rotation;// Using delta rotation instead of new rotation to avoid Gimbal-Lock
-					transformComponent.Position = position;
-					transformComponent.Rotation += deltaRotation;
-					transformComponent.Scale = scale;
+					const glm::mat4& cameraProj = mainCameraEditor.GetProjection();
+					glm::mat4 cameraView = mainCameraEditor.GetViewMatrix();
+
+					auto& transformComponent = selectedObject.GetComponent<TransformComponent>();
+					glm::mat4 transform = transformComponent.Transform();
+
+					float snapValue = 0.0f;
+
+					if (GetSnapRotation() && iGizmoType == ImGuizmo::ROTATE)
+					{
+						snapValue = 10.0f;
+					}
+					else if (GetSnapTranslation() && iGizmoType == ImGuizmo::TRANSLATE)
+					{
+						snapValue = 0.5f;
+					}
+					else if (GetSnapScale() && iGizmoType == ImGuizmo::SCALE)
+					{
+						snapValue = 0.5f;
+					}
+
+					float snapValues[3] = { snapValue,snapValue,snapValue };
+
+					ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProj)
+						, iGizmoType, iGizmoMode, glm::value_ptr(transform), nullptr, snapValues);
+
+					bIsUsingGizmo = ImGuizmo::IsUsing();
+					if (bIsUsingGizmo)
+					{
+						glm::vec3 position, rotation, scale;
+						Math::DecomposeTransform(transform, position, rotation, scale);
+
+						glm::vec3 deltaRotation = rotation - transformComponent.Rotation;// Using delta rotation instead of new rotation to avoid Gimbal-Lock
+						transformComponent.Position = position;
+						transformComponent.Rotation += deltaRotation;
+						transformComponent.Scale = scale;
+					}
 				}
+				ImGui::EndChild();
 			}
-			ImGui::EndChild();
 			ImGui::End();
 			ImGui::PopStyleVar();
 		}
@@ -449,35 +527,35 @@ namespace Odysseus
 			{
 				if (iGizmoType == ImGuizmo::SCALE)
 				{
-					iGizmoType = ImGuizmo::TRANSLATE;
+					SetTranslateGizmoType();
 				}
 				else if (iGizmoType == ImGuizmo::TRANSLATE)
 				{
-					iGizmoType = ImGuizmo::ROTATE;
+					SetRotateGizmoType();
 				}
 				else if (iGizmoType == ImGuizmo::ROTATE)
 				{
-					iGizmoType = ImGuizmo::SCALE;
+					SetScaleGizmoType();
 				}
 				break;
 			}
 			case (int)Key::A: // No gizmo
 			{
-				iGizmoType = -1;
+				SetSelectionGizmoType();
 				break;
 			}case (int)Key::W: // Position
 			{
-				iGizmoType = ImGuizmo::TRANSLATE;
+				SetTranslateGizmoType();
 				break;
 			}
 			case (int)Key::E: // Rotation
 			{
-				iGizmoType = ImGuizmo::ROTATE;
+				SetRotateGizmoType();
 				break;
 			}
 			case (int)Key::R: // Scale
 			{
-				iGizmoType = ImGuizmo::SCALE;
+				SetScaleGizmoType();
 				break;
 			}
 		}
@@ -492,6 +570,39 @@ namespace Odysseus
 				hierarchyPanel.SetSelectedObject(hoveredObject);
 		}
 		return false;
+	}
+
+	float Odysseus::EditorLayer::DrawFloatControl(const std::string& label, float currentValue, float resetValue, float min, float max, float columnWidth)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		auto boldFont = io.Fonts->Fonts[0];
+
+		ImVec2 avail = ImGui::GetContentRegionAvail();
+
+		float value = currentValue;
+
+		ImGui::PushID(label.c_str());
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, avail.x * 0.5f);
+		if (ImGui::Button(label.c_str(), ImVec2( avail.x * 0.5f, 0.0f)))
+		{
+			value = resetValue;
+		}
+		ImGui::NextColumn();
+
+		ImGui::SetColumnWidth(0, avail.x * 0.5f);
+
+		float lineHeight = GImGui->Style.FontSizeBase + GImGui->Style.FramePadding.y * 2;
+		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+		ImGui::SameLine();
+		ImGui::DragFloat("##float", &value, 0.1f, min, max, "%0.2f");
+
+		ImGui::Columns(1);
+		ImGui::PopID();
+
+		return value;
 	}
 
 	void EditorLayer::NewScene()
