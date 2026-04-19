@@ -101,12 +101,7 @@ namespace Odysseus
 			for (auto entity : view)
 			{
 				auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
-				QuadProperties quad;
-				quad.baseColor = sprite.Color;
-				quad.position = transform.Position;
-				quad.rotation = transform.Rotation;
-				quad.scale = glm::vec2(transform.Scale.x, transform.Scale.y);
-				Renderer2D::DrawQuad(quad, (int)entity);
+				Renderer2D::DrawQuad(transform.Transform(), sprite.Texture, sprite.TilingFactor, sprite.Color, (int)entity);
 			}
 			Renderer2D::EndScene();
 		}
@@ -120,12 +115,7 @@ namespace Odysseus
 		for (auto entity : view)
 		{
 			auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
-			QuadProperties quad;
-			quad.baseColor = sprite.Color;
-			quad.position = transform.Position;
-			quad.rotation = transform.Rotation;
-			quad.scale = glm::vec2(transform.Scale.x, transform.Scale.y);
-			Renderer2D::DrawQuad(quad, (int)entity);
+			Renderer2D::DrawQuad(transform.Transform(), sprite.Texture, sprite.TilingFactor, sprite.Color, (int)entity);
 		}
 		Renderer2D::EndScene();
 	}

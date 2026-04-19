@@ -5,9 +5,11 @@
 #include "Odysseus/Renderer/Camera.h"
 #include "SceneCamera.h"
 #include "ScriptableObject.h"
+#include <glm/gtx/quaternion.hpp>
+#include "Odysseus/Renderer/Texture.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/quaternion.hpp>
+
 
 namespace Odysseus
 {
@@ -52,11 +54,15 @@ namespace Odysseus
 	struct SpriteRendererComponent
 	{
 		glm::vec4 Color = glm::vec4(1.0f);
+		Ref<Texture2D> Texture;
+		float TilingFactor = 1.0f;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(const glm::vec4& color)
 			: Color(color) {}
+		SpriteRendererComponent(const glm::vec4& color, const Ref<Texture2D>& texture, float tilingFactor = 1.0f)
+			: Color(color), Texture(texture), TilingFactor(tilingFactor) {}
 	};
 
 	struct CameraComponent
