@@ -144,7 +144,7 @@ namespace Odysseus
 		ImGui::PushFont(boldFont, 0.0f);
 		if (ImGui::Button("Y", buttonSize))
 		{
-			values.x = resetValues;
+			values.y = resetValues;
 		}
 		ImGui::PopFont();
 
@@ -159,7 +159,7 @@ namespace Odysseus
 		ImGui::PushFont(boldFont, 0.0f);
 		if (ImGui::Button("Z", buttonSize))
 		{
-			values.x = resetValues;
+			values.z = resetValues;
 		}
 		ImGui::PopFont();
 

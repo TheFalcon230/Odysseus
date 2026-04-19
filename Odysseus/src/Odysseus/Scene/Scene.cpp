@@ -31,7 +31,7 @@ namespace Odysseus
 		Object entity = { registry.create(), this };
 		entity.AddComponent<TransformComponent>(glm::vec3(0.0f));
 		auto& tag = entity.AddComponent<TagComponent>(name);
-		entity.AddComponent<SpriteRendererComponent>();
+		entity.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f));
 		tag.Tag = name.empty() ? "Entity" : name;
 		return entity;
 	}

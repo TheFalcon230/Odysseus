@@ -1,10 +1,10 @@
-[11:25:32] [info] HAZEL: Creating window Odysseus Engine 0.0.1 1280, 720
-[11:25:33] [info] HAZEL: OpenGL Info:
-[11:25:33] [info] HAZEL:   Vendor: NVIDIA Corporation
-[11:25:33] [info] HAZEL:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
-[11:25:33] [info] HAZEL:   Version: 4.5.0 NVIDIA 596.21
-[11:25:33] [info] HAZEL: Complied shader Unlit successfully !
-[11:25:33] [info] HAZEL: Start loading texture at path: 'assets/textures/TestImage.png'
-[11:25:33] [info] HAZEL: Texture loaded successfully!
-[11:25:33] [info] HAZEL: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
-[11:25:33] [info] HAZEL: Texture loaded successfully!
+[12:02:03] [info] HAZEL: Creating window Odysseus Engine 0.0.1 1280, 720
+[12:02:04] [info] HAZEL: OpenGL Info:
+[12:02:04] [info] HAZEL:   Vendor: NVIDIA Corporation
+[12:02:04] [info] HAZEL:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
+[12:02:04] [info] HAZEL:   Version: 4.5.0 NVIDIA 596.21
+[12:02:04] [info] HAZEL: Complied shader Unlit successfully !
+[12:02:04] [info] HAZEL: Start loading texture at path: 'assets/textures/TestImage.png'
+[12:02:04] [info] HAZEL: Texture loaded successfully!
+[12:02:04] [info] HAZEL: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
+[12:02:04] [info] HAZEL: Texture loaded successfully!

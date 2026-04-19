@@ -58,6 +58,9 @@ namespace Odysseus
 
 		bool bIsUsingGizmo;
 
+		bool bIsCameraDebugEnabled = false;
+		bool bIsProfilerEnabled = false;
+
 		int iGizmoType = -1;
 
 		HierarchyPanel hierarchyPanel;
@@ -67,10 +70,10 @@ namespace Odysseus
 		struct ProfileResult
 		{
 			const char* Name;
-			float Time;
+			float ExecutionTime;
 
 			ProfileResult(const char* name, float time)
-				:Time(time), Name(name)
+				:ExecutionTime(time), Name(name)
 			{
 
 			}

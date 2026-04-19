@@ -211,13 +211,26 @@ namespace Odysseus
 				ImGui::EndMenu();
 			}
 
+			if (ImGui::BeginMenu("Tools"))
+			{
+				if (ImGui::MenuItem("Profiler", "Ctrl + Alt + P", bIsProfilerEnabled))
+				{
+					bIsProfilerEnabled = !bIsProfilerEnabled;
+				}
+				if (ImGui::MenuItem("Camera Debug", "Ctrl + Shift + D", bIsCameraDebugEnabled))
+				{
+					bIsCameraDebugEnabled = !bIsCameraDebugEnabled;
+				}
+
+				ImGui::EndMenu();
+			}
 
 			ImGui::EndMenuBar();
 		}
 
-		if (ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize))
+		if (bIsProfilerEnabled && ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize))
 		{
-
+			ImGui::BeginChild("Stats", ImVec2(150,0), ImGuiChildFlags_AutoResizeX);
 			ImGui::Text("Render Stats");
 			ImGui::Separator();
 			char label[50];
@@ -227,13 +240,17 @@ namespace Odysseus
 			ImGui::Text("Quads: %d", Renderer2D::GetStats().QuadCount);
 			ImGui::Text("Vertices: %d", Renderer2D::GetStats().GetTotalVertexCount());
 			ImGui::Text("Tris: %d", Renderer2D::GetStats().GetTotalTrisCount());
-			ImGui::Separator();
+			ImGui::EndChild();
+			ImGui::SameLine();
 
+			static ImPlotAxisFlags xflags = ImPlotAxisFlags_None;
+			static ImPlotAxisFlags yflags = ImPlotAxisFlags_AutoFit;
+
+			ImGui::BeginChild("Graph", ImVec2(0, 0));
 			//Profiling graph
 			if (ImPlot::BeginPlot("Graph", ImVec2(-1, -1)))
 			{
-				ImPlot::SetupAxes("Time (s)", "Execution time (ms)");
-				ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 10);
+				ImPlot::SetupAxes("Time (s)", "Execution time (ms)", xflags, yflags);
 				ImPlot::SetupAxisLimits(ImAxis_X1, t - 10, t, ImGuiCond_Always);
 				const int resultSize = m_ProfileResults.size();
 
@@ -242,7 +259,7 @@ namespace Odysseus
 
 				for (int i = 0; i < resultSize; i++)
 				{
-					sbDatas[i].AddPoint(t, m_ProfileResults[i].Time);
+					sbDatas[i].AddPoint(t, m_ProfileResults[i].ExecutionTime);
 					//ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 1.0f);
 					ImPlotSpec spec;
 					spec.Offset = sbDatas[i].Offset;
@@ -254,6 +271,17 @@ namespace Odysseus
 				m_ProfileResults.clear();
 				ImPlot::EndPlot();
 			}
+			ImGui::EndChild();
+			ImGui::End();
+		}
+
+		if (bIsCameraDebugEnabled && ImGui::Begin("Camera debug"))
+		{
+			ImGui::Text("Camera view matrix:");
+			ImGui::Text("[%f; %f; %f; %f]", mainCameraEditor.GetViewMatrix()[0].x, mainCameraEditor.GetViewMatrix()[0].y, mainCameraEditor.GetViewMatrix()[0].z, mainCameraEditor.GetViewMatrix()[0].w);
+			ImGui::Text("[%f; %f; %f; %f]", mainCameraEditor.GetViewMatrix()[1].x, mainCameraEditor.GetViewMatrix()[1].y, mainCameraEditor.GetViewMatrix()[1].z, mainCameraEditor.GetViewMatrix()[1].w);
+			ImGui::Text("[%f; %f; %f; %f]", mainCameraEditor.GetViewMatrix()[2].x, mainCameraEditor.GetViewMatrix()[2].y, mainCameraEditor.GetViewMatrix()[2].z, mainCameraEditor.GetViewMatrix()[2].w);
+			ImGui::Text("[%f; %f; %f; %f]", mainCameraEditor.GetViewMatrix()[3].x, mainCameraEditor.GetViewMatrix()[3].y, mainCameraEditor.GetViewMatrix()[3].z, mainCameraEditor.GetViewMatrix()[3].w);
 			ImGui::End();
 		}
 
@@ -360,6 +388,7 @@ namespace Odysseus
 
 		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
 		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
+		bool alt = Input::IsKeyPressed(Key::LeftAlt) || Input::IsKeyPressed(Key::RightAlt);
 
 		switch (e.GetKeyCode())
 		{
@@ -384,6 +413,22 @@ namespace Odysseus
 				if (control)
 				{
 					NewScene();
+				}
+				break;
+			}
+			case (int)Key::P:// Open
+			{
+				if (control && alt)
+				{
+					bIsProfilerEnabled = !bIsProfilerEnabled;
+				}
+				break;
+			}
+			case (int)Key::D:// Open
+			{
+				if (control && shift)
+				{
+					bIsCameraDebugEnabled = !bIsCameraDebugEnabled;
 				}
 				break;
 			}
