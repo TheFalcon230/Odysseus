@@ -138,7 +138,7 @@ private:
 
 };
 
-Odysseus::Application* Odysseus::CreateApplication()
+Odysseus::Application* Odysseus::CreateApplication(ApplicationCommandLineArgs args)
 {
 	return new Sandbox();
 }

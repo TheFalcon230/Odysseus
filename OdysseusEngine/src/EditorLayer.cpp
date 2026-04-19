@@ -1,4 +1,4 @@
-#include "EditorLayer.h"
+﻿#include "EditorLayer.h"
 
 #include "../imgui/imgui.h"
 #include "../implot/implot.h"
@@ -12,7 +12,7 @@
 #include "Odysseus/Math/Math.h"
 
 #define PROFILE_SCOPE(name) InstrumentationTimer timer##__LINE__(name, [&](ProfileResult profileResult) { m_ProfileResults.push_back(profileResult); })
-#define PROFILE_FUNCTION() ODC_PROFILE_SCOPE(__FUNCTION__);
+#define PROFILE_FUNCTION() ODC_PROFILE_SCOPE(__FUNCSIG__);
 
 
 
@@ -38,15 +38,18 @@ namespace Odysseus
 
 		activeScene = CreateRef<Scene>();
 
-		mainCameraEditor = EditorCamera(45.0f, 16.0f / 9.0f, 0.1f, 1000.0f);
+		auto commandLineArgs = Application::Get().GetCommandLineArgs();
+		if (commandLineArgs.Count > 1)
+		{
+			auto sceneFilePath = commandLineArgs[1];
+			SceneSerializer serializer(activeScene);
+			serializer.Deserialize(sceneFilePath);
+		}
+
+		mainCameraEditor = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 		auto square = activeScene->CreateSquare("Test Square");
-		square.GetComponent<SpriteRendererComponent>().texture = m_Texture;
-		square.GetComponent<SpriteRendererComponent>().Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		ETestSquare = square;
-
-		ECamera = activeScene->CreateObject("Main Camera");
-		ECamera.AddComponent<CameraComponent>();
 
 		hierarchyPanel.SetContext(activeScene);
 	}
@@ -58,7 +61,8 @@ namespace Odysseus
 
 	void EditorLayer::OnUpdate(Timestep updateTime)
 	{
-		PROFILE_SCOPE(__FUNCSIG__);
+		PROFILE_FUNCTION();
+
 		time = updateTime;
 
 		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
@@ -77,17 +81,15 @@ namespace Odysseus
 			{
 				m_CameraController.OnUpdate(updateTime);
 			}
-			if (!bIsUsingGizmo)
-			{
-				mainCameraEditor.Update(updateTime);
-			}
+			mainCameraEditor.Update(updateTime);	
+			activeScene->UpdateEditor(updateTime, mainCameraEditor);
 		}
 
 		Renderer2D::ResetStats();
 		{
 			PROFILE_SCOPE("Renderer Prep");
 			m_Framebuffer->Bind();
-			RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+			RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 			RenderCommand::Clear();
 
 			// Clear enity ID attachment to -1
@@ -96,7 +98,6 @@ namespace Odysseus
 
 		{
 			PROFILE_SCOPE("Renderer Draw");
-			activeScene->UpdateEditor(updateTime, mainCameraEditor);
 
 			auto [mx, my] = ImGui::GetMousePos();
 			mx -= vec_ViewportBounds[0].x;
@@ -113,9 +114,9 @@ namespace Odysseus
 				hoveredObject = pixelData == -1 ? Object() : Object((entt::entity)pixelData, activeScene.get());
 			}
 
-			m_Framebuffer->Unbind();
 		}
 
+		m_Framebuffer->Unbind();
 	}
 
 	void EditorLayer::OnImGuiRender()
@@ -123,7 +124,7 @@ namespace Odysseus
 		static float t = 0;
 		t += time;
 
-		PROFILE_SCOPE(__FUNCSIG__);
+		PROFILE_FUNCTION();
 
 		static bool isDockspaceOpen = true;
 		static bool opt_fullscreen = true;
@@ -161,166 +162,199 @@ namespace Odysseus
 		// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
 		if (!opt_padding)
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::Begin("DockSpace Demo", &isDockspaceOpen, window_flags);
-		if (!opt_padding)
-			ImGui::PopStyleVar();
 
-		if (opt_fullscreen)
-			ImGui::PopStyleVar(2);
-
-		// Submit the DockSpace
-		ImGuiIO& io = ImGui::GetIO();
-		ImGuiStyle& style = ImGui::GetStyle();
-		style.WindowMinSize.x = 370.0f;
-		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+		if (ImGui::Begin("DockSpace Demo", &isDockspaceOpen, window_flags))
 		{
-			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-		}
-		style.WindowMinSize.x = 32.0f;
+			if (!opt_padding)
+				ImGui::PopStyleVar();
 
-		if (ImGui::BeginMenuBar())
-		{
-			if (ImGui::BeginMenu("File"))
+			if (opt_fullscreen)
+				ImGui::PopStyleVar(2);
+
+			// Submit the DockSpace
+			ImGuiIO& io = ImGui::GetIO();
+			ImGuiStyle& style = ImGui::GetStyle();
+			style.WindowMinSize.x = 370.0f;
+			if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 			{
-				if (ImGui::MenuItem("New Scene", "Ctrl+N"))
+				ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+				ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+			}
+			style.WindowMinSize.x = 32.0f;
+
+			if (ImGui::BeginMenuBar())
+			{
+				if (ImGui::BeginMenu("File"))
 				{
-					NewScene();
+					if (ImGui::MenuItem("New Scene", "Ctrl+N"))
+					{
+						NewScene();
+					}
+
+					if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+					{
+						SaveAs();
+					}
+
+					if (ImGui::MenuItem("Open...", "Ctrl+O"))
+					{
+						OpenScene();
+					}
+
+					if (ImGui::MenuItem("Close", "Escape", false))
+						Application::Get().QuitApplication();
+					ImGui::EndMenu();
 				}
 
-				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+				if (ImGui::BeginMenu("Tools"))
 				{
-					SaveAs();
+					if (ImGui::MenuItem("Profiler", "Ctrl + P", bIsProfilerEnabled))
+					{
+						bIsProfilerEnabled = !bIsProfilerEnabled;
+					}
+					if (ImGui::MenuItem("Camera Debug", "Ctrl + D", bIsCameraDebugEnabled))
+					{
+						bIsCameraDebugEnabled = !bIsCameraDebugEnabled;
+					}
+
+					ImGui::EndMenu();
 				}
 
-				if (ImGui::MenuItem("Open...", "Ctrl+O"))
-				{
-					OpenScene();
-				}
-
-				if (ImGui::MenuItem("Close", "Escape", false))
-					Application::Get().QuitApplication();
-				ImGui::EndMenu();
+				ImGui::EndMenuBar();
 			}
 
-
-			ImGui::EndMenuBar();
-		}
-
-		if (ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize))
-		{
-
-			ImGui::Text("Render Stats");
-			ImGui::Separator();
-			char label[50];
-			strcpy(label, "%.0f FPS ");
-			ImGui::Text(label, 1000.f / time.AsMilliseconds());
-			ImGui::Text("Draw calls: %d", Renderer2D::GetStats().DrawCalls);
-			ImGui::Text("Quads: %d", Renderer2D::GetStats().QuadCount);
-			ImGui::Text("Vertices: %d", Renderer2D::GetStats().GetTotalVertexCount());
-			ImGui::Text("Tris: %d", Renderer2D::GetStats().GetTotalTrisCount());
-			ImGui::Separator();
-
-			//Profiling graph
-			if (ImPlot::BeginPlot("Graph", ImVec2(-1, -1)))
+			if (bIsProfilerEnabled && ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize))
 			{
-				ImPlot::SetupAxes("Time (s)", "Execution time (ms)");
-				ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 10);
-				ImPlot::SetupAxisLimits(ImAxis_X1, t - 10, t, ImGuiCond_Always);
-				const int resultSize = m_ProfileResults.size();
 
-				static std::vector<ScrollingBuffer> sbDatas;
-				sbDatas.resize(resultSize);
+				ImGui::Text("Render Stats");
+				ImGui::Separator();
+				char label[50];
+				strcpy(label, "%.0f FPS ");
+				ImGui::Text(label, 1000.f / time.AsMilliseconds());
+				ImGui::Text("Draw calls: %d", Renderer2D::GetStats().DrawCalls);
+				ImGui::Text("Quads: %d", Renderer2D::GetStats().QuadCount);
+				ImGui::Text("Vertices: %d", Renderer2D::GetStats().GetTotalVertexCount());
+				ImGui::Text("Tris: %d", Renderer2D::GetStats().GetTotalTrisCount());
+				ImGui::Separator();
 
-				for (int i = 0; i < resultSize; i++)
+				static ImPlotAxisFlags xflags = ImPlotAxisFlags_None;
+				static ImPlotAxisFlags yflags = ImPlotAxisFlags_AutoFit;
+
+				//Profiling graph
+				if (ImPlot::BeginPlot("Graph", ImVec2(-1, -1)))
 				{
-					sbDatas[i].AddPoint(t, m_ProfileResults[i].Time);
-					//ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 1.0f);
-					ImPlotSpec spec;
-					spec.Offset = sbDatas[i].Offset;
-					spec.Stride = 2 * sizeof(float);
-					spec.FillAlpha = 0.5f;
-					ImPlot::PlotShaded(m_ProfileResults[i].Name, &sbDatas[i].Data[0].x, &sbDatas[i].Data[0].y, sbDatas[i].Data.size(), 0, spec);
+					ImPlot::SetupAxes("Time (s)", "Execution time (ms)", xflags, yflags);
+					ImPlot::SetupAxisLimits(ImAxis_X1, t - 10, t, ImGuiCond_Always);
+					const int resultSize = m_ProfileResults.size();
+
+					static std::vector<ScrollingBuffer> sbDatas;
+					sbDatas.resize(resultSize);
+
+					for (int i = 0; i < resultSize; i++)
+					{
+						sbDatas[i].AddPoint(t, m_ProfileResults[i].ExcecutionTime);
+						if (m_ProfileResults[i].ExcecutionTime > fMaxProfilerValue + 1)
+						{
+							fMaxProfilerValue = m_ProfileResults[i].ExcecutionTime + 1;
+							//ImPlot::SetupAxisLimits(ImAxis_Y1, 0, iMaxProfilerValue);
+						}
+						//ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 1.0f);
+						ImPlotSpec spec;
+						spec.Offset = sbDatas[i].Offset;
+						spec.Stride = 2 * sizeof(float);
+						spec.FillAlpha = 0.5f;
+						ImPlot::PlotShaded(m_ProfileResults[i].Name, &sbDatas[i].Data[0].x, &sbDatas[i].Data[0].y, sbDatas[i].Data.size(), 0, spec);
+					}
+
+					m_ProfileResults.clear();
+					ImPlot::EndPlot();
+				}
+				ImGui::End();
+			}
+
+			if (bIsCameraDebugEnabled && ImGui::Begin("Camera debug"))
+			{
+				ImGui::Text("Camera view matrix:");
+				ImGui::Text("[%f; %f; %f; %f]", mainCameraEditor.GetViewMatrix()[0].x, mainCameraEditor.GetViewMatrix()[0].y, mainCameraEditor.GetViewMatrix()[0].z, mainCameraEditor.GetViewMatrix()[0].w);
+				ImGui::Text("[%f; %f; %f; %f]", mainCameraEditor.GetViewMatrix()[1].x, mainCameraEditor.GetViewMatrix()[1].y, mainCameraEditor.GetViewMatrix()[1].z, mainCameraEditor.GetViewMatrix()[1].w);
+				ImGui::Text("[%f; %f; %f; %f]", mainCameraEditor.GetViewMatrix()[2].x, mainCameraEditor.GetViewMatrix()[2].y, mainCameraEditor.GetViewMatrix()[2].z, mainCameraEditor.GetViewMatrix()[2].w);
+				ImGui::Text("[%f; %f; %f; %f]", mainCameraEditor.GetViewMatrix()[3].x, mainCameraEditor.GetViewMatrix()[3].y, mainCameraEditor.GetViewMatrix()[3].z, mainCameraEditor.GetViewMatrix()[3].w);
+				ImGui::End();
+			}
+
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+			ImGuiWindowClass window_class;
+			window_class.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_AutoHideTabBar;
+			ImGui::SetNextWindowClass(&window_class);
+			if (ImGui::Begin("Viewport", (bool*)true))
+			{
+				auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+				auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+				auto viewportOffset = ImGui::GetWindowPos();
+				vec_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+				vec_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+
+				bIsViewportFocused = ImGui::IsWindowFocused();
+				bIsViewportHovered = ImGui::IsWindowHovered();
+
+				Application::Get().GetImGuiLayer()->SetCanBlockEvents(!bIsViewportFocused || !bIsViewportHovered);
+
+				ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+				vec_ViewportSize = { viewportSize.x, viewportSize.y };
+
+				uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+				ImGui::Image((ImTextureID)(intptr_t)textureID, ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+
+				bIsUsingGizmo = false;
+				Object selectedObject = hierarchyPanel.GetSelectedObject();
+				if (selectedObject && iGizmoType != -1)
+				{
+					ImGuizmo::SetOrthographic(false);
+					ImGuizmo::SetDrawlist();
+					ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
+
+					/*auto mainCameraObject = activeScene->GetMainCamera();
+					const auto& mainCamera = mainCameraObject.GetComponent<CameraComponent>().Camera;
+					const glm::mat4& cameraProj = mainCamera.GetProjection();
+					glm::mat4 cameraView = glm::inverse(mainCameraObject.GetComponent<TransformComponent>().Transform());*/
+
+					const glm::mat4& cameraProj = mainCameraEditor.GetProjection();
+					glm::mat4 cameraView = mainCameraEditor.GetViewMatrix();
+
+					auto& transformComponent = selectedObject.GetComponent<TransformComponent>();
+					glm::mat4 transform = transformComponent.Transform();
+
+					float snapValue = 0.5f;
+					if (iGizmoType == ImGuizmo::ROTATE)
+						snapValue = 10.0f;
+
+					float snapValues[3] = { snapValue,snapValue,snapValue };
+
+					ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProj)
+						, (ImGuizmo::OPERATION)iGizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform), nullptr, snapValues);
+
+					bIsUsingGizmo = ImGuizmo::IsUsing();
+					if (bIsUsingGizmo)
+					{
+						glm::vec3 position, rotation, scale;
+						Math::DecomposeTransform(transform, position, rotation, scale);
+
+						glm::vec3 deltaRotation = rotation - transformComponent.Rotation;// Using delta rotation instead of new rotation to avoid Gimbal-Lock
+						transformComponent.Position = position;
+						transformComponent.Rotation += deltaRotation;
+						transformComponent.Scale = scale;
+					}
 				}
 
-				m_ProfileResults.clear();
-				ImPlot::EndPlot();
+				ImGui::End();
+				ImGui::PopStyleVar();
 			}
+
+			hierarchyPanel.OnImGuiRender();
+
 			ImGui::End();
 		}
-
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-		ImGuiWindowClass window_class;
-		window_class.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_AutoHideTabBar;
-		ImGui::SetNextWindowClass(&window_class);
-		if (ImGui::Begin("Viewport", (bool*)true))
-		{
-			auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
-			auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
-			auto viewportOffset = ImGui::GetWindowPos();
-			vec_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
-			vec_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
-
-			bIsViewportFocused = ImGui::IsWindowFocused();
-			bIsViewportHovered = ImGui::IsWindowHovered();
-
-			Application::Get().GetImGuiLayer()->SetCanBlockEvents(!bIsViewportFocused || !bIsViewportHovered);
-
-			ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-			vec_ViewportSize = { viewportSize.x, viewportSize.y };
-
-			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-			ImGui::Image((ImTextureID)(intptr_t)textureID, ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-
-
-			bIsUsingGizmo = false;
-			Object selectedObject = hierarchyPanel.GetSelectedObject();
-			if (selectedObject && iGizmoType != -1)
-			{
-				ImGuizmo::SetOrthographic(false);
-				ImGuizmo::SetDrawlist();
-				ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
-
-				/*auto mainCameraObject = activeScene->GetMainCamera();
-				const auto& mainCamera = mainCameraObject.GetComponent<CameraComponent>().Camera;
-				const glm::mat4& cameraProj = mainCamera.GetProjection();
-				glm::mat4 cameraView = glm::inverse(mainCameraObject.GetComponent<TransformComponent>().Transform());*/
-
-				const glm::mat4& cameraProj = mainCameraEditor.GetProjection();
-				glm::mat4 cameraView = mainCameraEditor.GetViewMatrix();
-
-				auto& transformComponent = selectedObject.GetComponent<TransformComponent>();
-				glm::mat4 transform = transformComponent.Transform();
-
-				float snapValue = 0.5f;
-				if (iGizmoType == ImGuizmo::ROTATE)
-					snapValue = 10.0f;
-
-				float snapValues[3] = { snapValue,snapValue,snapValue };
-
-				ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProj)
-					, (ImGuizmo::OPERATION)iGizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform), nullptr, snapValues);
-
-				bIsUsingGizmo = ImGuizmo::IsUsing();
-				if (bIsUsingGizmo)
-				{
-					glm::vec3 position, rotation, scale;
-					Math::DecomposeTransform(transform, position, rotation, scale);
-
-					glm::vec3 deltaRotation = rotation - transformComponent.Rotation;// Using delta rotation instead of new rotation to avoid Gimbal-Lock
-					transformComponent.Position = position;
-					transformComponent.Rotation += deltaRotation;
-					transformComponent.Scale = scale;
-				}
-			}
-
-			ImGui::End();
-			ImGui::PopStyleVar();
-		}
-
-		hierarchyPanel.OnImGuiRender();
-
-		ImGui::End();
 
 	}
 

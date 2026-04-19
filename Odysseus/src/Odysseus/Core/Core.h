@@ -34,7 +34,7 @@
 	#error "Unknown platform!"
 #endif // End of platform detection
 
-
+#define ODC_DYNAMIC_LINK 0
 
 #ifdef ODC_PLATFORM_WINDOWS
 	#if ODC_DYNAMIC_LINK

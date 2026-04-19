@@ -14,10 +14,22 @@
 
 namespace Odysseus
 {
+	struct ApplicationCommandLineArgs
+	{
+		int Count = 0;
+		char** Args = nullptr;
+
+		const char* operator[](int index) const
+		{
+			ODC_CORE_ASSERT(index < Count);
+			return Args[index];
+		}
+	};
+
 	class  Application
 	{
 	public:
-		ODYSSEUS_API Application(const std::string& appName = "Odysseus Editor");
+		ODYSSEUS_API Application(const std::string& appName = "Odysseus Editor", ApplicationCommandLineArgs args = ApplicationCommandLineArgs());
 		ODYSSEUS_API virtual ~Application();
 
 		ODYSSEUS_API void Run();
@@ -32,6 +44,8 @@ namespace Odysseus
 		ODYSSEUS_API inline Window& GetWindow() { return *m_Window; }
 
 		ODYSSEUS_API inline static Application& Get() { return *s_Instance; }
+		ODYSSEUS_API ApplicationCommandLineArgs GetCommandLineArgs() const { return m_CommandLineArgs; }
+
 		ODYSSEUS_API inline void QuitApplication() { m_Running = false; }
 
 		ODYSSEUS_API ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
@@ -40,6 +54,7 @@ namespace Odysseus
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 
+		ApplicationCommandLineArgs m_CommandLineArgs;
 		Scope<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		/// <summary>
@@ -57,5 +72,5 @@ namespace Odysseus
 	};
 
 	// To be defined in CLIENT
-	Application* CreateApplication();
+	Application* CreateApplication(ApplicationCommandLineArgs args);
 }

@@ -168,6 +168,7 @@ namespace Odysseus
 	template<>
 	void Scene::OnComponentAdded<CameraComponent>(Object object, CameraComponent& component)
 	{
-		component.Camera.SetViewportSize(viewportWidth, viewportHeight);
+		if (viewportWidth > 0 && viewportHeight > 0)
+			component.Camera.SetViewportSize(viewportWidth, viewportHeight);
 	}
 }

@@ -1,10 +1,23 @@
-[02:25:16] [info] ODYSSEUS: Creating window Odysseus Engine 0.0.1 1280, 720
-[02:25:17] [info] ODYSSEUS: OpenGL Info:
-[02:25:17] [info] ODYSSEUS:   Vendor: NVIDIA Corporation
-[02:25:17] [info] ODYSSEUS:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
-[02:25:17] [info] ODYSSEUS:   Version: 4.5.0 NVIDIA 595.97
-[02:25:17] [info] ODYSSEUS: Complied shader Unlit successfully !
-[02:25:17] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/TestImage.png'
-[02:25:17] [info] ODYSSEUS: Texture loaded successfully!
-[02:25:17] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
-[02:25:17] [info] ODYSSEUS: Texture loaded successfully!
+[22:28:28] [info] ODYSSEUS: Creating window Odysseus Engine 0.0.2 1280, 720
+[22:28:28] [info] ODYSSEUS: OpenGL Info:
+[22:28:28] [info] ODYSSEUS:   Vendor: NVIDIA Corporation
+[22:28:28] [info] ODYSSEUS:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
+[22:28:28] [info] ODYSSEUS:   Version: 4.6.0 NVIDIA 596.21
+[22:28:28] [trace] ODYSSEUS: OpenGLShader::Reflect - GL_VERTEX_SHADER assets/shaders/Unlit.glsl
+[22:28:28] [trace] ODYSSEUS:     1 uniform buffers
+[22:28:28] [trace] ODYSSEUS:     0 resources
+[22:28:28] [trace] ODYSSEUS: Uniform buffers:
+[22:28:28] [trace] ODYSSEUS:   _47_49
+[22:28:28] [trace] ODYSSEUS:     Size = 64
+[22:28:28] [trace] ODYSSEUS:     Binding = 0
+[22:28:28] [trace] ODYSSEUS:     Members = 1
+[22:28:28] [trace] ODYSSEUS: OpenGLShader::Reflect - GL_FRAGMENT_SHADER assets/shaders/Unlit.glsl
+[22:28:28] [trace] ODYSSEUS:     0 uniform buffers
+[22:28:28] [trace] ODYSSEUS:     0 resources
+[22:28:28] [trace] ODYSSEUS: Uniform buffers:
+[22:28:28] [warning] ODYSSEUS: Shader creation took 4.8375006 ms
+[22:28:28] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/TestImage.png'
+[22:28:28] [info] ODYSSEUS: Texture loaded successfully!
+[22:28:28] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
+[22:28:28] [info] ODYSSEUS: Texture loaded successfully!
+[22:28:28] [error] ODYSSEUS: Program/shader state performance warning: Vertex shader in program 2 is being recompiled based on GL state.

@@ -10,8 +10,8 @@ namespace Odysseus
 	class OdysseusEditor : public Application
 	{
 	public:
-		OdysseusEditor()
-			: Application("Odysseus Engine 0.0.1")
+		OdysseusEditor(ApplicationCommandLineArgs args)
+			: Application("Odysseus Engine 0.0.2", args)
 		{
 			PushLayer(new EditorLayer());
 		}
@@ -21,8 +21,8 @@ namespace Odysseus
 		}
 	};
 
-	Application* CreateApplication()
+	Application* CreateApplication(ApplicationCommandLineArgs args)
 	{
-		return new OdysseusEditor();
+		return new OdysseusEditor(args);
 	}
 }

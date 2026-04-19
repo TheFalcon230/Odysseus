@@ -1,16 +1,16 @@
 #pragma once
 #include "Odysseus/Core/Core.h"
+#include "Odysseus/Core/Application.h"
 
 #ifdef ODC_PLATFORM_WINDOWS
 
-extern Odysseus::Application* Odysseus::CreateApplication();
-
+extern Odysseus::Application* Odysseus::CreateApplication(Odysseus::ApplicationCommandLineArgs args);
 int main(int argc, char** argv)
 {
 	Odysseus::Log::Init();
 
 	ODC_PROFILE_BEGIN_SESSION("Startup", "OdysseusProfile-Startup.json");
-	auto app = Odysseus::CreateApplication();
+	auto app = Odysseus::CreateApplication({argc, argv});
 	ODC_PROFILE_END_SESSION();
 
 	ODC_PROFILE_BEGIN_SESSION("Runtime", "OdysseusProfile-Runtime.json");

@@ -245,7 +245,7 @@ namespace Odysseus
 		}
 		catch (YAML::ParserException e)
 		{
-			ODC_CORE_ERROR("Failed to load .hazel file '{0}'\n     {1}", filepath, e.what());
+			ODC_CORE_ERROR("Failed to load file '{0}'\n     {1}", filepath, e.what());
 			return false;
 		}
 

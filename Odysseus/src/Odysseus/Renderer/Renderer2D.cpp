@@ -33,7 +33,7 @@ namespace Odysseus
 		static const uint32_t MaxIndices = MaxQuadsPerDrawCall * 6;
 		static const uint32_t MaxTextureSlots = 32;
 
-		Ref<VertexArray> vertexArray;
+		Ref<VertexArray> quadVertexArray;
 		Ref<VertexBuffer> vertexBuffer;
 		Ref<Shader> unlitShader;
 		Ref<Texture2D> defaultTexture;
@@ -65,7 +65,7 @@ namespace Odysseus
 
 	void Renderer2D::Init()
 	{
-		s_Data.vertexArray = VertexArray::Create();
+		s_Data.quadVertexArray = VertexArray::Create();
 
 		s_Data.vertexBuffer = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
 		s_Data.vertexBuffer->SetLayout({
@@ -76,7 +76,7 @@ namespace Odysseus
 			{ ShaderDataType::Float,  "a_TilingFactor" },
 			{ ShaderDataType::Int,    "a_EntityID"     }
 			});
-		s_Data.vertexArray->AddVertexBuffer(s_Data.vertexBuffer);
+		s_Data.quadVertexArray->AddVertexBuffer(s_Data.vertexBuffer);
 
 		s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVertices];
 
@@ -97,7 +97,7 @@ namespace Odysseus
 		}
 
 		Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
-		s_Data.vertexArray->SetIndexBuffer(quadIB);
+		s_Data.quadVertexArray->SetIndexBuffer(quadIB);
 		delete[] quadIndices;
 
 		//Default texture creation.
@@ -111,9 +111,7 @@ namespace Odysseus
 
 		s_Data.unlitShader = Shader::Create("assets/shaders/Unlit.glsl");
 
-		//s_Data.unlitShader->Bind();
-		//s_Data.unlitShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlot);
-
+		// Set the first texture slot to 0 (reserved for default texture)
 		s_Data.TextureSlots[0] = s_Data.defaultTexture;
 
 		s_Data.VertexPosition[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
@@ -131,6 +129,15 @@ namespace Odysseus
 		delete[] s_Data.QuadVertexBufferBase;
 	}
 
+	void Renderer2D::BeginScene(const OrthographicCamera& camera)
+	{
+
+		s_Data.unlitShader->Bind();
+		s_Data.unlitShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+
+		StartBatch();
+	}
+
 
 	void Renderer2D::BeginScene(const Camera& camera, glm::mat4 transform)
 	{
@@ -140,19 +147,13 @@ namespace Odysseus
 		StartBatch();
 	}
 
-	void Renderer2D::BeginScene(const OrthographicCamera& camera)
-	{
-
-		s_Data.CameraBuffer.ViewProjection = camera.GetViewProjectionMatrix();
-		s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
-
-		StartBatch();
-	}
-
 	void Renderer2D::BeginScene(const EditorCamera& camera)
 	{
-		s_Data.CameraBuffer.ViewProjection = camera.GetViewProjection();
-		s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
+		//s_Data.CameraBuffer.ViewProjection = camera.GetViewProjection();
+		//s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
+
+		s_Data.unlitShader->Bind();
+		s_Data.unlitShader->SetMat4("u_ViewProjection", camera.GetViewProjection());
 
 		StartBatch();
 	}
@@ -174,7 +175,7 @@ namespace Odysseus
 				s_Data.TextureSlots[i]->Bind(i);
 
 			s_Data.unlitShader->Bind();
-			RenderCommand::DrawIndexed(s_Data.vertexArray, s_Data.QuadIndexCount);
+			RenderCommand::DrawIndexed(s_Data.quadVertexArray, s_Data.QuadIndexCount);
 			s_Data.Stats.DrawCalls++;
 		}
 	}
@@ -193,133 +194,13 @@ namespace Odysseus
 		s_Data.TextureSlotIndex = 1;
 	}
 
-
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
-	{
-		DrawQuad({ position.x, position.y, 0.0f }, size, color);
-	}
-
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
-	{
-		s_Data.QuadVertexBufferPtr->Position = position;
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 0.f, 0.f };
-		s_Data.QuadVertexBufferPtr->TexIndex = 0.f;
-		s_Data.QuadVertexBufferPtr->TilingFactor = 1.f;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y, 0.0f };
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 1.f, 0.f };
-		s_Data.QuadVertexBufferPtr->TexIndex = 0.f;
-		s_Data.QuadVertexBufferPtr->TilingFactor = 1.f;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y + size.y, 0.0f };;
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 1.f, 1.f };
-		s_Data.QuadVertexBufferPtr->TexIndex = 0.f;
-		s_Data.QuadVertexBufferPtr->TilingFactor = 1.f;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = { position.x , position.y + size.y, 0.0f };;
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 0.f, 1.f };
-		s_Data.QuadVertexBufferPtr->TexIndex = 0.f;
-		s_Data.QuadVertexBufferPtr->TilingFactor = 1.f;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadIndexCount += 6;
-
-		s_Data.unlitShader->SetFloat("u_Tiling", 1.0f);
-		/*s_Data.defaultTexture->Bind();
-
-		glm::mat4 scale = glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * scale;
-		s_Data.unlitShader->SetMat4("u_Transform", transform);
-
-		s_Data.vertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data.vertexArray);*/
-	}
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tillingFactor)
-	{
-		DrawQuad({ position.x, position.y, 0.0f }, size, texture, tillingFactor);
-	}
-
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor)
-	{
-		constexpr glm::vec4 color = glm::vec4(1.0f);
-
-		float textureIndex = 0.0f;
-
-		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
-		{
-			if (*s_Data.TextureSlots[i] == *texture)
-			{
-				textureIndex = (float)i;
-				break;
-			}
-		}
-
-		if (textureIndex == 0.0f)
-		{
-			if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
-				NextBatch();
-
-			textureIndex = (float)s_Data.TextureSlotIndex;
-			s_Data.TextureSlots[textureIndex] = texture;
-			s_Data.TextureSlotIndex++;
-		}
-
-		s_Data.QuadVertexBufferPtr->Position = position;
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y, 0.0f };
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y + size.y, 0.0f };
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = { position.x, position.y + size.y, 0.0f };
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadIndexCount += 6;
-
-		/*s_Data.unlitShader->SetFloat4("u_BaseColor", glm::vec4(1.0f));
-		glm::mat4 scale = glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * scale;
-		s_Data.unlitShader->SetMat4("u_Transform", transform);
-
-		texture->Bind();
-
-		s_Data.vertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data.vertexArray);*/
-	}
 	void Odysseus::Renderer2D::DrawQuad(const glm::mat4& inTransform, const Ref<Texture2D>& inTexture, float inTillingFactor, const glm::vec4& inColor, int inEntityID)
 	{
 		constexpr size_t quadVertexCount = 4;
 		const glm::vec2* textureCoords = defaultTexCoord;
 
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
-		{
 			NextBatch();
-		}
 
 		float textureIndex = 0.0f;
 		for (uint32_t i = 0; i < s_Data.TextureSlotIndex + 1; i++)
@@ -360,22 +241,32 @@ namespace Odysseus
 		s_Data.QuadIndexCount += 6;
 
 		s_Data.Stats.QuadCount++;
+	}
 
-		/*s_Data.unlitShader->SetFloat4("u_BaseColor", quad.baseColor);
-		s_Data.unlitShader->SetFloat("u_Tiling", quad.tilingFactor);
-		glm::mat4 location = glm::translate(glm::mat4(1.0f), quad.position);
-		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(quad.rotation), { 0.f, 0.f, 1.0f });
-		glm::mat4 scale = glm::scale(glm::mat4(1.0f), { quad.scale.x, quad.scale.y, 1.0f });
-		glm::mat4 transform = location * rotation * scale;
-		s_Data.unlitShader->SetMat4("u_Transform", transform);
+	void Renderer2D::DrawQuad(const glm::mat4& inTransform, const glm::vec4& inColor, int inEntityID)
+	{
+		constexpr size_t quadVertexCount = 4;
+		const float textureIndex = 0.0f; // White Texture
+		const glm::vec2* textureCoords = defaultTexCoord;
+		const float tilingFactor = 1.0f;
 
-		if (quad.texture != nullptr)
-			quad.texture->Bind();
-		else
-			s_Data.defaultTexture->Bind();
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+			NextBatch();
 
-		s_Data.vertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data.vertexArray);*/
+		for (size_t i = 0; i < quadVertexCount; i++)
+		{
+			s_Data.QuadVertexBufferPtr->Position = inTransform * s_Data.VertexPosition[i];
+			s_Data.QuadVertexBufferPtr->Color = inColor;
+			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
+			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = inEntityID;
+			s_Data.QuadVertexBufferPtr++;
+		}
+
+		s_Data.QuadIndexCount += 6;
+
+		s_Data.Stats.QuadCount++;
 	}
 
 	void Renderer2D::DrawSprite(const glm::mat4 transform, SpriteRendererComponent& sprite, int entityID)
@@ -383,6 +274,10 @@ namespace Odysseus
 		if (sprite.texture)
 		{
 			DrawQuad(transform, sprite.texture, sprite.tilling, sprite.Color, entityID);
+		}
+		else
+		{
+			DrawQuad(transform, sprite.Color, entityID);
 		}
 	}
 

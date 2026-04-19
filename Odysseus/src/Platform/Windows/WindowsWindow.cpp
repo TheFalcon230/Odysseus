@@ -71,7 +71,7 @@ namespace Odysseus
 		}
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		m_Window = glfwCreateWindow((int)props.width, (int)props.height, m_Data.title.c_str(), nullptr, nullptr);

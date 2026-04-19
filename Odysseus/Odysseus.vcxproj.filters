@@ -177,6 +177,9 @@
     <ClInclude Include="src\Odysseus\Renderer\Texture.h">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Odysseus\Renderer\UniformBuffer.h">
+      <Filter>src\Odysseus\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Odysseus\Renderer\VertexArray.h">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClInclude>
@@ -217,6 +220,9 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLUniformBuffer.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
@@ -1488,8 +1494,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\OpenGLUniformBuffer.h" />
-    <ClInclude Include="src\Odysseus\Renderer\UniformBuffer.h" />
+    <ClInclude Include="src\Odysseus\Core\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Odysseus\Core\Application.cpp">
@@ -1555,6 +1560,9 @@
     <ClCompile Include="src\Odysseus\Renderer\Texture.cpp">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Odysseus\Renderer\UniformBuffer.cpp">
+      <Filter>src\Odysseus\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Odysseus\Renderer\VertexArray.cpp">
       <Filter>src\Odysseus\Renderer</Filter>
     </ClCompile>
@@ -1588,6 +1596,9 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLUniformBuffer.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
@@ -1618,7 +1629,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\OpenGLUniformBuffer.cpp" />
-    <ClCompile Include="src\Odysseus\Renderer\UniformBuffer.cpp" />
   </ItemGroup>
 </Project>

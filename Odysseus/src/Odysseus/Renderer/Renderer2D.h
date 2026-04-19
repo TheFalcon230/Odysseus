@@ -37,48 +37,30 @@ namespace Odysseus
 		static void Flush();
 
 		// Primitives
-		
 		/// <summary>
-		/// [DEPRECATED]
-		/// Draw a quad at a given position with a given size and color.
+		/// Draw a quad with texture and color.
 		/// </summary>
-		/// <param name="position">The position of the quad</param>
-		/// <param name="size">The size of the quad</param>
-		/// <param name="color">The color of the quad.</param>
-		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
-		/// <summary>
-		/// [DEPRECATED]
-		/// Draw a quad at a given position with a given size and color.
-		/// </summary>
-		/// <param name="position">The position of the quad.
-		/// NB: The Z axis for the position can be related to the ZOrder.</param>
-		/// <param name="size">The size of the quad</param>
-		/// <param name="color">The color of the quad.</param>
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
-		/// <summary>
-		/// [DEPRECATED]
-		/// Draw a quad at a given position with a given size and texture.
-		/// </summary>
-		/// <param name="position">The position of the quad</param>
-		/// <param name="size">The size of the quad</param>
-		/// <param name="texture">The texture for the quad.</param>
-		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tillingFactor = 1.0f);
-		/// <summary>
-		/// [DEPRECATED]
-		/// Draw a quad at a given position with a given size and texture.
-		/// </summary>
-		/// <param name="position">The position of the quad.
-		/// NB: The Z axis for the position can be related to the ZOrder.</param>
-		/// <param name="size">The size of the quad</param>
-		/// <param name="texture">The texture for the quad.</param>
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tillingFactor = 1.0f);
-		/// <summary>
-		/// Draw a quad with given properties.
-		/// </summary>
-		/// <param name="Quad">The quad properties.</param>
-		/// <param name="entityID">The entity ID (if = -1 it's considered as invalid).</param>
+		/// <param name="inTransform">The transformation matrix for the quad.</param>
+		/// <param name="inTexture">The texture of the quad.</param>
+		/// <param name="inTillingFactor">The tiling factor for the texture.</param>
+		/// <param name="inColor">The color of the quad.</param>
+		/// <param name="inEntityID">The entity ID (if = -1 it's considered as invalid).</param>
 		static void DrawQuad(const glm::mat4 & inTransform, const Ref<Texture2D>& inTexture, float inTillingFactor, const glm::vec4 & inColor, int inEntityID = -1);
 
+		/// <summary>
+		/// Draw a quad with color only.
+		/// </summary>
+		/// <param name="inTransform">The transformation matrix for the quad.</param>
+		/// <param name="inColor">The color of the quad.</param>
+		/// <param name="inEntityID">The entity ID (if = -1 it's considered as invalid).</param>
+		static void DrawQuad(const glm::mat4 & inTransform, const glm::vec4 & inColor, int inEntityID = -1);
+
+		/// <summary>
+		/// Draw a quad with a sprite. The sprite contains both the texture and the texture coordinates.
+		/// </summary>
+		/// <param name="transform">The transformation matrix for the quad.</param>
+		/// <param name="sprite">The sprite component containing the texture and texture coordinates.</param>
+		/// <param name="entityID">The entity ID (if = -1 it's considered as invalid).</param>
 		static void DrawSprite(const glm::mat4 transform, SpriteRendererComponent& sprite, int entityID);
 
 		//Stats

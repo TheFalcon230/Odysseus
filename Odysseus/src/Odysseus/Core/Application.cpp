@@ -14,7 +14,8 @@ namespace Odysseus
 
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application(const std::string& appName)
+	Application::Application(const std::string& appName, ApplicationCommandLineArgs args)
+		: m_CommandLineArgs(args)
 	{
 		//ODC_PROFILE_FUNCTION();
 
