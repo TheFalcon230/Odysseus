@@ -80,6 +80,7 @@
     <None Include="..\..\Odysseus\premake5.lua" />
     <None Include="..\..\Odysseus\vendor\GLAD\premake5.lua" />
     <None Include="..\..\Odysseus\vendor\GLFW\premake5.lua" />
+    <None Include="..\..\Odysseus\vendor\assimp\premake5.lua" />
     <None Include="..\..\Odysseus\vendor\imgui\premake5.lua" />
     <None Include="..\..\Odysseus\vendor\yaml-cpp\premake5.lua" />
     <None Include="..\..\OdysseusEngine\premake5.lua" />

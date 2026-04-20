@@ -65,6 +65,20 @@ namespace Odysseus
 			: Color(color), Texture(texture), TilingFactor(tilingFactor) {}
 	};
 
+	struct CubeRendererComponent
+	{
+		glm::vec4 Color = glm::vec4(1.0f);
+		Ref<Texture2D> Texture;
+		float TilingFactor = 1.0f;
+
+		CubeRendererComponent() = default;
+		CubeRendererComponent(const CubeRendererComponent&) = default;
+		CubeRendererComponent(const glm::vec4& color)
+			: Color(color) {}
+		CubeRendererComponent(const glm::vec4& color, const Ref<Texture2D>& texture, float tilingFactor = 1.0f)
+			: Color(color), Texture(texture), TilingFactor(tilingFactor) {}
+	};
+
 	struct CameraComponent
 	{
 		SceneCamera Camera;
@@ -73,6 +87,16 @@ namespace Odysseus
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
+	};
+
+	struct PointLightComponent
+	{
+		float Intensity = 1.0f;
+		glm::vec4 Color = glm::vec4(1.0f);
+
+		PointLightComponent() = default;
+		PointLightComponent(const float& intensity, const glm::vec4& color = glm::vec4(1.0f))
+			: Intensity(intensity), Color(color) {}
 	};
 
 	struct NativeScriptComponent

@@ -1,18 +1,12 @@
-[11:31:21] [info] HAZEL: Creating window Odysseus Engine 0.0.1 1280, 720
-[11:31:21] [info] HAZEL: OpenGL Info:
-[11:31:21] [info] HAZEL:   Vendor: NVIDIA Corporation
-[11:31:21] [info] HAZEL:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
-[11:31:21] [info] HAZEL:   Version: 4.5.0 NVIDIA 596.21
-[11:31:21] [info] HAZEL: Complied shader  successfully !
-[11:31:21] [warning] HAZEL: Shader 'assets/shaders/Unlit.glsl' compiled in 1.0441003 ms
-[11:31:21] [info] HAZEL: Start loading texture at path: 'assets/textures/TestImage.png'
-[11:31:21] [info] HAZEL: Texture loaded successfully!
-[11:31:21] [info] HAZEL: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
-[11:31:22] [info] HAZEL: Texture loaded successfully!
-[11:31:22] [info] HAZEL: Start loading texture at path: 'assets/textures/Odysseus_Icon.png'
-[11:31:22] [info] HAZEL: Texture loaded successfully!
-[11:31:26] [trace] HAZEL: Deserializing scene 'New Scene'
-[11:31:26] [trace] HAZEL: Deserialized entity with ID = 184563512379, name = Left
-[11:31:26] [trace] HAZEL: Deserialized entity with ID = 184563512379, name = Right
-[11:31:26] [trace] HAZEL: Deserialized entity with ID = 184563512379, name = Camera
-[11:31:26] [trace] HAZEL: Deserialized entity with ID = 184563512379, name = Top
+[15:31:40] [info] HAZEL: Creating window Odysseus Engine 0.0.1 1280, 720
+[15:31:40] [info] HAZEL: OpenGL Info:
+[15:31:40] [info] HAZEL:   Vendor: NVIDIA Corporation
+[15:31:40] [info] HAZEL:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
+[15:31:40] [info] HAZEL:   Version: 4.5.0 NVIDIA 596.21
+[15:31:40] [error] HAZEL: : 0(21) : error C7557: OpenGL does not allow Cg-style semantics
+0(36) : error C0000: syntax error, unexpected reserved word "out" at token "out"
+0(50) : error C1503: undefined variable "LightPos"
+0(51) : error C1503: undefined variable "LightColor"
+0(51) : error C1503: undefined variable "LightBufferColor"
+
+[15:31:40] [error] HAZEL: Assertion Failed: Shader compilation failure!

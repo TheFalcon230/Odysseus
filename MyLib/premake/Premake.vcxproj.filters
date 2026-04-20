@@ -16,6 +16,9 @@
     <Filter Include="..\Odysseus\vendor\GLFW">
       <UniqueIdentifier>{8B5ECDB2-F795-154A-00A0-796D6C563C43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="..\Odysseus\vendor\assimp">
+      <UniqueIdentifier>{681120DB-D4D3-5365-1D84-E2F189852C43}</UniqueIdentifier>
+    </Filter>
     <Filter Include="..\Odysseus\vendor\imgui">
       <UniqueIdentifier>{361AF30E-223F-428F-4B8A-271F370E41AD}</UniqueIdentifier>
     </Filter>
@@ -38,6 +41,9 @@
     </None>
     <None Include="..\..\Odysseus\vendor\GLFW\premake5.lua">
       <Filter>..\Odysseus\vendor\GLFW</Filter>
+    </None>
+    <None Include="..\..\Odysseus\vendor\assimp\premake5.lua">
+      <Filter>..\Odysseus\vendor\assimp</Filter>
     </None>
     <None Include="..\..\Odysseus\vendor\imgui\premake5.lua">
       <Filter>..\Odysseus\vendor\imgui</Filter>

@@ -1,0 +1,13 @@
+[18:56:56] [info] ODYSSEUS: Creating window Odysseus Engine 0.0.1 1280, 720
+[18:56:57] [info] ODYSSEUS: OpenGL Info:
+[18:56:57] [info] ODYSSEUS:   Vendor: NVIDIA Corporation
+[18:56:57] [info] ODYSSEUS:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
+[18:56:57] [info] ODYSSEUS:   Version: 4.5.0 NVIDIA 596.21
+[18:56:57] [info] ODYSSEUS: Complied shader  successfully !
+[18:56:57] [warning] ODYSSEUS: Shader 'assets/shaders/Unlit.glsl' compiled in 1.0278001 ms
+[18:56:57] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/TestImage.png'
+[18:56:57] [info] ODYSSEUS: Texture loaded successfully!
+[18:56:57] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
+[18:56:57] [info] ODYSSEUS: Texture loaded successfully!
+[18:56:57] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/Odysseus_Icon.png'
+[18:56:57] [info] ODYSSEUS: Texture loaded successfully!

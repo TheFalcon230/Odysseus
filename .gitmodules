@@ -17,3 +17,6 @@
 	path = Odysseus/vendor/imgui
 	url = https://github.com/ocornut/imgui/
 	branch = docking
+[submodule "Odysseus/vendor/assimp"]
+	path = Odysseus/vendor/assimp
+	url = https://github.com/assimp/assimp.git

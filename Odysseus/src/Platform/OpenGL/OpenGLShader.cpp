@@ -220,7 +220,7 @@ namespace Odysseus
 				glDeleteShader(shader);
 
 				ODC_CORE_ERROR("{0}: {1}", m_Name, infoLog.data());
-				ODC_CORE_ASSERT(false, "Shader compilation failure!");
+					ODC_CORE_ASSERT(false, "Shader compilation failure!");
 				break;
 			}
 

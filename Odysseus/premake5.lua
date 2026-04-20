@@ -50,6 +50,7 @@ project "Odysseus"
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.yaml_cpp}",
+		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.Icons}"
 	}

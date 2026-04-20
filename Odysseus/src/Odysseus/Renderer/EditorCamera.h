@@ -23,7 +23,8 @@ namespace Odysseus
 		inline void SetViewportSize(float width, float height) { fViewportWidth = width; fViewportHeight = height; }
 
 		const glm::mat4 GetViewMatrix() const { return viewMatrix; }
-		glm::mat4 GetViewProjection() const { return projectionMatrix * viewMatrix; }
+		glm::mat4 GetViewProjection() const { return projectionMatrix * viewMatrix * modelMatrix; }
+		const glm::mat4 GetModelMatrix() const { return modelMatrix; }
 
 		glm::vec3 GetUpDirection() const;
 		glm::vec3 GetRightDirection() const;
@@ -43,6 +44,7 @@ namespace Odysseus
 	private:
 		void UpdateProjection();
 		void UpdateView();
+		void UpdateModel();
 
 		bool OnMouseScrolled(MouseScrolledEvent& e);
 
@@ -59,6 +61,7 @@ namespace Odysseus
 		float fFOV = 45.0f, fAspectRatio = 16.0f / 9.0f, fNearClip = 0.1f, fFarClip = 1000.0f;
 
 		glm::mat4 viewMatrix;
+		glm::mat4 modelMatrix;
 		glm::vec3 Position = { 0.0f, 0.0f, 0.0f }, vecFocalPoint = {0.0f, 0.0f, 0.0f};
 
 		glm::vec2 vecInitialMousePos;

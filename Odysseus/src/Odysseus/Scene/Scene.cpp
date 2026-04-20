@@ -36,6 +36,26 @@ namespace Odysseus
 		return entity;
 	}
 
+	Object Scene::CreateCube(std::string name)
+	{
+		Object entity = { registry.create(), this };
+		entity.AddComponent<TransformComponent>(glm::vec3(0.0f));
+		auto& tag = entity.AddComponent<TagComponent>(name);
+		entity.AddComponent<CubeRendererComponent>(glm::vec4(1.0f));
+		tag.Tag = name.empty() ? "Entity" : name;
+		return entity;
+	}
+
+	Object Scene::CreatePointLight(std::string name)
+	{
+		Object entity = { registry.create(), this };
+		entity.AddComponent<TransformComponent>(glm::vec3(0.0f));
+		auto& tag = entity.AddComponent<TagComponent>(name);
+		entity.AddComponent<PointLightComponent>(1.0f, glm::vec4(1.0f));
+		tag.Tag = name.empty() ? "Point Light" : name;
+		return entity;
+	}
+
 	void Scene::DestroyObject(Object object)
 	{
 		registry.destroy(object);
@@ -97,11 +117,25 @@ namespace Odysseus
 		{
 			Renderer2D::BeginScene(mainCamera->GetProjection(), cameraTransform);
 
-			auto view = registry.view<TransformComponent, SpriteRendererComponent>();
-			for (auto entity : view)
+			auto SpriteView = registry.view<TransformComponent, SpriteRendererComponent>();
+			for (auto entity : SpriteView)
 			{
-				auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
-				Renderer2D::DrawQuad(transform.Transform(), sprite.Texture, sprite.TilingFactor, sprite.Color, (int)entity);
+				auto [transform, sprite] = SpriteView.get<TransformComponent, SpriteRendererComponent>(entity);
+				Renderer2D::DrawSprite(transform.Transform(), sprite, (int)entity);
+			}
+
+			auto CubeView = registry.view<TransformComponent, CubeRendererComponent>();
+			for (auto entity : CubeView)
+			{
+				auto [transform, cube] = CubeView.get<TransformComponent, CubeRendererComponent>(entity);
+				Renderer2D::DrawCube(transform.Transform(), cube.Color, (int)entity);
+			}
+
+			auto LightView = registry.view<TransformComponent, PointLightComponent>();
+			for (auto entity : LightView)
+			{
+				auto [transform, light] = LightView.get<TransformComponent, PointLightComponent>(entity);
+				Renderer2D::DrawPointLight(transform.Position, light.Color, light.Intensity);
 			}
 			Renderer2D::EndScene();
 		}
@@ -111,12 +145,27 @@ namespace Odysseus
 	{
 		Renderer2D::BeginScene(camera);
 
-		auto view = registry.view<TransformComponent, SpriteRendererComponent>();
-		for (auto entity : view)
+		auto SpriteView = registry.view<TransformComponent, SpriteRendererComponent>();
+		for (auto entity : SpriteView)
 		{
-			auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
-			Renderer2D::DrawQuad(transform.Transform(), sprite.Texture, sprite.TilingFactor, sprite.Color, (int)entity);
+			auto [transform, sprite] = SpriteView.get<TransformComponent, SpriteRendererComponent>(entity);
+			Renderer2D::DrawSprite(transform.Transform(), sprite, (int)entity);
 		}
+
+		auto CubeView = registry.view<TransformComponent, CubeRendererComponent>();
+		for (auto entity : CubeView)
+		{
+			auto [transform, cube] = CubeView.get<TransformComponent, CubeRendererComponent>(entity);
+			Renderer2D::DrawCube(transform.Transform(), cube.Color, (int)entity);
+		}
+
+		auto LightView = registry.view<TransformComponent, PointLightComponent>();
+		for (auto entity : LightView)
+		{
+			auto [transform, light] = LightView.get<TransformComponent, PointLightComponent>(entity);
+			Renderer2D::DrawPointLight(transform.Position, light.Color, light.Intensity);
+		}
+
 		Renderer2D::EndScene();
 	}
 

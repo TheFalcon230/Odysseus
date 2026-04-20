@@ -54,6 +54,15 @@ namespace Odysseus
 					{
 						Context->CreateSquare("Square");
 					}
+					if (ImGui::MenuItem("Cube"))
+					{
+						Context->CreateCube("Cube");
+					}
+					ImGui::Separator();
+					if (ImGui::MenuItem("Point Light"))
+					{
+						Context->CreatePointLight("Point Light");
+					}
 
 					ImGui::EndPopup();
 				}
@@ -264,6 +273,8 @@ namespace Odysseus
 		});
 
 		DrawComponent<SpriteRendererComponent>("Sprite Renderer", object, [](auto& component) {ImGui::ColorEdit4("Color", glm::value_ptr(component.Color)); });
+
+		DrawComponent<PointLightComponent>("Point Light", object, [](auto& component) {ImGui::ColorEdit4("Color", glm::value_ptr(component.Color)); ImGui::DragFloat("Intensity", &component.Intensity, 0.1f, 0.0f, 100.0f); });
 
 		DrawComponent<CameraComponent>("Camera", object, [](auto& component)
 		{
