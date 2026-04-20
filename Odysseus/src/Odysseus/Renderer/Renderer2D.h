@@ -6,6 +6,8 @@
 #include "Odysseus/Renderer/EditorCamera.h"
 #include <Odysseus/Scene/Components.h>
 
+#include "Odysseus/Renderer/UniformBuffer.h"
+
 namespace Odysseus
 {
 	struct QuadProperties
@@ -59,5 +61,6 @@ namespace Odysseus
 	private:
 		static void NextBatch();
 		static void NewBatch();
+
 	};
 }

@@ -48,7 +48,7 @@ namespace Odysseus
 
 		glm::vec4 VertexPosition[4];
 
-
+		Ref<UniformBuffer> m_CameraBuffer;
 
 		Renderer2D::Statistics Stats;
 	};
@@ -58,6 +58,8 @@ namespace Odysseus
 
 	void Renderer2D::Init()
 	{
+		s_Data.m_CameraBuffer = UniformBuffer::Create(80, 0, BufferUsageType::DYNAMIC_DRAW);
+
 		s_Data.vertexArray = VertexArray::Create();
 
 
@@ -140,22 +142,27 @@ namespace Odysseus
 
 	void Renderer2D::BeginScene(const EditorCamera& camera)
 	{
+		/*s_Data.unlitShader->Bind();
+		s_Data.unlitShader->SetMat4("u_ViewProjection", camera.GetViewProjection());*/
+
 		s_Data.unlitShader->Bind();
-		s_Data.unlitShader->SetMat4("u_ViewProjection", camera.GetViewProjection());
+		s_Data.m_CameraBuffer->Bind();
+		s_Data.m_CameraBuffer->AddData(0, sizeof(glm::mat4), &camera.GetViewProjection());
+		s_Data.m_CameraBuffer->Unbind();
 
 		NewBatch();
 	}
 
 	void Renderer2D::EndScene()
 	{
-		uint32_t dataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
-		s_Data.vertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
-
 		Flush();
 	}
 
 	void Renderer2D::Flush()
 	{
+		uint32_t dataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
+		s_Data.vertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
+
 		for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
 		{
 			s_Data.TextureSlots[i]->Bind(i);
@@ -169,10 +176,7 @@ namespace Odysseus
 	{
 		EndScene();
 
-		s_Data.QuadIndexCount = 0;
-		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-
-		s_Data.TextureSlotIndex = 1;
+		NewBatch();
 	}
 
 	void Renderer2D::NewBatch()

@@ -156,6 +156,7 @@
     <ClInclude Include="src\Odysseus\Core\LayerStack.h" />
     <ClInclude Include="src\Odysseus\Core\Log.h" />
     <ClInclude Include="src\Odysseus\Core\MouseButtonCodes.h" />
+    <ClInclude Include="src\Odysseus\Core\Timer.h" />
     <ClInclude Include="src\Odysseus\Core\Timestep.h" />
     <ClInclude Include="src\Odysseus\Core\Window.h" />
     <ClInclude Include="src\Odysseus\Debug\Instrumentor.h" />
@@ -192,9 +193,11 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLUniformBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\odcpch.h" />
+    <ClInclude Include="src\Odysseus\Renderer\UniformBuffer.h" />
     <ClInclude Include="vendor\Icons\IconsFontAwesome6.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
@@ -639,6 +642,7 @@
     <ClCompile Include="src\Odysseus\Renderer\Shader.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\Sprite.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\Texture.cpp" />
+    <ClCompile Include="src\Odysseus\Renderer\UniformBuffer.cpp" />
     <ClCompile Include="src\Odysseus\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Odysseus\Scene\Entity.cpp" />
     <ClCompile Include="src\Odysseus\Scene\Scene.cpp" />
@@ -650,6 +654,7 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLUniformBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsPlatformUtils.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />

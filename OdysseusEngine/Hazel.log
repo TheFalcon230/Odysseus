@@ -1,12 +1,18 @@
-[00:16:47] [info] HAZEL: Creating window Odysseus Engine 0.0.1 1280, 720
-[00:16:47] [info] HAZEL: OpenGL Info:
-[00:16:47] [info] HAZEL:   Vendor: NVIDIA Corporation
-[00:16:47] [info] HAZEL:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
-[00:16:47] [info] HAZEL:   Version: 4.5.0 NVIDIA 596.21
-[00:16:47] [info] HAZEL: Complied shader Unlit successfully !
-[00:16:47] [info] HAZEL: Start loading texture at path: 'assets/textures/TestImage.png'
-[00:16:47] [info] HAZEL: Texture loaded successfully!
-[00:16:47] [info] HAZEL: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
-[00:16:47] [info] HAZEL: Texture loaded successfully!
-[00:16:48] [info] HAZEL: Start loading texture at path: 'assets/textures/Odysseus_Icon.png'
-[00:16:48] [info] HAZEL: Texture loaded successfully!
+[11:31:21] [info] HAZEL: Creating window Odysseus Engine 0.0.1 1280, 720
+[11:31:21] [info] HAZEL: OpenGL Info:
+[11:31:21] [info] HAZEL:   Vendor: NVIDIA Corporation
+[11:31:21] [info] HAZEL:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
+[11:31:21] [info] HAZEL:   Version: 4.5.0 NVIDIA 596.21
+[11:31:21] [info] HAZEL: Complied shader  successfully !
+[11:31:21] [warning] HAZEL: Shader 'assets/shaders/Unlit.glsl' compiled in 1.0441003 ms
+[11:31:21] [info] HAZEL: Start loading texture at path: 'assets/textures/TestImage.png'
+[11:31:21] [info] HAZEL: Texture loaded successfully!
+[11:31:21] [info] HAZEL: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
+[11:31:22] [info] HAZEL: Texture loaded successfully!
+[11:31:22] [info] HAZEL: Start loading texture at path: 'assets/textures/Odysseus_Icon.png'
+[11:31:22] [info] HAZEL: Texture loaded successfully!
+[11:31:26] [trace] HAZEL: Deserializing scene 'New Scene'
+[11:31:26] [trace] HAZEL: Deserialized entity with ID = 184563512379, name = Left
+[11:31:26] [trace] HAZEL: Deserialized entity with ID = 184563512379, name = Right
+[11:31:26] [trace] HAZEL: Deserialized entity with ID = 184563512379, name = Camera
+[11:31:26] [trace] HAZEL: Deserialized entity with ID = 184563512379, name = Top

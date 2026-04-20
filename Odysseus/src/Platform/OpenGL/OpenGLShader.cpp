@@ -1,6 +1,8 @@
 #include "odcpch.h"
 #include "OpenGLShader.h"
 
+#include "Odysseus/Core/Timer.h"
+
 #include <fstream>
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -31,6 +33,12 @@ namespace Odysseus
 		std::string source = ReadFile(path);
 		auto shaderSources = PreProcess(source);
 
+		{
+			Timer timer;
+			Compile(shaderSources);
+			ODC_CORE_WARN("Shader '{0}' compiled in {1} ms", path, timer.ElapsedMillis());
+		}
+
 		//assets/shaders/newShader.glsl
 		auto lastSlash = path.find_last_of("/\\");
 		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
@@ -38,7 +46,6 @@ namespace Odysseus
 		auto count = lastDot == std::string::npos ? path.size() - lastSlash : lastDot - lastSlash;
 		m_Name = path.substr(lastSlash, count);
 		
-		Compile(shaderSources);
 	}
 
 	OpenGLShader::~OpenGLShader()
