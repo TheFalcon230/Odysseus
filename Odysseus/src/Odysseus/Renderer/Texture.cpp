@@ -6,7 +6,7 @@
 
 namespace Odysseus
 {
-	Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height)
+	Ref<Texture2D> Texture2D::Create(const TextureSpecification& specification)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -15,7 +15,7 @@ namespace Odysseus
 			return nullptr;
 			break;
 		case RendererAPI::API::OpenGL:
-			return CreateRef<OpenGLTexture2D>(width, height);
+			return CreateRef<OpenGLTexture2D>(specification);
 			break;
 		default:
 			ODC_CORE_ASSERT(false, "Unknown RendererAPI .");

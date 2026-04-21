@@ -1,13 +1,23 @@
-[18:56:56] [info] ODYSSEUS: Creating window Odysseus Engine 0.0.1 1280, 720
-[18:56:57] [info] ODYSSEUS: OpenGL Info:
-[18:56:57] [info] ODYSSEUS:   Vendor: NVIDIA Corporation
-[18:56:57] [info] ODYSSEUS:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
-[18:56:57] [info] ODYSSEUS:   Version: 4.5.0 NVIDIA 596.21
-[18:56:57] [info] ODYSSEUS: Complied shader  successfully !
-[18:56:57] [warning] ODYSSEUS: Shader 'assets/shaders/Unlit.glsl' compiled in 1.0278001 ms
-[18:56:57] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/TestImage.png'
-[18:56:57] [info] ODYSSEUS: Texture loaded successfully!
-[18:56:57] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
-[18:56:57] [info] ODYSSEUS: Texture loaded successfully!
-[18:56:57] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/Odysseus_Icon.png'
-[18:56:57] [info] ODYSSEUS: Texture loaded successfully!
+[12:37:20] [info] ODYSSEUS: Creating window Odysseus Engine 0.0.1 1280, 720
+[12:37:21] [info] ODYSSEUS: OpenGL Info:
+[12:37:21] [info] ODYSSEUS:   Vendor: NVIDIA Corporation
+[12:37:21] [info] ODYSSEUS:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
+[12:37:21] [info] ODYSSEUS:   Version: 4.5.0 NVIDIA 596.21
+[12:37:21] [info] ODYSSEUS: Complied shader  successfully !
+[12:37:21] [warning] ODYSSEUS: Shader 'assets/shaders/Unlit.glsl' compiled in 0.9018001 ms
+[12:37:21] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/TestImage.png'
+[12:37:21] [info] ODYSSEUS: Texture loaded successfully!
+[12:37:21] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/RPG_Sheet.png'
+[12:37:21] [info] ODYSSEUS: Texture loaded successfully!
+[12:37:21] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/Odysseus_Icon.png'
+[12:37:21] [info] ODYSSEUS: Texture loaded successfully!
+[12:37:23] [trace] ODYSSEUS: Deserializing scene 'New Scene'
+[12:37:23] [trace] ODYSSEUS: Deserialized entity with ID = 184563512379, name = Top
+[12:37:23] [trace] ODYSSEUS: Deserialized entity with ID = 184563512379, name = Camera
+[12:37:23] [trace] ODYSSEUS: Deserialized entity with ID = 184563512379, name = Right
+[12:37:23] [trace] ODYSSEUS: Deserialized entity with ID = 184563512379, name = Left
+[12:37:25] [trace] ODYSSEUS: Deserializing scene 'New Scene'
+[12:37:25] [trace] ODYSSEUS: Deserialized entity with ID = 184563512379, name = Left
+[12:37:25] [trace] ODYSSEUS: Deserialized entity with ID = 184563512379, name = Right
+[12:37:25] [trace] ODYSSEUS: Deserialized entity with ID = 184563512379, name = Camera
+[12:37:25] [trace] ODYSSEUS: Deserialized entity with ID = 184563512379, name = Top

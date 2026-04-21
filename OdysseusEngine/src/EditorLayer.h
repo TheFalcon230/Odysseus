@@ -1,7 +1,10 @@
 #pragma once
 #include <Odysseus.h>
+
 #include "Panels/HierarchyPanel.h"
 #include "Panels/WindowTitleBar/WindowTitleBar.h"
+#include "Panels/ContentBrowser/ContentBrowserPanel.h"
+
 #include <imguizmo/ImGuizmo.h>
 
 #include "Odysseus/Renderer/EditorCamera.h"
@@ -21,6 +24,9 @@ namespace Odysseus
 
 		void NewScene();
 		void OpenScene();
+
+		void OpenScene(const std::filesystem::path& path);
+
 		void SaveAs();
 
 		void OnEvent(Event& e) override;
@@ -48,6 +54,8 @@ namespace Odysseus
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
 		static float DrawFloatControl(const std::string& label, float currentValue, float resetValue = 0.0f, float min = 0.0f, float max = 100.0f, float columnWidth = 100.0f);
+
+		void SerializeScene(Ref<Scene> scene, const std::filesystem::path& path);
 	private:
 		OrthographicCameraController m_CameraController;
 
@@ -92,6 +100,7 @@ namespace Odysseus
 
 		HierarchyPanel hierarchyPanel;
 		WindowTitleBar windowTitleBar;
+		ContentBrowserPanel contentBrowserPanel;
 
 		/*--------------------------------------------------------*/
 

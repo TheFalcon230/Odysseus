@@ -16,6 +16,7 @@
     <ClInclude Include="src\Panels\WindowTitleBar\WindowTitleBar.h">
       <Filter>Panels\WindowTitleBar</Filter>
     </ClInclude>
+    <ClInclude Include="src\Panels\ContentBrowser\ContentBrowserPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
@@ -26,5 +27,6 @@
     <ClCompile Include="src\Panels\WindowTitleBar\WindowTitleBar.cpp">
       <Filter>Panels\WindowTitleBar</Filter>
     </ClCompile>
+    <ClCompile Include="src\Panels\ContentBrowser\ContentBrowserPanel.cpp" />
   </ItemGroup>
 </Project>

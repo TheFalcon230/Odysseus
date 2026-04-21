@@ -136,8 +136,7 @@ namespace Odysseus
 	static void SerializeObject(YAML::Emitter& out, Object object)
 	{
 		out << YAML::BeginMap; // Object
-		out << YAML::Key << "Object";
-		out << YAML::Value << "184563512379";
+		out << YAML::Key << "Object" << YAML::Value << "184563512379";
 
 		if (object.HasComponent<TagComponent>())
 		{
@@ -155,12 +154,10 @@ namespace Odysseus
 			out << YAML::Key << "TransformComponent";
 			out << YAML::BeginMap; // Transform Component
 
-			auto& pos = object.GetComponent<TransformComponent>().Position;
-			auto& rot = object.GetComponent<TransformComponent>().Rotation;
-			auto& scale = object.GetComponent<TransformComponent>().Scale;
-			out << YAML::Key << "Position" << YAML::Value << pos;
-			out << YAML::Key << "Rotation" << YAML::Value << rot;
-			out << YAML::Key << "Scale" << YAML::Value << scale;
+			auto& tc = object.GetComponent<TransformComponent>();
+			out << YAML::Key << "Position" << YAML::Value << tc.Position;
+			out << YAML::Key << "Rotation" << YAML::Value << tc.Rotation;
+			out << YAML::Key << "Scale" << YAML::Value << tc.Scale;
 
 			out << YAML::EndMap; // Transform Component
 		}
@@ -176,7 +173,7 @@ namespace Odysseus
 			out << YAML::Key << "Camera" << YAML::Value;
 			out << YAML::BeginMap; // Camera 
 			out << YAML::Key << "ProjectionType" << YAML::Value << (int)camera.GetProjectionType();
-			out << YAML::Key << "PerspectiveFOV" << YAML::Value << (int)camera.GetPerspectiveFOV();
+			out << YAML::Key << "PerspectiveFOV" << YAML::Value << camera.GetPerspectiveFOV();
 			out << YAML::Key << "PerspectiveNear" << YAML::Value << camera.GetPerspectiveNearClip();
 			out << YAML::Key << "PerspectiveFar" << YAML::Value << camera.GetPerspectiveFarClip();
 			out << YAML::Key << "OrthographicSize" << YAML::Value << camera.GetOrthographicSize();
@@ -197,10 +194,10 @@ namespace Odysseus
 
 			auto& spriteRendererComponent = object.GetComponent<SpriteRendererComponent>();
 			out << YAML::Key << "Color" << YAML::Value << spriteRendererComponent.Color;
-			/*if (spriteRendererComponent.Texture)
+			if (spriteRendererComponent.Texture)
 				out << YAML::Key << "TexturePath" << YAML::Value << spriteRendererComponent.Texture->GetPath();
 
-			out << YAML::Key << "TilingFactor" << YAML::Value << spriteRendererComponent.TilingFactor;*/
+			out << YAML::Key << "TilingFactor" << YAML::Value << spriteRendererComponent.TilingFactor;
 
 			out << YAML::EndMap; // SpriteRendererComponent
 		}
@@ -212,10 +209,8 @@ namespace Odysseus
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
-		out << YAML::Key << "Scene";
-		out << YAML::Value << "New Scene";
-		out << YAML::Key << "Objects";
-		out << YAML::Value << YAML::BeginSeq;
+		out << YAML::Key << "Scene" << YAML::Value << "New Scene";
+		out << YAML::Key << "Objects" << YAML::Value << YAML::BeginSeq;
 		m_Scene->registry.each([&](auto& objectID)
 		{
 			Object object = {objectID, m_Scene.get() };

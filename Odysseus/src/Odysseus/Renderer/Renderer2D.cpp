@@ -143,7 +143,7 @@ namespace Odysseus
 		delete[] quadIndices;
 
 		//Default texture creation.
-		s_Data.defaultTexture = Texture2D::Create(1, 1);
+		s_Data.defaultTexture = Texture2D::Create(TextureSpecification());
 		uint32_t defaultTextureData = 0xffffffff;
 		s_Data.defaultTexture->SetData(&defaultTextureData, sizeof(uint32_t));
 

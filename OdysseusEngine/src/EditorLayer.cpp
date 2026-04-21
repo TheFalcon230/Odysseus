@@ -21,6 +21,8 @@
 
 namespace Odysseus
 {
+	extern const std::filesystem::path g_AssetsDirectory;
+ 
 	EditorLayer::EditorLayer()
 		: Layer("Editor Layer"), m_CameraController(1280.f / 720.f)
 	{
@@ -389,7 +391,19 @@ namespace Odysseus
 
 				uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
 				ImGui::Image((ImTextureID)(intptr_t)textureID, ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+				
+				if (ImGui::BeginDragDropTarget())
+				{
+					const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
+					if (payload)
+					{
+						const wchar_t* itemPath = (const wchar_t*)payload->Data;
 
+						OpenScene(std::filesystem::path(g_AssetsDirectory) / itemPath);
+
+					}
+					ImGui::EndDragDropTarget();
+				}
 
 				bIsUsingGizmo = false;
 				Object selectedObject = hierarchyPanel.GetSelectedObject();
@@ -444,6 +458,7 @@ namespace Odysseus
 		}
 
 		hierarchyPanel.OnImGuiRender();
+		contentBrowserPanel.OnImGuiRender();
 
 		ImGui::End();
 
@@ -605,6 +620,12 @@ namespace Odysseus
 		return value;
 	}
 
+	void EditorLayer::SerializeScene(Ref<Scene> scene, const std::filesystem::path& path)
+	{
+		SceneSerializer serializer(scene);
+		serializer.Serialize(path.string());
+	}
+
 	void EditorLayer::NewScene()
 	{
 		activeScene = CreateRef<Scene>();
@@ -617,12 +638,20 @@ namespace Odysseus
 		std::string openPath = FileDialogs::OpenFile("Odysseus Scene (*.odcmap)\0*.odcmap\0");
 		if (!openPath.empty())
 		{
+			OpenScene(openPath);
+		}
+	}
+
+	void EditorLayer::OpenScene(const std::filesystem::path& path)
+	{
+		if (!path.empty())
+		{
 			activeScene = CreateRef<Scene>();
 			activeScene->OnViewportResize((uint32_t)vec_ViewportSize.x, (uint32_t)vec_ViewportSize.y);
 			hierarchyPanel.SetContext(activeScene);
 
 			SceneSerializer serializer(activeScene);
-			serializer.Deserialize(openPath);
+			serializer.Deserialize(path.string());
 		}
 	}
 
@@ -631,8 +660,7 @@ namespace Odysseus
 		std::string savePath = FileDialogs::SaveFile("Odysseus Scene (*.odcmap)\0*.odcmap\0");
 		if (!savePath.empty())
 		{
-			SceneSerializer serializer(activeScene);
-			serializer.Serialize(savePath);
+			SerializeScene(activeScene, savePath);
 		}
 	}
 

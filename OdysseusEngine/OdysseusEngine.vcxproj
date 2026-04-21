@@ -136,10 +136,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorLayer.h" />
+    <ClInclude Include="src\Panels\ContentBrowser\ContentBrowserPanel.h" />
     <ClInclude Include="src\Panels\HierarchyPanel.h" />
     <ClInclude Include="src\Panels\WindowTitleBar\WindowTitleBar.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Panels\ContentBrowser\ContentBrowserPanel.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\OdysseusEditorApp.cpp" />
     <ClCompile Include="src\Panels\HierarchyPanel.cpp" />
