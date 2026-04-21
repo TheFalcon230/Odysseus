@@ -16,6 +16,8 @@
 
 namespace Odysseus
 {
+	extern const std::filesystem::path g_AssetsDirectory;
+
 	HierarchyPanel::HierarchyPanel(const Ref<Scene>& context)
 	{
 		SetContext(context);
@@ -183,6 +185,35 @@ namespace Odysseus
 		ImGui::PopID();
 	}
 
+	static void DrawFloatControl(const std::string& label, float& currentValue, float resetValue, float min, float max, float columnWidth)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		auto boldFont = io.Fonts->Fonts[0];
+
+		ImVec2 avail = ImGui::GetContentRegionAvail();
+
+		ImGui::PushID(label.c_str());
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, avail.x * 0.5f);
+		if (ImGui::Button(label.c_str(), ImVec2(avail.x * 0.5f, 0.0f)))
+		{
+			currentValue = resetValue;
+		}
+		ImGui::NextColumn();
+
+		ImGui::SetColumnWidth(0, avail.x * 0.5f);
+
+		float lineHeight = GImGui->Style.FontSizeBase + GImGui->Style.FramePadding.y * 2;
+		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+		ImGui::SameLine();
+		ImGui::DragFloat("##float", &currentValue, 0.1f, min, max, "%0.2f");
+
+		ImGui::Columns(1);
+		ImGui::PopID();
+	}
+
 	template<typename T, typename UIFunction>
 	static void DrawComponent(const std::string& name, Object object, UIFunction function)
 	{
@@ -259,11 +290,18 @@ namespace Odysseus
 				OSelectionContext.AddComponent<SpriteRendererComponent>();
 				ImGui::CloseCurrentPopup();
 			}
+
+			if (ImGui::MenuItem("Point light"))
+			{
+				OSelectionContext.AddComponent<PointLightComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+
 			ImGui::EndPopup();
 		}
 		ImGui::PopItemWidth();
 
-		DrawComponent<TransformComponent>("Transform", object, [](auto& component)
+		DrawComponent<TransformComponent>("Transform", object, [](TransformComponent& component)
 		{
 			DrawVec3Controls("Position", component.Position);
 			glm::vec3 rotation = glm::degrees(component.Rotation);
@@ -272,7 +310,39 @@ namespace Odysseus
 			DrawVec3Controls("Scale", component.Scale, 1.0f);
 		});
 
-		DrawComponent<SpriteRendererComponent>("Sprite Renderer", object, [](auto& component) {ImGui::ColorEdit4("Color", glm::value_ptr(component.Color)); });
+		DrawComponent<SpriteRendererComponent>("Sprite Renderer", object, [](SpriteRendererComponent& component)
+		{
+			ImVec2 avail = ImGui::GetContentRegionAvail();
+			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+
+			ImGui::Columns(2);
+			ImGui::SetColumnWidth(0, avail.x * 0.5f);
+			ImGui::Text("Texture");
+			ImGui::NextColumn();
+			if (ImGui::ImageButton("##Texture", (ImTextureID)(component.Texture ? component.Texture->GetRendererID() : 0), ImVec2{ 64, 64 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
+			{
+				//Clears texture
+				component.Texture = nullptr;
+			}
+
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+				{
+					const wchar_t* path = (const wchar_t*)payload->Data;
+					std::filesystem::path texturePath = std::filesystem::path(g_AssetsDirectory)/ path;
+					Ref<Texture2D> texture = Texture2D::Create(texturePath.string());
+					if (texture->IsLoaded())
+						component.Texture = texture;
+					else
+						ODC_WARN("Could not load texture {0}", texturePath.filename().string());
+				}
+				ImGui::EndDragDropTarget();
+			}
+			ImGui::Columns(1);
+			DrawFloatControl("Tiling Factor", component.TilingFactor, 1.0f, 0.0f, 10.0f, 100.0f);
+
+		});
 
 		DrawComponent<PointLightComponent>("Point Light", object, [](auto& component) {ImGui::ColorEdit4("Color", glm::value_ptr(component.Color)); ImGui::DragFloat("Intensity", &component.Intensity, 0.1f, 0.0f, 100.0f); });
 

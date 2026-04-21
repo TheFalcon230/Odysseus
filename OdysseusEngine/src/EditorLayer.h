@@ -27,7 +27,9 @@ namespace Odysseus
 
 		void OpenScene(const std::filesystem::path& path);
 
-		void SaveAs();
+		void SaveScene();
+
+		void SaveSceneAs();
 
 		void OnEvent(Event& e) override;
 
@@ -101,6 +103,8 @@ namespace Odysseus
 		HierarchyPanel hierarchyPanel;
 		WindowTitleBar windowTitleBar;
 		ContentBrowserPanel contentBrowserPanel;
+
+		std::filesystem::path m_EditorScenePath;
 
 		/*--------------------------------------------------------*/
 

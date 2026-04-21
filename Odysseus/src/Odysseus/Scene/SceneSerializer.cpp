@@ -106,6 +106,8 @@ namespace YAML {
 
 namespace Odysseus
 {
+	extern const std::filesystem::path g_AssetsDirectory;
+
 	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& v)
 	{
 		out << YAML::Flow;
@@ -200,6 +202,18 @@ namespace Odysseus
 			out << YAML::Key << "TilingFactor" << YAML::Value << spriteRendererComponent.TilingFactor;
 
 			out << YAML::EndMap; // SpriteRendererComponent
+		}
+
+		if (object.HasComponent<PointLightComponent>())
+		{
+			out << YAML::Key << "PointLightComponent";
+			out << YAML::BeginMap; // PointLightComponent
+
+			auto& pointLightComponent = object.GetComponent<PointLightComponent>();
+			out << YAML::Key << "Color" << YAML::Value << pointLightComponent.Color;
+			out << YAML::Key << "Intensity" << YAML::Value << pointLightComponent.Intensity;
+
+			out << YAML::EndMap; // PointLightComponent
 		}
 
 		out << YAML::EndMap; // Object
@@ -301,15 +315,23 @@ namespace Odysseus
 				{
 					auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
 					src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
-					/*if (spriteRendererComponent["TexturePath"])
+					if (spriteRendererComponent["TexturePath"])
 					{
 						std::string texturePath = spriteRendererComponent["TexturePath"].as<std::string>();
-						auto path = Project::GetAssetFileSystemPath(texturePath);
-						src.Texture = Texture2D::Create(path.string());
+						auto path = (texturePath);
+						src.Texture = Texture2D::Create(path);
 					}
 
 					if (spriteRendererComponent["TilingFactor"])
-						src.TilingFactor = spriteRendererComponent["TilingFactor"].as<float>();*/
+						src.TilingFactor = spriteRendererComponent["TilingFactor"].as<float>();
+				}
+
+				auto pointLightComponent = entity["PointLightComponent"];
+				if (pointLightComponent)
+				{
+					auto& plc = deserializedEntity.AddComponent<PointLightComponent>();
+					plc.Color = pointLightComponent["Color"].as<glm::vec4>();
+					plc.Intensity = pointLightComponent["Intensity"].as<float>();
 				}
 			}
 		}

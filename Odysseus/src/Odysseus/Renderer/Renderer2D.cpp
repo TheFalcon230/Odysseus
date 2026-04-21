@@ -97,7 +97,7 @@ namespace Odysseus
 	};
 
 	static Renderer2DData s_Data;
-	static glm::vec2 defaultTexCoord[] = { {0.0, 0.0},{1.0, 0.0},{1.0, 1.0},{0.0, 1.0}, };
+	static glm::vec2 defaultTexCoord[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
 	void Renderer2D::Init()
 	{
@@ -315,25 +315,24 @@ namespace Odysseus
 
 	void Renderer2D::Flush()
 	{
-		uint32_t dataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
-		s_Data.vertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
-
-		uint32_t cubeDataSize = (uint8_t*)s_Data.CubeVertexBufferPtr - (uint8_t*)s_Data.CubeVertexBufferBase;
-		s_Data.vertexBuffer->SetData(s_Data.CubeVertexBufferBase, cubeDataSize);
-
-		for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+		if (s_Data.QuadIndexCount)
 		{
-			s_Data.TextureSlots[i]->Bind(i);
-		}
+			uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase);
+			s_Data.vertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
 
-		RenderCommand::DrawIndexed(s_Data.vertexArray, s_Data.QuadIndexCount);
-		s_Data.Stats.DrawCalls++;
+			// Bind textures
+			for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+				s_Data.TextureSlots[i]->Bind(i);
+
+			s_Data.unlitShader->Bind();
+			RenderCommand::DrawIndexed(s_Data.vertexArray, s_Data.QuadIndexCount);
+			s_Data.Stats.DrawCalls++;
+		}
 	}
 
 	void Renderer2D::NextBatch()
 	{
-		EndScene();
-
+		Flush();
 		NewBatch();
 	}
 
@@ -372,41 +371,37 @@ namespace Odysseus
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
 	{
 		constexpr size_t quadVertexCount = 4;
+		const glm::vec2* textureCoords = defaultTexCoord;
 
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndicesPerDrawCall)
-		{
 			NextBatch();
+
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
+		{
+			if (*s_Data.TextureSlots[i] == *texture)
+			{
+				textureIndex = (float)i;
+				break;
+			}
 		}
 
-		glm::vec4 color = tintColor;
-		float textureIndex = 0.0f;
-
-		if (texture != nullptr)
+		if (textureIndex == 0.0f)
 		{
+			if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlot)
+				NextBatch();
 
-			for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
-			{
-				if (*s_Data.TextureSlots[i].get() == *(texture).get())
-				{
-					textureIndex = (float)i;
-					break;
-				}
-			}
-
-			if (textureIndex == 0.0f)
-			{
-				textureIndex = (float)s_Data.TextureSlotIndex;
-				s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
-				s_Data.TextureSlotIndex++;
-			}
+			// if texture not found, add to slot
+			textureIndex = (float)s_Data.TextureSlotIndex;
+			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
+			s_Data.TextureSlotIndex++;
 		}
 
 		for (size_t i = 0; i < quadVertexCount; i++)
 		{
 			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[i];
-			s_Data.QuadVertexBufferPtr->Normal = transform * s_Data.QuadVertexNormal[i];
-			s_Data.QuadVertexBufferPtr->Color = color;
-			s_Data.QuadVertexBufferPtr->TexCoord = defaultTexCoord[i];
+			s_Data.QuadVertexBufferPtr->Color = tintColor;
+			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
 			s_Data.QuadVertexBufferPtr->EntityID = entityID;
@@ -416,22 +411,6 @@ namespace Odysseus
 		s_Data.QuadIndexCount += 6;
 
 		s_Data.Stats.QuadCount++;
-
-		/*s_Data.unlitShader->SetFloat4("u_BaseColor", quad.baseColor);
-		s_Data.unlitShader->SetFloat("u_Tiling", quad.tillingFactor);
-		glm::mat4 location = glm::translate(glm::mat4(1.0f), quad.position);
-		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(quad.rotation), { 0.f, 0.f, 1.0f });
-		glm::mat4 scale = glm::scale(glm::mat4(1.0f), { quad.scale.x, quad.scale.y, 1.0f });
-		glm::mat4 transform = location * rotation * scale;
-		s_Data.unlitShader->SetMat4("u_Transform", transform);
-
-		if (quad.texture != nullptr)
-			quad.texture->Bind();
-		else
-			s_Data.defaultTexture->Bind();
-
-		s_Data.vertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data.vertexArray);*/
 	}
 
 	void Renderer2D::DrawCube(const glm::mat4& transform, const glm::vec4& color, int entityID)

@@ -78,7 +78,7 @@ namespace Odysseus
 
 					if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
 					{
-						Context->SaveAs();
+						Context->SaveSceneAs();
 					}
 
 					if (ImGui::MenuItem("Open...", "Ctrl+O"))

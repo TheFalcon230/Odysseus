@@ -71,6 +71,8 @@ namespace Odysseus
 	{
 		PROFILE_FUNCTION();
 		time = updateTime;
+		
+		activeScene->OnViewportResize((uint32_t)vec_ViewportSize.x, (uint32_t)vec_ViewportSize.y);
 
 		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
 			vec_ViewportSize.x > 0.0f && vec_ViewportSize.y > 0.0f &&
@@ -79,7 +81,6 @@ namespace Odysseus
 			m_Framebuffer->Resize((uint32_t)vec_ViewportSize.x, (uint32_t)vec_ViewportSize.y);
 			m_CameraController.OnResize(vec_ViewportSize.x, vec_ViewportSize.y);
 			mainCameraEditor.SetViewportSize(vec_ViewportSize.x, vec_ViewportSize.y);
-			activeScene->OnViewportResize((uint32_t)vec_ViewportSize.x, (uint32_t)vec_ViewportSize.y);
 		}
 
 		{
@@ -105,9 +106,10 @@ namespace Odysseus
 			m_Framebuffer->ClearAttachment(1, -1);
 		}
 
+		
+		activeScene->UpdateEditor(updateTime, mainCameraEditor);
 		{
 			PROFILE_SCOPE("Renderer Draw");
-			activeScene->UpdateEditor(updateTime, mainCameraEditor);
 
 			auto [mx, my] = ImGui::GetMousePos();
 			mx -= vec_ViewportBounds[0].x;
@@ -384,7 +386,7 @@ namespace Odysseus
 				bIsViewportFocused = ImGui::IsWindowFocused();
 				bIsViewportHovered = ImGui::IsWindowHovered();
 
-				Application::Get().GetImGuiLayer()->SetCanBlockEvents(!bIsViewportFocused || !bIsViewportHovered);
+				Application::Get().GetImGuiLayer()->SetCanBlockEvents(!bIsViewportHovered);
 
 				ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 				vec_ViewportSize = { viewportSize.x, viewportSize.y };
@@ -498,9 +500,16 @@ namespace Odysseus
 		{
 			case (int)Key::S: // Save
 			{
-				if (control && shift)
+				if (control)
 				{
-					SaveAs();
+					if (shift)
+					{
+						SaveSceneAs();
+					}
+					else
+					{
+						SaveScene();
+					}
 				}
 				break;
 			}
@@ -587,7 +596,7 @@ namespace Odysseus
 		return false;
 	}
 
-	float Odysseus::EditorLayer::DrawFloatControl(const std::string& label, float currentValue, float resetValue, float min, float max, float columnWidth)
+	float EditorLayer::DrawFloatControl(const std::string& label, float currentValue, float resetValue, float min, float max, float columnWidth)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		auto boldFont = io.Fonts->Fonts[0];
@@ -629,8 +638,9 @@ namespace Odysseus
 	void EditorLayer::NewScene()
 	{
 		activeScene = CreateRef<Scene>();
-		activeScene->OnViewportResize((uint32_t)vec_ViewportSize.x, (uint32_t)vec_ViewportSize.y);
 		hierarchyPanel.SetContext(activeScene);
+
+		m_EditorScenePath = std::filesystem::path();
 	}
 
 	void EditorLayer::OpenScene()
@@ -646,21 +656,38 @@ namespace Odysseus
 	{
 		if (!path.empty())
 		{
-			activeScene = CreateRef<Scene>();
-			activeScene->OnViewportResize((uint32_t)vec_ViewportSize.x, (uint32_t)vec_ViewportSize.y);
-			hierarchyPanel.SetContext(activeScene);
+			Ref<Scene> newScene = CreateRef<Scene>();
+			SceneSerializer serializer(newScene);
+			if (serializer.Deserialize(path.string()))
+			{
+				activeScene = newScene;
+				hierarchyPanel.SetContext(activeScene);
 
-			SceneSerializer serializer(activeScene);
-			serializer.Deserialize(path.string());
+				m_EditorScenePath = path;
+			}
+
 		}
 	}
 
-	void EditorLayer::SaveAs()
+	void EditorLayer::SaveScene()
+	{
+		if (m_EditorScenePath.empty())
+		{
+			SaveSceneAs();
+		}
+		else
+		{
+			SerializeScene(activeScene, m_EditorScenePath);
+		}
+	}
+
+	void EditorLayer::SaveSceneAs()
 	{
 		std::string savePath = FileDialogs::SaveFile("Odysseus Scene (*.odcmap)\0*.odcmap\0");
 		if (!savePath.empty())
 		{
 			SerializeScene(activeScene, savePath);
+			m_EditorScenePath = savePath;
 		}
 	}
 
