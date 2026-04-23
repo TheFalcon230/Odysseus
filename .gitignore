@@ -3,7 +3,10 @@
 bin/
 bin-int/
 x64/
+OdysseusEngine/assets/cache/
 
 # Files
 *.user
 *.log
+*.json
+*.ini

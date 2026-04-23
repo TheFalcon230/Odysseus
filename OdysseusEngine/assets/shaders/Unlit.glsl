@@ -36,10 +36,10 @@ struct VertexOutput
 	float Roughness;
 };
 
-out vec3 FragPos;
-out flat float v_TexIndex;
-out flat int v_EntityID;
-out vec3 v_CameraPosition;
+layout (location = 0) out vec3 FragPos;
+layout (location = 4) out flat float v_TexIndex;
+layout (location = 5) out flat int v_EntityID;
+layout (location = 6) out vec3 v_CameraPosition;
 
 struct Light {
 	vec3 u_LightPos;
@@ -47,8 +47,8 @@ struct Light {
 	float u_LightIntensity;
 };
 
-out Light LightOutput;
-out VertexOutput Output;
+layout (location = 10) out Light LightOutput;
+layout (location = 19) out VertexOutput Output;
 
 void main()
 {
@@ -67,7 +67,7 @@ void main()
 	LightOutput.u_LightIntensity = u_LightBufferIntensity;
 
 	FragPos = vec3( u_Model * vec4(a_Position, 1.0f));
-	gl_Position = u_ViewProjection *  vec4(a_Position, 1.0f);
+	gl_Position = u_ViewProjection *  vec4(FragPos, 1.0f);
 }
 
 #type fragment
@@ -91,12 +91,12 @@ struct VertexOutput
 	float Roughness;
 };
 
-in Light LightOutput;
-in VertexOutput Output;
-in vec3 FragPos;
-in flat float v_TexIndex;
-in flat int v_EntityID;
-in vec3 v_CameraPosition;
+layout (location = 0) in vec3 FragPos;
+layout (location = 4) in flat float v_TexIndex;
+layout (location = 5) in flat int v_EntityID;
+layout (location = 6) in vec3 v_CameraPosition;
+layout (location = 10) in Light LightOutput;
+layout (location = 19) in VertexOutput Output;
 
 layout (binding = 0) uniform sampler2D u_Textures[32];
 
@@ -104,7 +104,7 @@ void main()
 {
 	vec4 objectColor = Output.Color;
 
-	switch(int(Input.TexIndex))
+	switch(int(v_TexIndex))
 	{
 		case  0: objectColor *= texture(u_Textures[ 0], Output.TexCoord * Output.TilingFactor); break;
 		case  1: objectColor *= texture(u_Textures[ 1], Output.TexCoord * Output.TilingFactor); break;
@@ -163,7 +163,7 @@ void main()
 	FragColor.rgb = (Ambient + Diffuse + Specular) * objectColor.rgb;
 	FragColor.a = objectColor.a;
 
-	color = Input.Color;
+	FragColor = Output.Color;
 
-	color2 = v_EntityID;
+	ID = v_EntityID;
 }

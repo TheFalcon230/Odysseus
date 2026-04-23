@@ -130,9 +130,9 @@ namespace Odysseus
 		s_Data.m_LightBuffer = UniformBuffer::Create(sizeof(Renderer2DData::LightData) * s_Data.MaxLights, 1, BufferUsageType::DYNAMIC_DRAW);
 		s_Data.m_MaterialBuffer = UniformBuffer::Create(sizeof(Renderer2DData::MaterialData), 2, BufferUsageType::DYNAMIC_DRAW);
 
-		s_Data.vertexArray = VertexArray::Create();
+		s_Data.quadVertexArray = VertexArray::Create();
 
-		s_Data.vertexBuffer = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
+		s_Data.vertexBuffer = VertexBuffer::Create(s_Data.MaxVerticesPerDrawCall * sizeof(QuadVertex));
 		s_Data.vertexBuffer->SetLayout({
 			{ ShaderDataType::Float3, "a_Position" },
 			{ ShaderDataType::Float3, "a_Normal" },
@@ -150,10 +150,10 @@ namespace Odysseus
 		s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVerticesPerDrawCall];
 		s_Data.CubeVertexBufferBase = new CubeVertex[s_Data.MaxVerticesPerDrawCall];
 
-		uint32_t* quadIndices = new uint32_t[s_Data.MaxIndices];
+		uint32_t* quadIndices = new uint32_t[s_Data.MaxIndicesPerDrawCall];
 
 		uint32_t offset = 0;
-		for (uint32_t i = 0; i < s_Data.MaxIndices; i += 6)
+		for (uint32_t i = 0; i < s_Data.MaxIndicesPerDrawCall; i += 6)
 		{
 			quadIndices[i + 0] = offset + 0;
 			quadIndices[i + 1] = offset + 1;
@@ -186,7 +186,7 @@ namespace Odysseus
 		s_Data.defaultORMTexture->SetData(&defaultORMTextureData, sizeof(uint32_t));
 
 		int32_t samplers[s_Data.MaxTextureSlot];
-		for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
+		for (uint32_t i = 0; i < s_Data.MaxTextureSlot; i++)
 			samplers[i] = i;
 
 		s_Data.unlitShader = Shader::Create("assets/shaders/Unlit.glsl");
@@ -317,8 +317,9 @@ namespace Odysseus
 
 	void Renderer2D::BeginScene(const Camera& camera, glm::mat4 transform)
 	{
-		s_Data.CameraBuffer.ViewProjection = camera.GetProjection() * glm::inverse(transform);
-		s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
+
+		//s_Data.unlitShader->Bind();
+		//s_Data.unlitShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 
 		StartBatch();
 	}
@@ -379,7 +380,7 @@ namespace Odysseus
 				s_Data.defaultORMTexture->Bind(2);
 
 			s_Data.PBRShader->Bind();
-			RenderCommand::DrawIndexed(s_Data.vertexArray, s_Data.QuadIndexCount);
+			RenderCommand::DrawIndexed(s_Data.quadVertexArray, s_Data.QuadIndexCount);
 			s_Data.Stats.DrawCalls++;
 		}
 	}

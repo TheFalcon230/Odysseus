@@ -20,33 +20,6 @@ namespace Odysseus
 			case ImageFormat::RGBA8: return GL_RGBA;
 			}
 
-			ODC_CORE_ASSERT(false, "Unknown image format!");
-			return 0;
-		}
-
-		static GLenum OdysseusImageFormatToGLInternalFormat(ImageFormat format)
-		{
-			switch (format)
-			{
-			case ImageFormat::RGB8:  return GL_RGB8;
-			case ImageFormat::RGBA8: return GL_RGBA8;
-			}
-
-			ODC_CORE_ASSERT(false, "Unknown image format!");
-			return 0;
-		}
-	}
-
-	namespace Utils {
-
-		static GLenum OdysseusImageFormatToGLDataFormat(ImageFormat format)
-		{
-			switch (format)
-			{
-			case ImageFormat::RGB8:  return GL_RGB;
-			case ImageFormat::RGBA8: return GL_RGBA;
-			}
-
 			ODC_CORE_ASSERT(false);
 			return 0;
 		}
@@ -95,17 +68,6 @@ namespace Odysseus
 				internalFormat = GL_RGB8;
 				dataFormat = GL_RGB;
 			}
-			GLenum internalFormat = 0, dataFormat = 0;
-			if (channels == 4)
-			{
-				internalFormat = GL_RGBA8;
-				dataFormat = GL_RGBA;
-			}
-			else if (channels == 3)
-			{
-				internalFormat = GL_RGB8;
-				dataFormat = GL_RGB;
-			}
 
 				m_InternalFormat = internalFormat;
 				m_DataFormat = dataFormat;
@@ -131,15 +93,8 @@ namespace Odysseus
 		{
 			ODC_CORE_ASSERT(data, "Failed to load image!");
 		}
-		}
-		else
-		{
-			ODC_CORE_ASSERT(data, "Failed to load image!");
-		}
 	}
 
-	OpenGLTexture2D::OpenGLTexture2D(const TextureSpecification& specification)
-		: m_Specification(specification), m_Width(specification.Width), m_Height(specification.Height)
 	OpenGLTexture2D::OpenGLTexture2D(const TextureSpecification& specification)
 		: m_Specification(specification), m_Width(specification.Width), m_Height(specification.Height)
 	{

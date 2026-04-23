@@ -39,10 +39,10 @@ struct VertexOutput
 	mat3 TBN;
 };
 
-out vec3 FragPos;
-out flat float v_TexIndex;
-out flat int v_EntityID;
-out vec3 v_CameraPosition;
+layout (location = 0) out vec3 FragPos;
+layout (location = 4) out flat float v_TexIndex;
+layout (location = 5) out flat int v_EntityID;
+layout (location = 6) out vec3 v_CameraPosition;
 
 struct Light {
 	vec3 u_LightPos;
@@ -57,9 +57,9 @@ struct Material
 	float AO;
 };
 
-out Light LightOutput;
-out VertexOutput Output;
-out Material MaterialOutput;
+layout (location = 10) out Light LightOutput;
+layout (location = 19) out VertexOutput Output;
+layout (location = 26) out Material MaterialOutput;
 
 void main()
 {
@@ -78,7 +78,7 @@ void main()
 	LightOutput.u_LightIntensity = u_LightBufferIntensity;
 
 	FragPos = vec3( u_Model * vec4(a_Position, 1.0f));
-	gl_Position = u_ViewProjection *  vec4(a_Position, 1.0f);
+	gl_Position = u_ViewProjection *  vec4(FragPos, 1.0f);
 }
 
 #type fragment
@@ -109,13 +109,13 @@ struct Material
 	float AO;
 };
 
-in Light LightOutput;
-in VertexOutput Output;
-in Material MaterialOutput;
-in vec3 FragPos;
-in flat float v_TexIndex;
-in flat int v_EntityID;
-in vec3 v_CameraPosition;
+layout (location = 0) in vec3 FragPos;
+layout (location = 4)in flat float v_TexIndex;
+layout (location = 5)in flat int v_EntityID;
+layout (location = 6)in vec3 v_CameraPosition;
+layout (location = 10)in Light LightOutput;
+layout (location = 19)in VertexOutput Output;
+layout (location = 26)in Material MaterialOutput;
 
 const float PI = 3.14159265359;
 

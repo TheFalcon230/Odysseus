@@ -2,24 +2,6 @@ Scene: New Scene
 Objects:
   - Object: 184563512379
     TagComponent:
-      Name: Test Square
-    TransformComponent:
-      Position: [-2.4000001, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0, 1, 1, 1]
-  - Object: 184563512379
-    TagComponent:
-      Name: Red Square
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [1, 0, 0, 1]
-  - Object: 184563512379
-    TagComponent:
       Name: Ground
     TransformComponent:
       Position: [0, 0, 0]
@@ -29,3 +11,13 @@ Objects:
       Color: [1, 1, 1, 1]
       TilingFactor: 10
       Roughness: 0.5
+  - Object: 184563512379
+    TagComponent:
+      Name: Point Light
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PointLightComponent:
+      Color: [1, 1, 1, 1]
+      Intensity: 1

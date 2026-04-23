@@ -22,7 +22,7 @@
 namespace Odysseus
 {
 	extern const std::filesystem::path g_AssetsDirectory;
- 
+
 	EditorLayer::EditorLayer()
 		: Layer("Editor Layer"), m_CameraController(1920.f / 1080.f)
 	{
@@ -72,7 +72,7 @@ namespace Odysseus
 		PROFILE_FUNCTION();
 
 		time = updateTime;
-		
+
 		activeScene->OnViewportResize((uint32_t)vec_ViewportSize.x, (uint32_t)vec_ViewportSize.y);
 
 		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
@@ -90,7 +90,7 @@ namespace Odysseus
 			{
 				m_CameraController.OnUpdate(updateTime);
 			}
-			mainCameraEditor.Update(updateTime);	
+			mainCameraEditor.Update(updateTime);
 			activeScene->UpdateEditor(updateTime, mainCameraEditor);
 		}
 
@@ -105,7 +105,7 @@ namespace Odysseus
 			m_Framebuffer->ClearAttachment(1, -1);
 		}
 
-		
+
 		activeScene->UpdateEditor(updateTime, mainCameraEditor);
 		{
 			PROFILE_SCOPE("Renderer Draw");
@@ -177,17 +177,27 @@ namespace Odysseus
 		// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
 		if (!opt_padding)
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		ImGui::Begin("DockSpace Demo", &isDockspaceOpen, window_flags);
+		if (!opt_padding)
+			ImGui::PopStyleVar();
 
-		if (ImGui::Begin("DockSpace Demo", &isDockspaceOpen, window_flags))
+		if (opt_fullscreen)
+			ImGui::PopStyleVar(2);
+
+		// Submit the DockSpace
+		ImGuiIO& io = ImGui::GetIO();
+		ImGuiStyle& style = ImGui::GetStyle();
+		style.WindowMinSize.x = 370.0f;
+		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 		style.WindowMinSize.x = 32.0f;
-		
+
 		if (bIsProfilerEnabled && ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoResize))
 		{
-			ImGui::BeginChild("Stats", ImVec2(150,0), ImGuiChildFlags_AutoResizeX);
+			ImGui::BeginChild("Stats", ImVec2(150, 0), ImGuiChildFlags_AutoResizeX);
 			ImGui::Text("Render Stats");
 			ImGui::Separator();
 			char label[50];
@@ -211,22 +221,10 @@ namespace Odysseus
 				ImPlot::SetupAxisLimits(ImAxis_X1, t - 10, t, ImGuiCond_Always);
 				const int resultSize = m_ProfileResults.size();
 
-				ImGui::Text("Render Stats");
-				ImGui::Separator();
-				char label[50];
-				strcpy(label, "%.0f FPS ");
-				ImGui::Text(label, 1000.f / time.AsMilliseconds());
-				ImGui::Text("Draw calls: %d", Renderer2D::GetStats().DrawCalls);
-				ImGui::Text("Quads: %d", Renderer2D::GetStats().QuadCount);
-				ImGui::Text("Vertices: %d", Renderer2D::GetStats().GetTotalVertexCount());
-				ImGui::Text("Tris: %d", Renderer2D::GetStats().GetTotalTrisCount());
-				ImGui::Separator();
+				static std::vector<ScrollingBuffer> sbDatas;
+				sbDatas.resize(resultSize);
 
-				static ImPlotAxisFlags xflags = ImPlotAxisFlags_None;
-				static ImPlotAxisFlags yflags = ImPlotAxisFlags_AutoFit;
-
-				//Profiling graph
-				if (ImPlot::BeginPlot("Graph", ImVec2(-1, -1)))
+				for (int i = 0; i < resultSize; i++)
 				{
 					sbDatas[i].AddPoint(t, m_ProfileResults[i].ExecutionTime);
 					//ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 1.0f);
@@ -237,8 +235,8 @@ namespace Odysseus
 					ImPlot::PlotShaded(m_ProfileResults[i].Name, &sbDatas[i].Data[0].x, &sbDatas[i].Data[0].y, sbDatas[i].Data.size(), 0, spec);
 				}
 
-				ImGui::End();
-				ImGui::PopStyleVar();
+				m_ProfileResults.clear();
+				ImPlot::EndPlot();
 			}
 			ImGui::EndChild();
 			ImGui::End();
@@ -257,7 +255,7 @@ namespace Odysseus
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGuiWindowClass window_class;
 		window_class.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_AutoHideTabBar;
-		ImGui::SetNextWindowClass(&window_class);			
+		ImGui::SetNextWindowClass(&window_class);
 
 		if (ImGui::Begin("##Viewport", (bool*)true))
 		{
@@ -271,7 +269,7 @@ namespace Odysseus
 				ImGui::PushFont(io.Fonts->Fonts[1], IconSize);
 				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ODYSSEUS_HOVERED_BUTTON_COLOR);
 				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ODYSSEUS_ACTIVE_BUTTON_COLOR);
-				
+
 				ImGui::PushStyleColor(ImGuiCol_Button, iGizmoType == ImGuizmo::SELECTION ? ODYSSEUS_ACTIVE_BUTTON_COLOR : ODYSSEUS_DEFAULT_BUTTON_COLOR);
 				ImGui::PushID("SelectGuizmoButton");
 				if (ImGui::Button(ICON_FA_ARROW_POINTER, ImVec2(0, 0)))//Select
@@ -281,18 +279,18 @@ namespace Odysseus
 				ImGui::PopID();
 				ImGui::SameLine();
 				ImGui::PopStyleColor(1);
-				
+
 				ImGui::PushStyleColor(ImGuiCol_Button, iGizmoType == ImGuizmo::TRANSLATE ? ODYSSEUS_ACTIVE_BUTTON_COLOR : ODYSSEUS_DEFAULT_BUTTON_COLOR);
 
 				ImGui::PushID("TranslateGuizmoButton");
 				if (ImGui::Button(ICON_FA_ARROWS_UP_DOWN_LEFT_RIGHT, ImVec2(0, 0)))//Move
 				{
-					SetTranslateGizmoType();				
+					SetTranslateGizmoType();
 				}
 				ImGui::PopID();
 				ImGui::SameLine();
 				ImGui::PopStyleColor(1);
-				
+
 				ImGui::PushStyleColor(ImGuiCol_Button, iGizmoType == ImGuizmo::ROTATE ? ODYSSEUS_ACTIVE_BUTTON_COLOR : ODYSSEUS_DEFAULT_BUTTON_COLOR);
 
 				ImGui::PushID("RotateGuizmoButton");
@@ -375,8 +373,8 @@ namespace Odysseus
 				ImGui::EndChild();
 			}
 
-			ImGuiChildFlags viewportRenderFlags =  ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY;
-			if (ImGui::BeginChild("##ViewportRender", ImVec2(0,0)))
+			ImGuiChildFlags viewportRenderFlags = ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY;
+			if (ImGui::BeginChild("##ViewportRender", ImVec2(0, 0)))
 			{
 				auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
 				auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
@@ -394,7 +392,7 @@ namespace Odysseus
 
 				uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
 				ImGui::Image((ImTextureID)(intptr_t)textureID, ImVec2{ vec_ViewportSize.x, vec_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-				
+
 				if (ImGui::BeginDragDropTarget())
 				{
 					const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
@@ -410,7 +408,7 @@ namespace Odysseus
 
 				bIsUsingGizmo = false;
 				Object selectedObject = hierarchyPanel.GetSelectedObject();
-				if (selectedObject && iGizmoType != (ImGuizmo::OPERATION) - 1)
+				if (selectedObject && iGizmoType != (ImGuizmo::OPERATION)-1)
 				{
 					ImGuizmo::SetOrthographic(false);
 					ImGuizmo::SetDrawlist();
@@ -420,7 +418,7 @@ namespace Odysseus
 					glm::mat4 cameraView = mainCameraEditor.GetViewMatrix();
 
 					if (selectedObject.HasComponent<TransformComponent>())
-					{	
+					{
 						auto& transformComponent = selectedObject.GetComponent<TransformComponent>();
 						glm::mat4 transform = transformComponent.Transform();
 
@@ -502,104 +500,104 @@ namespace Odysseus
 
 		switch (e.GetKeyCode())
 		{
-			case (int)Key::S: // Save
+		case (int)Key::S: // Save
+		{
+			if (control)
 			{
-				if (control)
+				if (shift)
 				{
-					if (shift)
-					{
-						SaveSceneAs();
-					}
-					else
-					{
-						SaveScene();
-					}
+					SaveSceneAs();
 				}
-				break;
+				else
+				{
+					SaveScene();
+				}
 			}
-			case (int)Key::O:// Open
+			break;
+		}
+		case (int)Key::O:// Open
+		{
+			if (control)
 			{
-				if (control)
-				{
-					OpenScene();
-				}
-				break;
+				OpenScene();
 			}
-			case (int)Key::N:// Open
+			break;
+		}
+		case (int)Key::N:// Open
+		{
+			if (control)
 			{
-				if (control)
-				{
-					NewScene();
-				}
-				break;
+				NewScene();
 			}
-			case (int)Key::P:// Open
+			break;
+		}
+		case (int)Key::P:// Open
+		{
+			if (control && alt)
 			{
-				if (control && alt)
-				{
-					bIsProfilerEnabled = !bIsProfilerEnabled;
-				}
-				break;
+				bIsProfilerEnabled = !bIsProfilerEnabled;
 			}
-			case (int)Key::D:// Open
+			break;
+		}
+		case (int)Key::D:// Open
+		{
+			if (control && shift)
 			{
-				if (control && shift)
-				{
-					bIsCameraDebugEnabled = !bIsCameraDebugEnabled;
-				}
-				break;
+				bIsCameraDebugEnabled = !bIsCameraDebugEnabled;
 			}
+			break;
+		}
 
-			// Gizmos shortcuts
-			case (int)Key::Space: // Switching between gizmos
-			{
-				if (iGizmoType == ImGuizmo::SCALE)
-				{
-					SetTranslateGizmoType();
-				}
-				else if (iGizmoType == ImGuizmo::TRANSLATE)
-				{
-					SetRotateGizmoType();
-				}
-				else if (iGizmoType == ImGuizmo::ROTATE)
-				{
-					SetScaleGizmoType();
-				}
-				break;
-			}
-			case (int)Key::A: // No gizmo
-			{
-				SetSelectionGizmoType();
-				break;
-			}case (int)Key::W: // Position
+		// Gizmos shortcuts
+		case (int)Key::Space: // Switching between gizmos
+		{
+			if (iGizmoType == ImGuizmo::SCALE)
 			{
 				SetTranslateGizmoType();
-				break;
 			}
-			case (int)Key::E: // Rotation
+			else if (iGizmoType == ImGuizmo::TRANSLATE)
 			{
 				SetRotateGizmoType();
-				break;
 			}
-			case (int)Key::R: // Scale
+			else if (iGizmoType == ImGuizmo::ROTATE)
 			{
 				SetScaleGizmoType();
-				break;
 			}
+			break;
+		}
+		case (int)Key::A: // No gizmo
+		{
+			SetSelectionGizmoType();
+			break;
+		}case (int)Key::W: // Position
+		{
+			SetTranslateGizmoType();
+			break;
+		}
+		case (int)Key::E: // Rotation
+		{
+			SetRotateGizmoType();
+			break;
+		}
+		case (int)Key::R: // Scale
+		{
+			SetScaleGizmoType();
+			break;
+		}
 
-			case (int)Key::Delete:
+		case (int)Key::Delete:
+		{
+			if (Application::Get().GetImGuiLayer()->GetActiveWidgetID() == 0)
 			{
-				if (Application::Get().GetImGuiLayer()->GetActiveWidgetID() == 0)
+				Object selectedEntity = hierarchyPanel.GetSelectedObject();
+				if (selectedEntity)
 				{
-					Object selectedEntity = hierarchyPanel.GetSelectedObject();
-					if (selectedEntity)
-					{
-						hierarchyPanel.SetSelectedObject({});
-						activeScene->DestroyObject(selectedEntity);
-					}
+					hierarchyPanel.SetSelectedObject({});
+					activeScene->DestroyObject(selectedEntity);
 				}
-				break;
 			}
+			break;
+		}
 		}
 		return true;
 	}
@@ -627,7 +625,7 @@ namespace Odysseus
 		ImGui::Columns(2);
 
 		ImGui::SetColumnWidth(0, avail.x * 0.5f);
-		if (ImGui::Button(label.c_str(), ImVec2( avail.x * 0.5f, 0.0f)))
+		if (ImGui::Button(label.c_str(), ImVec2(avail.x * 0.5f, 0.0f)))
 		{
 			value = resetValue;
 		}

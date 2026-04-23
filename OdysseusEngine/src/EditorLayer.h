@@ -92,9 +92,6 @@ namespace Odysseus
 		bool bIsProfilerEnabled = false;
 		bool bIsCameraDebugEnabled = false;
 
-		bool bIsCameraDebugEnabled = false;
-		bool bIsProfilerEnabled = false;
-
 		ImGuizmo::OPERATION iGizmoType = ImGuizmo::TRANSLATE;
 		ImGuizmo::MODE iGizmoMode = ImGuizmo::LOCAL;
 
