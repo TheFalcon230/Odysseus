@@ -1,6 +1,11 @@
 #pragma once
 #include <Odysseus.h>
+
 #include "Panels/HierarchyPanel.h"
+#include "Panels/WindowTitleBar/WindowTitleBar.h"
+#include "Panels/ContentBrowser/ContentBrowserPanel.h"
+
+#include <imguizmo/ImGuizmo.h>
 
 #include "Odysseus/Renderer/EditorCamera.h"
 
@@ -17,15 +22,42 @@ namespace Odysseus
 		void OnUpdate(Timestep updateTime) override;
 		virtual void OnImGuiRender() override;
 
+		void NewScene();
+		void OpenScene();
+
+		void OpenScene(const std::filesystem::path& path);
+
+		void SaveScene();
+
+		void SaveSceneAs();
 
 		void OnEvent(Event& e) override;
+
+		bool GetCameraDebugEnabled() const { return bIsCameraDebugEnabled; }
+		void SetCameraDebugEnabled(bool enabled) { bIsCameraDebugEnabled = enabled; }
+		bool GetProfilerEnabled() const { return bIsProfilerEnabled; }
+		void SetProfilerEnabled(bool enabled) { bIsProfilerEnabled = enabled; }
+
+		void SetSnapTranslation(bool snap) { bSnapTranslation = snap; }
+		void SetSnapRotation(bool snap) { bSnapRotation = snap; }
+		void SetSnapScale(bool snap) { bSnapScale = snap; }
+
+		bool GetSnapTranslation() const { return bSnapTranslation; }
+		bool GetSnapRotation() const { return bSnapRotation; }
+		bool GetSnapScale() const { return bSnapScale; }
+
+		void SetSelectionGizmoType() { iGizmoType = (ImGuizmo::OPERATION) - 1; }
+		void SetTranslateGizmoType() { iGizmoType = ImGuizmo::TRANSLATE; }
+		void SetRotateGizmoType() { iGizmoType = ImGuizmo::ROTATE; }
+		void SetScaleGizmoType() { iGizmoType = ImGuizmo::SCALE; }
+
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
-		void NewScene();
-		void OpenScene();
-		void SaveAs();
+		static float DrawFloatControl(const std::string& label, float currentValue, float resetValue = 0.0f, float min = 0.0f, float max = 100.0f, float columnWidth = 100.0f);
+
+		void SerializeScene(Ref<Scene> scene, const std::filesystem::path& path);
 	private:
 		OrthographicCameraController m_CameraController;
 
@@ -60,20 +92,31 @@ namespace Odysseus
 		bool bIsProfilerEnabled = false;
 		bool bIsCameraDebugEnabled = false;
 
-		int iGizmoType = -1;
-		float fMaxProfilerValue = 0;
+		bool bIsCameraDebugEnabled = false;
+		bool bIsProfilerEnabled = false;
+
+		ImGuizmo::OPERATION iGizmoType = ImGuizmo::TRANSLATE;
+		ImGuizmo::MODE iGizmoMode = ImGuizmo::LOCAL;
+
+		bool bSnapTranslation = false;
+		bool bSnapRotation = false;
+		bool bSnapScale = false;
 
 		HierarchyPanel hierarchyPanel;
+		WindowTitleBar windowTitleBar;
+		ContentBrowserPanel contentBrowserPanel;
+
+		std::filesystem::path m_EditorScenePath;
 
 		/*--------------------------------------------------------*/
 
 		struct ProfileResult
 		{
 			const char* Name;
-			float ExcecutionTime;
+			float ExecutionTime;
 
 			ProfileResult(const char* name, float time)
-				:ExcecutionTime(time), Name(name)
+				:ExecutionTime(time), Name(name)
 			{
 
 			}

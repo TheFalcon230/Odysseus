@@ -20,19 +20,12 @@ Objects:
       Color: [1, 0, 0, 1]
   - Object: 184563512379
     TagComponent:
-      Name: Main Camera
+      Name: Ground
     TransformComponent:
-      Position: [0, 0, 10]
+      Position: [0, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjectionType: 0
-        PerspectiveFOV: 1
-        PerspectiveNear: 0.00999999978
-        PerspectiveFar: 10000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
-      Primary: true
-      FixedAspectRatio: false
+    SpriteRendererComponent:
+      Color: [1, 1, 1, 1]
+      TilingFactor: 10
+      Roughness: 0.5

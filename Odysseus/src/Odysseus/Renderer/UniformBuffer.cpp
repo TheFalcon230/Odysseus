@@ -1,23 +1,24 @@
 #include "odcpch.h"
 #include "UniformBuffer.h"
-
-#include "Odysseus/Renderer/Renderer.h"
+#include "RendererAPI.h"
 #include "Platform/OpenGL/OpenGLUniformBuffer.h"
 
 namespace Odysseus
 {
-	Ref<UniformBuffer> Odysseus::UniformBuffer::Create(uint32_t size, uint32_t binding)
+	Ref<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding, BufferUsageType usage)
 	{
-		switch (Renderer::GetAPI())
+		switch (RendererAPI::GetAPI())
 		{
-		case RendererAPI::API::None: ODC_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL: return CreateRef<OpenGLUniformBuffer>(size, binding);
+			case RendererAPI::API::None:
+			//ODYSSEUS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
+			return nullptr;
+			case RendererAPI::API::OpenGL:
+				return CreateRef<OpenGLUniformBuffer>(size, binding, usage);
 		default:
 			break;
 		}
 
-		ODC_CORE_ASSERT(false, "Unkown RendererAPI !");
-		return nullptr;
+		return Ref<UniformBuffer>();
 	}
 
 }

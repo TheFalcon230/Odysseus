@@ -20,10 +20,11 @@ namespace Odysseus
 		inline float GetDistance() const {return fDistance;}
 		inline void SetDistance(float distance) { fDistance = distance; }
 
-		inline void SetViewportSize(float width, float height) { fViewportWidth = width; fViewportHeight = height; }
+		inline void SetViewportSize(float width, float height) { fViewportWidth = width; fViewportHeight = height; UpdateProjection(); }
 
 		const glm::mat4 GetViewMatrix() const { return viewMatrix; }
-		glm::mat4 GetViewProjection() const { return projectionMatrix * viewMatrix; }
+		glm::mat4 GetViewProjection() const { return projectionMatrix * viewMatrix * modelMatrix; }
+		const glm::mat4 GetModelMatrix() const { return modelMatrix; }
 
 		glm::vec3 GetUpDirection() const;
 		glm::vec3 GetRightDirection() const;
@@ -34,9 +35,16 @@ namespace Odysseus
 		float GetPitch() const { return fPitch; }
 		float GetYaw() const { return fYaw; }
 
+		float GetFOV() const { return fFOV; }
+		float GetFarClip() const { return fFarClip; }
+
+		void SetFOV(float fov) { fFOV = fov; UpdateProjection(); }
+		void SetFarClip(float farClip) { fFarClip = farClip; UpdateProjection(); }
+
 	private:
 		void UpdateProjection();
 		void UpdateView();
+		void UpdateModel();
 
 		bool OnMouseScrolled(MouseScrolledEvent& e);
 
@@ -53,6 +61,7 @@ namespace Odysseus
 		float fFOV = 45.0f, fAspectRatio = 16.0f / 9.0f, fNearClip = 0.1f, fFarClip = 1000.0f;
 
 		glm::mat4 viewMatrix;
+		glm::mat4 modelMatrix;
 		glm::vec3 Position = { 0.0f, 0.0f, 0.0f }, vecFocalPoint = {0.0f, 0.0f, 0.0f};
 
 		glm::vec2 vecInitialMousePos;

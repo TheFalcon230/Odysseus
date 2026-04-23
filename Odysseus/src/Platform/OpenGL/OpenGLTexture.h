@@ -5,7 +5,7 @@
 
 namespace Odysseus
 {
-	class OpenGLTexture2D: public Texture2D
+	class OpenGLTexture2D : public Texture2D
 	{
 	public:
 		OpenGLTexture2D(const TextureSpecification& specification);
@@ -19,6 +19,8 @@ namespace Odysseus
 		virtual uint32_t GetRendererID() const override { return m_RendererID; }
 
 		virtual void SetData(void* data, uint32_t size) override;
+
+		virtual const std::string& GetPath() const override { return m_Path; }
 
 		virtual void Bind(uint32_t slot = 0) const override;
 
@@ -39,4 +41,3 @@ namespace Odysseus
 		bool IsLoaded() const override;
 	};
 }
-

@@ -15,7 +15,9 @@ namespace Odysseus
 	EditorCamera::EditorCamera(float fov, float aspectRatio, float nearClip, float farClip)
 		:fFOV(fov), fAspectRatio(aspectRatio), fNearClip(nearClip), fFarClip(farClip), Camera(glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip))
 	{
+		modelMatrix = glm::mat4(1.0f);
 		UpdateView();
+		UpdateModel();
 	}
 
 	void EditorCamera::Update(Timestep ts)
@@ -73,6 +75,15 @@ namespace Odysseus
 		glm::quat orientation = GetOrientation();
 		viewMatrix = glm::translate(glm::mat4(1.0f), Position) * glm::toMat4(orientation);
 		viewMatrix = glm::inverse(viewMatrix);
+		//UpdateModel();
+
+	}
+
+	void EditorCamera::UpdateModel()
+	{
+		modelMatrix = glm::mat4(1.0f);
+		/*modelMatrix = glm::translate(modelMatrix, Position);
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5f));*/
 	}
 
 	bool EditorCamera::OnMouseScrolled(MouseScrolledEvent& e)

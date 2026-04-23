@@ -18,7 +18,7 @@
 	#elif TARGET_OS_IPHONE == 1
 		#define ODC_PLATFORM_IOS
 		#error "IOS is not supported!"
-	#elif TARGET_OS_MCA == 1
+	#elif TARGET_OS_MAC == 1
 		#define ODC_PLATFORM_MAC
 		#error "MacOS is not supported!"
 	#else

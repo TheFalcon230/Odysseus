@@ -31,6 +31,7 @@ group "Dependencies"
 	include "Odysseus/vendor/GLAD"
 	include "Odysseus/vendor/imgui"
 	include "Odysseus/vendor/yaml-cpp"
+	include "Odysseus/vendor/assimp"
 group ""
 
 include "Odysseus"

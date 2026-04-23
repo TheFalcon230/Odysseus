@@ -23,6 +23,8 @@ project "Odysseus"
 		"vendor/imgui/imgui.h",
 		"vendor/imgui/imgui.cpp",
 
+		"vendor/Icons/IconsFontAwesome6.h",
+
 		"vendor/implot/implot.h",
 		"vendor/implot/implot.cpp",
 		"vendor/implot/implot_demo.cpp",
@@ -48,9 +50,10 @@ project "Odysseus"
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.yaml_cpp}",
+		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.Icons}",
 		"%{IncludeDir.VulkanSDK}"
-
 	}
 
 	links

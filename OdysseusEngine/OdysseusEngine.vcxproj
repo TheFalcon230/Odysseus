@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ODC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Odysseus\vendor\spdlog\include;..\Odysseus\src;..\Odysseus\vendor;..\Odysseus\vendor\glm;..\Odysseus\vendor\imgui;..\Odysseus\vendor\implot;..\Odysseus\vendor\entt\include;..\Odysseus\vendor\imguizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Odysseus\vendor\spdlog\include;..\Odysseus\src;..\Odysseus\vendor;..\Odysseus\vendor\glm;..\Odysseus\vendor\imgui;..\Odysseus\vendor\implot;..\Odysseus\vendor\entt\include;..\Odysseus\vendor\imguizmo;..\Odysseus\vendor\GLFW\include;..\Odysseus\vendor\Icons;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -97,7 +97,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ODC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Odysseus\vendor\spdlog\include;..\Odysseus\src;..\Odysseus\vendor;..\Odysseus\vendor\glm;..\Odysseus\vendor\imgui;..\Odysseus\vendor\implot;..\Odysseus\vendor\entt\include;..\Odysseus\vendor\imguizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Odysseus\vendor\spdlog\include;..\Odysseus\src;..\Odysseus\vendor;..\Odysseus\vendor\glm;..\Odysseus\vendor\imgui;..\Odysseus\vendor\implot;..\Odysseus\vendor\entt\include;..\Odysseus\vendor\imguizmo;..\Odysseus\vendor\GLFW\include;..\Odysseus\vendor\Icons;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -118,7 +118,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ODC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Odysseus\vendor\spdlog\include;..\Odysseus\src;..\Odysseus\vendor;..\Odysseus\vendor\glm;..\Odysseus\vendor\imgui;..\Odysseus\vendor\implot;..\Odysseus\vendor\entt\include;..\Odysseus\vendor\imguizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Odysseus\vendor\spdlog\include;..\Odysseus\src;..\Odysseus\vendor;..\Odysseus\vendor\glm;..\Odysseus\vendor\imgui;..\Odysseus\vendor\implot;..\Odysseus\vendor\entt\include;..\Odysseus\vendor\imguizmo;..\Odysseus\vendor\GLFW\include;..\Odysseus\vendor\Icons;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -136,12 +136,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorLayer.h" />
+    <ClInclude Include="src\Panels\ContentBrowser\ContentBrowserPanel.h" />
     <ClInclude Include="src\Panels\HierarchyPanel.h" />
+    <ClInclude Include="src\Panels\WindowTitleBar\WindowTitleBar.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Panels\ContentBrowser\ContentBrowserPanel.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\OdysseusEditorApp.cpp" />
     <ClCompile Include="src\Panels\HierarchyPanel.cpp" />
+    <ClCompile Include="src\Panels\WindowTitleBar\WindowTitleBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Odysseus\Odysseus.vcxproj">

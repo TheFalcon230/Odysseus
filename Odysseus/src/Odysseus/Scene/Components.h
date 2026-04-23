@@ -7,9 +7,11 @@
 #include "Odysseus/Renderer/Camera.h"
 #include "SceneCamera.h"
 #include "ScriptableObject.h"
+#include <glm/gtx/quaternion.hpp>
+#include "Odysseus/Renderer/Texture.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/quaternion.hpp>
+
 
 namespace Odysseus
 {
@@ -54,16 +56,32 @@ namespace Odysseus
 	struct SpriteRendererComponent
 	{
 		glm::vec4 Color = glm::vec4(1.0f);
-		Ref<Texture2D> texture;
-		float tilling = 1.0f;
-		float textureIndex = 0.0f;
+		Ref<Texture2D> Albedo, NormalMap, ORMMap;
+		float TilingFactor = 1.0f;
+		float Roughness = 0.5f;
+		float Metallic = 0.5f;
+		float AO = 0.0f;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(const glm::vec4& color)
 			: Color(color) {}
-		SpriteRendererComponent(const glm::vec4& color, const Ref<Texture2D>& texture)
-			: Color(color), texture(texture) {}
+		SpriteRendererComponent(const glm::vec4& color, const Ref<Texture2D>& albedo, const Ref<Texture2D>& normalMap = nullptr, const Ref<Texture2D>& ormMap = nullptr, float tilingFactor = 1.0f, float roughness = 0.5f, float metallic = 0.5f, float ao = 0.0f)
+			: Color(color), Albedo(albedo), NormalMap(normalMap), ORMMap(ormMap), TilingFactor(tilingFactor), Roughness(roughness), Metallic(metallic), AO(ao) {}
+	};
+
+	struct CubeRendererComponent
+	{
+		glm::vec4 Color = glm::vec4(1.0f);
+		Ref<Texture2D> Texture;
+		float TilingFactor = 1.0f;
+
+		CubeRendererComponent() = default;
+		CubeRendererComponent(const CubeRendererComponent&) = default;
+		CubeRendererComponent(const glm::vec4& color)
+			: Color(color) {}
+		CubeRendererComponent(const glm::vec4& color, const Ref<Texture2D>& texture, float tilingFactor = 1.0f)
+			: Color(color), Texture(texture), TilingFactor(tilingFactor) {}
 	};
 
 	struct CameraComponent
@@ -74,6 +92,16 @@ namespace Odysseus
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
+	};
+
+	struct PointLightComponent
+	{
+		float Intensity = 1.0f;
+		glm::vec4 Color = glm::vec4(1.0f);
+
+		PointLightComponent() = default;
+		PointLightComponent(const float& intensity, const glm::vec4& color = glm::vec4(1.0f))
+			: Intensity(intensity), Color(color) {}
 	};
 
 	struct NativeScriptComponent

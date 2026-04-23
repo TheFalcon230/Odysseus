@@ -4,8 +4,9 @@
 
 #include "Odysseus/Renderer/Camera.h"
 #include "Odysseus/Renderer/EditorCamera.h"
-
 #include <Odysseus/Scene/Components.h>
+
+#include "Odysseus/Renderer/UniformBuffer.h"
 
 namespace Odysseus
 {
@@ -37,31 +38,14 @@ namespace Odysseus
 		static void Flush();
 
 		// Primitives
-		/// <summary>
-		/// Draw a quad with texture and color.
-		/// </summary>
-		/// <param name="inTransform">The transformation matrix for the quad.</param>
-		/// <param name="inTexture">The texture of the quad.</param>
-		/// <param name="inTillingFactor">The tiling factor for the texture.</param>
-		/// <param name="inColor">The color of the quad.</param>
-		/// <param name="inEntityID">The entity ID (if = -1 it's considered as invalid).</param>
-		static void DrawQuad(const glm::mat4 & inTransform, const Ref<Texture2D>& inTexture, float inTillingFactor, const glm::vec4 & inColor, int inEntityID = -1);
+		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID = -1);
+		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const Ref<Texture2D>& normalMap = nullptr, const Ref<Texture2D>& ormMap = nullptr, float Roughness = 0.5f, float Metallic = 0.5f, float AO = 0.0f, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), int entityID = -1);
 
-		/// <summary>
-		/// Draw a quad with color only.
-		/// </summary>
-		/// <param name="inTransform">The transformation matrix for the quad.</param>
-		/// <param name="inColor">The color of the quad.</param>
-		/// <param name="inEntityID">The entity ID (if = -1 it's considered as invalid).</param>
-		static void DrawQuad(const glm::mat4 & inTransform, const glm::vec4 & inColor, int inEntityID = -1);
+		static void DrawCube(const glm::mat4& transform, const glm::vec4& color, int entityID = -1);
 
-		/// <summary>
-		/// Draw a quad with a sprite. The sprite contains both the texture and the texture coordinates.
-		/// </summary>
-		/// <param name="transform">The transformation matrix for the quad.</param>
-		/// <param name="sprite">The sprite component containing the texture and texture coordinates.</param>
-		/// <param name="entityID">The entity ID (if = -1 it's considered as invalid).</param>
-		static void DrawSprite(const glm::mat4 transform, SpriteRendererComponent& sprite, int entityID);
+		static void DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID);
+
+		static void DrawPointLight(const glm::vec3& position, const glm::vec3& color, float intensity, float radius = 100.0f, int entityID = -1);
 
 		//Stats
 		struct Statistics

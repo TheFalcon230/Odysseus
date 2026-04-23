@@ -25,6 +25,13 @@ namespace Odysseus
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
+		virtual bool IsMaximized() const override;
+
+		// Windows specific functions
+		virtual void MinimizeWindow() override;
+		virtual void MaximizeWindow() override;
+		virtual void RestoreWindow() override;
+
 
 	private:
 		// Privates functions

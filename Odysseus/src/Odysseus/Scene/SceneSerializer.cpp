@@ -106,6 +106,8 @@ namespace YAML {
 
 namespace Odysseus
 {
+	extern const std::filesystem::path g_AssetsDirectory;
+
 	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& v)
 	{
 		out << YAML::Flow;
@@ -136,8 +138,7 @@ namespace Odysseus
 	static void SerializeObject(YAML::Emitter& out, Object object)
 	{
 		out << YAML::BeginMap; // Object
-		out << YAML::Key << "Object";
-		out << YAML::Value << "184563512379";
+		out << YAML::Key << "Object" << YAML::Value << "184563512379";
 
 		if (object.HasComponent<TagComponent>())
 		{
@@ -155,12 +156,10 @@ namespace Odysseus
 			out << YAML::Key << "TransformComponent";
 			out << YAML::BeginMap; // Transform Component
 
-			auto& pos = object.GetComponent<TransformComponent>().Position;
-			auto& rot = object.GetComponent<TransformComponent>().Rotation;
-			auto& scale = object.GetComponent<TransformComponent>().Scale;
-			out << YAML::Key << "Position" << YAML::Value << pos;
-			out << YAML::Key << "Rotation" << YAML::Value << rot;
-			out << YAML::Key << "Scale" << YAML::Value << scale;
+			auto& tc = object.GetComponent<TransformComponent>();
+			out << YAML::Key << "Position" << YAML::Value << tc.Position;
+			out << YAML::Key << "Rotation" << YAML::Value << tc.Rotation;
+			out << YAML::Key << "Scale" << YAML::Value << tc.Scale;
 
 			out << YAML::EndMap; // Transform Component
 		}
@@ -176,7 +175,7 @@ namespace Odysseus
 			out << YAML::Key << "Camera" << YAML::Value;
 			out << YAML::BeginMap; // Camera 
 			out << YAML::Key << "ProjectionType" << YAML::Value << (int)camera.GetProjectionType();
-			out << YAML::Key << "PerspectiveFOV" << YAML::Value << (int)camera.GetPerspectiveFOV();
+			out << YAML::Key << "PerspectiveFOV" << YAML::Value << camera.GetPerspectiveFOV();
 			out << YAML::Key << "PerspectiveNear" << YAML::Value << camera.GetPerspectiveNearClip();
 			out << YAML::Key << "PerspectiveFar" << YAML::Value << camera.GetPerspectiveFarClip();
 			out << YAML::Key << "OrthographicSize" << YAML::Value << camera.GetOrthographicSize();
@@ -197,12 +196,30 @@ namespace Odysseus
 
 			auto& spriteRendererComponent = object.GetComponent<SpriteRendererComponent>();
 			out << YAML::Key << "Color" << YAML::Value << spriteRendererComponent.Color;
-			/*if (spriteRendererComponent.Texture)
-				out << YAML::Key << "TexturePath" << YAML::Value << spriteRendererComponent.Texture->GetPath();
+			if (spriteRendererComponent.Albedo)
+				out << YAML::Key << "TexturePath" << YAML::Value << spriteRendererComponent.Albedo->GetPath();
+			if (spriteRendererComponent.NormalMap)
+				out << YAML::Key << "NormalMapPath" << YAML::Value << spriteRendererComponent.NormalMap->GetPath();
+			if (spriteRendererComponent.ORMMap)
+				out << YAML::Key << "ORMMapPath" << YAML::Value << spriteRendererComponent.ORMMap->GetPath();
 
-			out << YAML::Key << "TilingFactor" << YAML::Value << spriteRendererComponent.TilingFactor;*/
+			out << YAML::Key << "TilingFactor" << YAML::Value << spriteRendererComponent.TilingFactor;
+
+			out << YAML::Key << "Roughness" << YAML::Value << spriteRendererComponent.Roughness;
 
 			out << YAML::EndMap; // SpriteRendererComponent
+		}
+
+		if (object.HasComponent<PointLightComponent>())
+		{
+			out << YAML::Key << "PointLightComponent";
+			out << YAML::BeginMap; // PointLightComponent
+
+			auto& pointLightComponent = object.GetComponent<PointLightComponent>();
+			out << YAML::Key << "Color" << YAML::Value << pointLightComponent.Color;
+			out << YAML::Key << "Intensity" << YAML::Value << pointLightComponent.Intensity;
+
+			out << YAML::EndMap; // PointLightComponent
 		}
 
 		out << YAML::EndMap; // Object
@@ -212,10 +229,8 @@ namespace Odysseus
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
-		out << YAML::Key << "Scene";
-		out << YAML::Value << "New Scene";
-		out << YAML::Key << "Objects";
-		out << YAML::Value << YAML::BeginSeq;
+		out << YAML::Key << "Scene" << YAML::Value << "New Scene";
+		out << YAML::Key << "Objects" << YAML::Value << YAML::BeginSeq;
 		m_Scene->registry.each([&](auto& objectID)
 		{
 			Object object = {objectID, m_Scene.get() };
@@ -306,15 +321,38 @@ namespace Odysseus
 				{
 					auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
 					src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
-					/*if (spriteRendererComponent["TexturePath"])
+					if (spriteRendererComponent["TexturePath"])
 					{
 						std::string texturePath = spriteRendererComponent["TexturePath"].as<std::string>();
-						auto path = Project::GetAssetFileSystemPath(texturePath);
-						src.Texture = Texture2D::Create(path.string());
+						auto path = (texturePath);
+						src.Albedo = Texture2D::Create(path);
+					}
+					if (spriteRendererComponent["NormalMapPath"])
+					{
+						std::string texturePath = spriteRendererComponent["NormalMapPath"].as<std::string>();
+						auto path = (texturePath);
+						src.NormalMap = Texture2D::Create(path);
+					}
+					if (spriteRendererComponent["ORMMapPath"])
+					{
+						std::string texturePath = spriteRendererComponent["ORMMapPath"].as<std::string>();
+						auto path = (texturePath);
+						src.ORMMap = Texture2D::Create(path);
 					}
 
 					if (spriteRendererComponent["TilingFactor"])
-						src.TilingFactor = spriteRendererComponent["TilingFactor"].as<float>();*/
+						src.TilingFactor = spriteRendererComponent["TilingFactor"].as<float>();
+
+					if (spriteRendererComponent["Roughness"])
+						src.Roughness = spriteRendererComponent["Roughness"].as<float>();
+				}
+
+				auto pointLightComponent = entity["PointLightComponent"];
+				if (pointLightComponent)
+				{
+					auto& plc = deserializedEntity.AddComponent<PointLightComponent>();
+					plc.Color = pointLightComponent["Color"].as<glm::vec4>();
+					plc.Intensity = pointLightComponent["Intensity"].as<float>();
 				}
 			}
 		}

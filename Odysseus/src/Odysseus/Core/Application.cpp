@@ -23,6 +23,7 @@ namespace Odysseus
 		s_Instance = this;
 
 		m_Window = Window::Create(WindowProps(appName));
+		m_AppName = appName;
 		m_Window->SetEventCallback(ODC_BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
@@ -57,6 +58,8 @@ namespace Odysseus
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
+
+			float titleBarHeight = 0.f;
 			m_ImGuiLayer->End();
 
 			m_Window->Update();

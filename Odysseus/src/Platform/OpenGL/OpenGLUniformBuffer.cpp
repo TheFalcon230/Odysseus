@@ -3,22 +3,35 @@
 
 #include <glad/glad.h>
 
-namespace Odysseus
+Odysseus::OpenGLUniformBuffer::OpenGLUniformBuffer(uint32_t size, uint32_t binding, BufferUsageType usage)
+	: m_RendererID(0), m_Size(size), m_BindingPoint(binding), m_UsageType(usage)
 {
-	OpenGLUniformBuffer::OpenGLUniformBuffer(uint32_t size, uint32_t binding)
-	{
-		glCreateBuffers(1, &m_RendererID);
-		glNamedBufferData(m_RendererID, size, nullptr, GL_DYNAMIC_DRAW);
-		glBindBufferBase(GL_UNIFORM_BUFFER, binding, m_RendererID);
-	}
+	glGenBuffers(1, &m_RendererID);
+	glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
+	glBufferData(GL_UNIFORM_BUFFER, size, nullptr, (m_UsageType == BufferUsageType::DYNAMIC_DRAW ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
+	glBindBufferBase(GL_UNIFORM_BUFFER, binding, m_RendererID);
+	glBindBufferBase(GL_UNIFORM_BUFFER, m_BindingPoint, m_RendererID);
+}
 
-	OpenGLUniformBuffer::~OpenGLUniformBuffer()
-	{
-		glDeleteBuffers(1, &m_RendererID);
-	}
+void Odysseus::OpenGLUniformBuffer::Bind() const
+{
+	glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
+}
 
-	void OpenGLUniformBuffer::SetData(const void* data, uint32_t size, uint32_t offset)
-	{
-		glNamedBufferSubData(m_RendererID, offset, size, data);
-	}
+void Odysseus::OpenGLUniformBuffer::Unbind() const
+{
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	glMemoryBarrier(GL_UNIFORM_BARRIER_BIT);
+}
+
+void Odysseus::OpenGLUniformBuffer::SetBindingPoint(uint32_t binding)
+{
+	glBindBufferBase(GL_UNIFORM_BUFFER, binding, m_RendererID);
+	m_BindingPoint = binding;
+}
+
+void Odysseus::OpenGLUniformBuffer::AddData(uint32_t offset, uint32_t size, const void* data)
+{
+	//glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
+	glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
 }

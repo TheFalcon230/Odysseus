@@ -43,6 +43,9 @@
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\Icons">
+      <UniqueIdentifier>{9ED087EE-8A33-1793-33B9-4F491FFBE215}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor\glm">
       <UniqueIdentifier>{829FC5A8-6E57-07F6-D75E-E051C335A2E6}</UniqueIdentifier>
     </Filter>
@@ -109,6 +112,9 @@
       <Filter>src\Odysseus\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Odysseus\Core\MouseButtonCodes.h">
+      <Filter>src\Odysseus\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Odysseus\Core\Timer.h">
       <Filter>src\Odysseus\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Odysseus\Core\Timestep.h">
@@ -233,6 +239,9 @@
     </ClInclude>
     <ClInclude Include="src\odcpch.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\Icons\IconsFontAwesome6.h">
+      <Filter>vendor\Icons</Filter>
     </ClInclude>
     <ClInclude Include="vendor\glm\glm\common.hpp">
       <Filter>vendor\glm\glm</Filter>
