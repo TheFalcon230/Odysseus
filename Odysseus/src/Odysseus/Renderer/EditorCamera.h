@@ -20,7 +20,7 @@ namespace Odysseus
 		inline float GetDistance() const {return fDistance;}
 		inline void SetDistance(float distance) { fDistance = distance; }
 
-		inline void SetViewportSize(float width, float height) { fViewportWidth = width; fViewportHeight = height; }
+		inline void SetViewportSize(float width, float height) { fViewportWidth = width; fViewportHeight = height; UpdateProjection(); }
 
 		const glm::mat4 GetViewMatrix() const { return viewMatrix; }
 		glm::mat4 GetViewProjection() const { return projectionMatrix * viewMatrix * modelMatrix; }

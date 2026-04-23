@@ -196,10 +196,16 @@ namespace Odysseus
 
 			auto& spriteRendererComponent = object.GetComponent<SpriteRendererComponent>();
 			out << YAML::Key << "Color" << YAML::Value << spriteRendererComponent.Color;
-			if (spriteRendererComponent.Texture)
-				out << YAML::Key << "TexturePath" << YAML::Value << spriteRendererComponent.Texture->GetPath();
+			if (spriteRendererComponent.Albedo)
+				out << YAML::Key << "TexturePath" << YAML::Value << spriteRendererComponent.Albedo->GetPath();
+			if (spriteRendererComponent.NormalMap)
+				out << YAML::Key << "NormalMapPath" << YAML::Value << spriteRendererComponent.NormalMap->GetPath();
+			if (spriteRendererComponent.ORMMap)
+				out << YAML::Key << "ORMMapPath" << YAML::Value << spriteRendererComponent.ORMMap->GetPath();
 
 			out << YAML::Key << "TilingFactor" << YAML::Value << spriteRendererComponent.TilingFactor;
+
+			out << YAML::Key << "Roughness" << YAML::Value << spriteRendererComponent.Roughness;
 
 			out << YAML::EndMap; // SpriteRendererComponent
 		}
@@ -319,11 +325,26 @@ namespace Odysseus
 					{
 						std::string texturePath = spriteRendererComponent["TexturePath"].as<std::string>();
 						auto path = (texturePath);
-						src.Texture = Texture2D::Create(path);
+						src.Albedo = Texture2D::Create(path);
+					}
+					if (spriteRendererComponent["NormalMapPath"])
+					{
+						std::string texturePath = spriteRendererComponent["NormalMapPath"].as<std::string>();
+						auto path = (texturePath);
+						src.NormalMap = Texture2D::Create(path);
+					}
+					if (spriteRendererComponent["ORMMapPath"])
+					{
+						std::string texturePath = spriteRendererComponent["ORMMapPath"].as<std::string>();
+						auto path = (texturePath);
+						src.ORMMap = Texture2D::Create(path);
 					}
 
 					if (spriteRendererComponent["TilingFactor"])
 						src.TilingFactor = spriteRendererComponent["TilingFactor"].as<float>();
+
+					if (spriteRendererComponent["Roughness"])
+						src.Roughness = spriteRendererComponent["Roughness"].as<float>();
 				}
 
 				auto pointLightComponent = entity["PointLightComponent"];

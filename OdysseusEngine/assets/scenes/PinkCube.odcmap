@@ -2,29 +2,14 @@ Scene: New Scene
 Objects:
   - Object: 184563512379
     TagComponent:
-      Name: Point Light
+      Name: Top
     TransformComponent:
-      Position: [0, 1, 1.5]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-  - Object: 184563512379
-    TagComponent:
-      Name: Left
-    TransformComponent:
-      Position: [-0.354999989, 0, 0.349999994]
-      Rotation: [0, -0.785398901, -8.04248117e-08]
-      Scale: [0.999999881, 1, 0.999999881]
+      Position: [0, 0.5, 0]
+      Rotation: [-1.57079637, 0.785398185, 1.39149805e-07]
+      Scale: [0.999999881, 0.999999166, 0.999993265]
     SpriteRendererComponent:
       Color: [1, 1, 1, 1]
-  - Object: 184563512379
-    TagComponent:
-      Name: Right
-    TransformComponent:
-      Position: [0.351999998, 0, 0.349999994]
-      Rotation: [-1.49011498e-07, 0.785398483, -2.01786406e-07]
-      Scale: [0.99999994, 0.999999881, 0.99999994]
-    SpriteRendererComponent:
-      Color: [1, 1, 1, 1]
+      TilingFactor: 1
   - Object: 184563512379
     TagComponent:
       Name: Camera
@@ -45,10 +30,31 @@ Objects:
       FixedAspectRatio: false
   - Object: 184563512379
     TagComponent:
-      Name: Top
+      Name: Right
     TransformComponent:
-      Position: [0, 0.5, 0]
-      Rotation: [-1.57079637, 0.785398185, 1.39149805e-07]
-      Scale: [0.999999881, 0.999999166, 0.999993265]
+      Position: [0.351999998, 0, 0.349999994]
+      Rotation: [-1.49011498e-07, 0.785398483, -2.01786406e-07]
+      Scale: [0.99999994, 0.999999881, 0.99999994]
     SpriteRendererComponent:
       Color: [1, 1, 1, 1]
+      TilingFactor: 1
+  - Object: 184563512379
+    TagComponent:
+      Name: Left
+    TransformComponent:
+      Position: [-0.354999989, 0, 0.349999994]
+      Rotation: [0, -0.785398901, -8.04248117e-08]
+      Scale: [0.999999881, 1, 0.999999881]
+    SpriteRendererComponent:
+      Color: [1, 1, 1, 1]
+      TilingFactor: 1
+  - Object: 184563512379
+    TagComponent:
+      Name: Point Light
+    TransformComponent:
+      Position: [-0.426751792, 1.17675781, 1.27200484]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PointLightComponent:
+      Color: [1, 1, 1, 1]
+      Intensity: 1

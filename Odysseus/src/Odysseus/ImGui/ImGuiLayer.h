@@ -22,6 +22,9 @@ namespace Odysseus
 		void End();
 
 		void SetCanBlockEvents(bool pValue) { bCanBlockImGuiEvents = pValue; };
+
+		uint32_t GetActiveWidgetID() const;
+
 	private:
 		void SetDarkThemeColors();
 	private:

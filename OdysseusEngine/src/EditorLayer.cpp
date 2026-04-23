@@ -418,39 +418,42 @@ namespace Odysseus
 					const glm::mat4& cameraProj = mainCameraEditor.GetProjection();
 					glm::mat4 cameraView = mainCameraEditor.GetViewMatrix();
 
-					auto& transformComponent = selectedObject.GetComponent<TransformComponent>();
-					glm::mat4 transform = transformComponent.Transform();
+					if (selectedObject.HasComponent<TransformComponent>())
+					{	
+						auto& transformComponent = selectedObject.GetComponent<TransformComponent>();
+						glm::mat4 transform = transformComponent.Transform();
 
-					float snapValue = 0.0f;
+						float snapValue = 0.0f;
 
-					if (GetSnapRotation() && iGizmoType == ImGuizmo::ROTATE)
-					{
-						snapValue = 10.0f;
-					}
-					else if (GetSnapTranslation() && iGizmoType == ImGuizmo::TRANSLATE)
-					{
-						snapValue = 0.5f;
-					}
-					else if (GetSnapScale() && iGizmoType == ImGuizmo::SCALE)
-					{
-						snapValue = 0.5f;
-					}
+						if (GetSnapRotation() && iGizmoType == ImGuizmo::ROTATE)
+						{
+							snapValue = 10.0f;
+						}
+						else if (GetSnapTranslation() && iGizmoType == ImGuizmo::TRANSLATE)
+						{
+							snapValue = 0.5f;
+						}
+						else if (GetSnapScale() && iGizmoType == ImGuizmo::SCALE)
+						{
+							snapValue = 0.5f;
+						}
 
-					float snapValues[3] = { snapValue,snapValue,snapValue };
+						float snapValues[3] = { snapValue,snapValue,snapValue };
 
-					ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProj)
-						, iGizmoType, iGizmoMode, glm::value_ptr(transform), nullptr, snapValues);
+						ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProj)
+							, iGizmoType, iGizmoMode, glm::value_ptr(transform), nullptr, snapValues);
 
-					bIsUsingGizmo = ImGuizmo::IsUsing();
-					if (bIsUsingGizmo)
-					{
-						glm::vec3 position, rotation, scale;
-						Math::DecomposeTransform(transform, position, rotation, scale);
+						bIsUsingGizmo = ImGuizmo::IsUsing();
+						if (bIsUsingGizmo)
+						{
+							glm::vec3 position, rotation, scale;
+							Math::DecomposeTransform(transform, position, rotation, scale);
 
-						glm::vec3 deltaRotation = rotation - transformComponent.Rotation;// Using delta rotation instead of new rotation to avoid Gimbal-Lock
-						transformComponent.Position = position;
-						transformComponent.Rotation += deltaRotation;
-						transformComponent.Scale = scale;
+							glm::vec3 deltaRotation = rotation - transformComponent.Rotation;// Using delta rotation instead of new rotation to avoid Gimbal-Lock
+							transformComponent.Position = position;
+							transformComponent.Rotation += deltaRotation;
+							transformComponent.Scale = scale;
+						}
 					}
 				}
 				ImGui::EndChild();
@@ -580,6 +583,20 @@ namespace Odysseus
 			case (int)Key::R: // Scale
 			{
 				SetScaleGizmoType();
+				break;
+			}
+
+			case (int)Key::Delete:
+			{
+				if (Application::Get().GetImGuiLayer()->GetActiveWidgetID() == 0)
+				{
+					Object selectedEntity = hierarchyPanel.GetSelectedObject();
+					if (selectedEntity)
+					{
+						hierarchyPanel.SetSelectedObject({});
+						activeScene->DestroyObject(selectedEntity);
+					}
+				}
 				break;
 			}
 		}

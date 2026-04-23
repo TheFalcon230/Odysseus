@@ -64,7 +64,7 @@ namespace Odysseus
 			{
 				if (p.is_directory())
 				{
-					m_CurrentDirectory /= relativePath;
+					m_CurrentDirectory /= path.filename();
 				}
 			}
 			ImGui::TextWrapped(filenameString.c_str());

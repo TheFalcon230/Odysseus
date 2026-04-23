@@ -75,12 +75,15 @@ namespace Odysseus
 		glm::quat orientation = GetOrientation();
 		viewMatrix = glm::translate(glm::mat4(1.0f), Position) * glm::toMat4(orientation);
 		viewMatrix = glm::inverse(viewMatrix);
+		//UpdateModel();
+
 	}
 
 	void EditorCamera::UpdateModel()
 	{
 		modelMatrix = glm::mat4(1.0f);
-		//modelMatrix = glm::rotate(modelMatrix, glm::radians(-55.0f), GetRightDirection());
+		/*modelMatrix = glm::translate(modelMatrix, Position);
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5f));*/
 	}
 
 	bool EditorCamera::OnMouseScrolled(MouseScrolledEvent& e)

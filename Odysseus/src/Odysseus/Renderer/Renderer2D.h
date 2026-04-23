@@ -41,7 +41,7 @@ namespace Odysseus
 
 		// Primitives
 		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID = -1);
-		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), int entityID = -1);
+		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const Ref<Texture2D>& normalMap = nullptr, const Ref<Texture2D>& ormMap = nullptr, float Roughness = 0.5f, float Metallic = 0.5f, float AO = 0.0f, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), int entityID = -1);
 
 		static void DrawCube(const glm::mat4& transform, const glm::vec4& color, int entityID = -1);
 

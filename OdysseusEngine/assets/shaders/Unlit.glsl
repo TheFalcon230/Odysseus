@@ -9,6 +9,7 @@ layout(location = 3) in vec2 a_TexCoord;
 layout(location = 4) in float a_TexIndex;
 layout(location = 5) in float a_TilingFactor;
 layout(location = 6) in int a_EntityID;
+layout(location = 7) in float a_Roughness;
 
 // uniform mat4 u_ViewProjection;
 
@@ -32,6 +33,7 @@ struct VertexOutput
 	vec3 Normal;
 	vec2 TexCoord;
 	float TilingFactor;
+	float Roughness;
 };
 
 out vec3 FragPos;
@@ -56,6 +58,7 @@ void main()
 	Output.TilingFactor = a_TilingFactor;
 	v_EntityID = a_EntityID;
 	Output.Normal = a_Normal;
+	Output.Roughness = a_Roughness;
 
 	v_CameraPosition = u_CameraPosition;
 
@@ -64,7 +67,7 @@ void main()
 	LightOutput.u_LightIntensity = u_LightBufferIntensity;
 
 	FragPos = vec3( u_Model * vec4(a_Position, 1.0f));
-	gl_Position = u_ViewProjection *  vec4(a_Position, 1.0);
+	gl_Position = u_ViewProjection *  vec4(a_Position, 1.0f);
 }
 
 #type fragment
@@ -84,7 +87,8 @@ struct VertexOutput
 	vec4 Color;
 	vec3 Normal;
 	vec2 TexCoord;
-	float TilingFactor;
+	float TilingFactor;	
+	float Roughness;
 };
 
 in Light LightOutput;
@@ -137,24 +141,24 @@ void main()
 	}
 
 
-	float ambientStrength = 0.1f;
+	float ambientStrength = 0.05f;
 	vec3 Ambient = ambientStrength * LightOutput.u_LightColor;
 
-	vec3 norm = normalize(Output.Normal);
 	vec3 lightDir = normalize(LightOutput.u_LightPos - FragPos);
+	vec3 norm = normalize(Output.Normal);
+	vec3 viewDir = normalize( v_CameraPosition - FragPos);
+	vec3 halfwayDir = normalize(lightDir + viewDir);
 
 	float LdotN = dot(norm, lightDir);
-
 	float diff = LdotN * 0.5 + 0.5;
+
 
 	vec3 Diffuse = diff * LightOutput.u_LightColor; 
 	Diffuse *= LightOutput.u_LightIntensity;
 
 	float specularStrength = 0.5f;
-	vec3 viewDir = normalize( v_CameraPosition - FragPos);
-	vec3 reflectDir = reflect(-lightDir, norm);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-	vec3 Specular = specularStrength * spec * LightOutput.u_LightColor;
+	float spec = pow(dot(norm, halfwayDir)*0.5f + 0.5f, 256.0f * (1.0f - Output.Roughness));
+	vec3 Specular = specularStrength * spec * LightOutput.u_LightColor * LightOutput.u_LightIntensity;
 
 	FragColor.rgb = (Ambient + Diffuse + Specular) * objectColor.rgb;
 	FragColor.a = objectColor.a;

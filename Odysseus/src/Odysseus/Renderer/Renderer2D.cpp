@@ -19,6 +19,14 @@ namespace Odysseus
 		glm::vec2 TexCoord;
 		float TexIndex;
 		float TilingFactor;
+		float Roughness;
+		float Metallic;
+		float AO;
+
+		glm::vec3 Tangent1;
+		glm::vec3 Tangent2;
+		glm::vec3 Bitangent1;
+		glm::vec3 Bitangent2;
 
 		// Editor only
 		int EntityID;
@@ -47,7 +55,8 @@ namespace Odysseus
 		Ref<VertexArray> vertexArray;
 		Ref<VertexBuffer> vertexBuffer;
 		Ref<Shader> unlitShader;
-		Ref<Texture2D> defaultTexture;
+		Ref<Shader> PBRShader;
+		Ref<Texture2D> defaultAlbedoTexture, defaultNormalTexture, defaultORMTexture;
 
 		uint32_t QuadIndexCount = 0;
 		QuadVertex* QuadVertexBufferBase = nullptr;
@@ -57,12 +66,14 @@ namespace Odysseus
 		CubeVertex* CubeVertexBufferPtr = nullptr;
 
 		std::array<Ref<Texture2D>, MaxTextureSlot> TextureSlots;
+		Ref<Texture2D> NormalMapSlot;
+		Ref<Texture2D> ORMMapSlot;
 		/// <summary>
 		/// Current texture slot index (can only starts at 1 -> 0 is reserved to defaultTexture)
 		/// </summary>
 		uint32_t TextureSlotIndex = 1;
 
-		glm::vec4 QuadVertexPosition[4];
+		glm::vec4 QuadVertexPositions[4];
 		glm::vec4 QuadVertexNormal[4];
 
 		glm::vec4 CubeVertexPosition[36];
@@ -72,6 +83,7 @@ namespace Odysseus
 		{
 			glm::mat4 ViewProjection;
 			glm::mat4 ModelMatrix;
+			glm::mat3 NormalMatrix;
 			glm::vec3 CameraPosition;
 		};
 
@@ -89,9 +101,19 @@ namespace Odysseus
 			}
 		};
 
-		Ref<UniformBuffer> m_CameraBuffer, m_LightBuffer;
+		struct MaterialData
+		{
+			glm::vec3 Albedo = glm::vec3(1.0f);
+			float metallic = 0.5f;
+			float roughness = 0.5f;
+			float ao = 0.0f;
+		};
+
+		Ref<UniformBuffer> m_CameraBuffer, m_LightBuffer, m_MaterialBuffer;
 
 		Ref<LightData> LightsToRender;
+
+		MaterialData materialData;
 
 		Renderer2D::Statistics Stats;
 	};
@@ -103,6 +125,7 @@ namespace Odysseus
 	{
 		s_Data.m_CameraBuffer = UniformBuffer::Create(sizeof(Renderer2DData::CameraData), 0, BufferUsageType::DYNAMIC_DRAW);
 		s_Data.m_LightBuffer = UniformBuffer::Create(sizeof(Renderer2DData::LightData) * s_Data.MaxLights, 1, BufferUsageType::DYNAMIC_DRAW);
+		s_Data.m_MaterialBuffer = UniformBuffer::Create(sizeof(Renderer2DData::MaterialData), 2, BufferUsageType::DYNAMIC_DRAW);
 
 		s_Data.vertexArray = VertexArray::Create();
 
@@ -115,7 +138,10 @@ namespace Odysseus
 			{ ShaderDataType::Float2, "a_TexCoord" },
 			{ ShaderDataType::Float, "a_TexIndex" },
 			{ ShaderDataType::Float, "a_TilingFactor" },
-			{ ShaderDataType::Int, "a_EntityID"}
+			{ ShaderDataType::Int, "a_EntityID"},
+			{ ShaderDataType::Float, "a_Roughness" },
+			{ ShaderDataType::Float, "a_Metallic" },
+			{ ShaderDataType::Float, "a_AO" }
 			});
 		s_Data.vertexArray->AddVertexBuffer(s_Data.vertexBuffer);
 
@@ -143,22 +169,33 @@ namespace Odysseus
 		delete[] quadIndices;
 
 		//Default texture creation.
-		s_Data.defaultTexture = Texture2D::Create(TextureSpecification());
+		s_Data.defaultAlbedoTexture = Texture2D::Create(TextureSpecification());
 		uint32_t defaultTextureData = 0xffffffff;
-		s_Data.defaultTexture->SetData(&defaultTextureData, sizeof(uint32_t));
+		s_Data.defaultAlbedoTexture->SetData(&defaultTextureData, sizeof(uint32_t));
+
+		//Default normal texture (normal pointing up)
+		s_Data.defaultNormalTexture = Texture2D::Create(TextureSpecification());
+		uint32_t defaultNormalTextureData = 0xff8080ff; // (128, 128, 255) in RGBA8 format
+		s_Data.defaultNormalTexture->SetData(&defaultNormalTextureData, sizeof(uint32_t));
+
+		//Default ORM texture (R: 1.0, G: 1.0, B: 0.0)
+		s_Data.defaultORMTexture = Texture2D::Create(TextureSpecification());
+		uint32_t defaultORMTextureData = 0xffff00ff; // (255, 255, 0) in RGBA8 format
+		s_Data.defaultORMTexture->SetData(&defaultORMTextureData, sizeof(uint32_t));
 
 		int32_t samplers[s_Data.MaxTextureSlot];
 		for (uint32_t i = 0; i < s_Data.MaxTextureSlot; i++)
 			samplers[i] = i;
 
 		s_Data.unlitShader = Shader::Create("assets/shaders/Unlit.glsl");
+		s_Data.PBRShader = Shader::Create("assets/shaders/pbr.glsl");
 
-		s_Data.TextureSlots[0] = s_Data.defaultTexture;
+		s_Data.TextureSlots[0] = s_Data.defaultAlbedoTexture;
 
-		s_Data.QuadVertexPosition[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
-		s_Data.QuadVertexPosition[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
-		s_Data.QuadVertexPosition[2] = { 0.5f,  0.5f, 0.0f, 1.0f };
-		s_Data.QuadVertexPosition[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
+		s_Data.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
+		s_Data.QuadVertexPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f };
+		s_Data.QuadVertexPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f };
+		s_Data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
 
 		s_Data.QuadVertexNormal[0] = { 0.0f, 0.0f, 1.0f, 0.0f };
 		s_Data.QuadVertexNormal[1] = { 0.0f, 0.0f, 1.0f, 0.0f };
@@ -289,11 +326,15 @@ namespace Odysseus
 		/*s_Data.unlitShader->Bind();
 		s_Data.unlitShader->SetMat4("u_ViewProjection", camera.GetViewProjection());*/
 
-		s_Data.unlitShader->Bind();
+		glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(camera.GetModelMatrix())));
+		//glm::mat3 normalMatrix = camera.GetModelMatrix();
+
+		s_Data.PBRShader->Bind();
 		s_Data.m_CameraBuffer->Bind();
 		s_Data.m_CameraBuffer->AddData(0, sizeof(glm::mat4), &camera.GetViewProjection());
 		s_Data.m_CameraBuffer->AddData(sizeof(glm::mat4), sizeof(glm::mat4), &camera.GetModelMatrix());
-		s_Data.m_CameraBuffer->AddData(2* sizeof(glm::mat4), sizeof(glm::vec3), &camera.GetPosition());
+		s_Data.m_CameraBuffer->AddData(2 * sizeof(glm::mat4), sizeof(glm::mat3), &normalMatrix);
+		s_Data.m_CameraBuffer->AddData(2 * sizeof(glm::mat4) + sizeof(glm::mat3), sizeof(glm::vec3), &camera.GetPosition());
 		s_Data.m_CameraBuffer->Unbind();
 
 		s_Data.m_LightBuffer->Bind();
@@ -304,6 +345,7 @@ namespace Odysseus
 			s_Data.m_LightBuffer->AddData(sizeof(glm::vec3) + sizeof(glm::vec4), sizeof(float), &s_Data.LightsToRender->Intensity);
 		}
 		s_Data.m_LightBuffer->Unbind();
+		s_Data.PBRShader->Unbind();
 
 		NewBatch();
 	}
@@ -322,9 +364,19 @@ namespace Odysseus
 
 			// Bind textures
 			for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
-				s_Data.TextureSlots[i]->Bind(i);
+				s_Data.TextureSlots[i]->Bind(0);
 
-			s_Data.unlitShader->Bind();
+			if (s_Data.NormalMapSlot)
+				s_Data.NormalMapSlot->Bind(1);
+			else
+				s_Data.defaultNormalTexture->Bind(1);
+
+			if (s_Data.ORMMapSlot)
+				s_Data.ORMMapSlot->Bind(2);
+			else
+				s_Data.defaultORMTexture->Bind(2);
+
+			s_Data.PBRShader->Bind();
 			RenderCommand::DrawIndexed(s_Data.vertexArray, s_Data.QuadIndexCount);
 			s_Data.Stats.DrawCalls++;
 		}
@@ -353,13 +405,16 @@ namespace Odysseus
 
 		for (size_t i = 0; i < quadVertexCount; i++)
 		{
-			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[i];
+			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
 			s_Data.QuadVertexBufferPtr->Normal = transform * s_Data.QuadVertexNormal[i];
 			s_Data.QuadVertexBufferPtr->Color = color;
 			s_Data.QuadVertexBufferPtr->TexCoord = defaultTexCoord[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
 			s_Data.QuadVertexBufferPtr->EntityID = entityID;
+			s_Data.QuadVertexBufferPtr->Roughness = 0.5f; // Example value, adjust as needed
+			s_Data.QuadVertexBufferPtr->Metallic = 0.5f; // Example value, adjust as needed
+			s_Data.QuadVertexBufferPtr->AO = 0.0f; // Example value, adjust as needed
 			s_Data.QuadVertexBufferPtr++;
 		}
 
@@ -368,7 +423,7 @@ namespace Odysseus
 		s_Data.Stats.QuadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
+	void Odysseus::Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const Ref<Texture2D>& normalMap, const Ref<Texture2D>& ormMap, float Roughness, float Metallic, float AO,float tilingFactor, const glm::vec4& tintColor, int entityID)
 	{
 		constexpr size_t quadVertexCount = 4;
 		const glm::vec2* textureCoords = defaultTexCoord;
@@ -397,14 +452,21 @@ namespace Odysseus
 			s_Data.TextureSlotIndex++;
 		}
 
+		s_Data.NormalMapSlot = normalMap;
+		s_Data.ORMMapSlot = ormMap;
+
 		for (size_t i = 0; i < quadVertexCount; i++)
 		{
-			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[i];
+			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
+			s_Data.QuadVertexBufferPtr->Normal = transform * s_Data.QuadVertexNormal[i];
 			s_Data.QuadVertexBufferPtr->Color = tintColor;
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
 			s_Data.QuadVertexBufferPtr->EntityID = entityID;
+			s_Data.QuadVertexBufferPtr->Roughness = Roughness; // Example value, adjust as needed
+			s_Data.QuadVertexBufferPtr->Metallic = Metallic; // Example value, adjust as needed
+			s_Data.QuadVertexBufferPtr->AO = AO; // Example value, adjust as needed
 			s_Data.QuadVertexBufferPtr++;
 		}
 
@@ -430,6 +492,9 @@ namespace Odysseus
 			s_Data.CubeVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.CubeVertexBufferPtr->TilingFactor = tilingFactor;
 			s_Data.CubeVertexBufferPtr->EntityID = entityID;
+			s_Data.QuadVertexBufferPtr->Roughness = 0.5f; // Example value, adjust as needed
+			s_Data.QuadVertexBufferPtr->Metallic = 0.5f; // Example value, adjust as needed
+			s_Data.QuadVertexBufferPtr->AO = 0.0f; // Example value, adjust as needed
 			s_Data.CubeVertexBufferPtr++;
 		}
 
@@ -440,9 +505,10 @@ namespace Odysseus
 
 	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
 	{
-		if (src.Texture)
+		s_Data.materialData.Albedo = src.Color;
+		if (src.Albedo)
 		{
-			DrawQuad(transform, src.Texture, src.TilingFactor, src.Color, entityID);
+			DrawQuad(transform, src.Albedo, src.NormalMap, src.ORMMap, src.Roughness, src.Metallic, src.AO,src.TilingFactor, src.Color, entityID);
 		}
 		else
 		{

@@ -2,13 +2,28 @@ Scene: New Scene
 Objects:
   - Object: 184563512379
     TagComponent:
-      Name: Top
+      Name: Left
     TransformComponent:
-      Position: [0, 0.5, 0]
-      Rotation: [1.57079637, 0.785398185, 0]
+      Position: [-0.354999989, 0, 0.349999994]
+      Rotation: [0, -0.785398185, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Color: [1, 1, 1, 1]
+      TexturePath: assets\textures\Odysseus_Icon.png
+      TilingFactor: 1
+      Roughness: 0.5
+  - Object: 184563512379
+    TagComponent:
+      Name: Right
+    TransformComponent:
+      Position: [0.351999998, 0, 0.349999994]
+      Rotation: [0, 0.785398185, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [1, 1, 1, 1]
+      TexturePath: assets\textures\Odysseus_Icon.png
+      TilingFactor: 1
+      Roughness: 0.5
   - Object: 184563512379
     TagComponent:
       Name: Camera
@@ -29,19 +44,13 @@ Objects:
       FixedAspectRatio: false
   - Object: 184563512379
     TagComponent:
-      Name: Right
+      Name: Top
     TransformComponent:
-      Position: [0.351999998, 0, 0.349999994]
-      Rotation: [0, 0.785398185, 0]
+      Position: [0, 0.5, 0]
+      Rotation: [1.57079637, 0.785398185, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Color: [1, 1, 1, 1]
-  - Object: 184563512379
-    TagComponent:
-      Name: Left
-    TransformComponent:
-      Position: [-0.354999989, 0, 0.349999994]
-      Rotation: [0, -0.785398185, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [1, 1, 1, 1]
+      TexturePath: assets\textures\Odysseus_Icon.png
+      TilingFactor: 1
+      Roughness: 0.5

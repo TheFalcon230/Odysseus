@@ -54,15 +54,18 @@ namespace Odysseus
 	struct SpriteRendererComponent
 	{
 		glm::vec4 Color = glm::vec4(1.0f);
-		Ref<Texture2D> Texture;
+		Ref<Texture2D> Albedo, NormalMap, ORMMap;
 		float TilingFactor = 1.0f;
+		float Roughness = 0.5f;
+		float Metallic = 0.5f;
+		float AO = 0.0f;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(const glm::vec4& color)
 			: Color(color) {}
-		SpriteRendererComponent(const glm::vec4& color, const Ref<Texture2D>& texture, float tilingFactor = 1.0f)
-			: Color(color), Texture(texture), TilingFactor(tilingFactor) {}
+		SpriteRendererComponent(const glm::vec4& color, const Ref<Texture2D>& albedo, const Ref<Texture2D>& normalMap = nullptr, const Ref<Texture2D>& ormMap = nullptr, float tilingFactor = 1.0f, float roughness = 0.5f, float metallic = 0.5f, float ao = 0.0f)
+			: Color(color), Albedo(albedo), NormalMap(normalMap), ORMMap(ormMap), TilingFactor(tilingFactor), Roughness(roughness), Metallic(metallic), AO(ao) {}
 	};
 
 	struct CubeRendererComponent
