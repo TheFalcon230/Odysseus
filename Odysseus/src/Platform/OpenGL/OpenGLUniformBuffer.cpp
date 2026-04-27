@@ -8,9 +8,8 @@ namespace Odysseus
 	OpenGLUniformBuffer::OpenGLUniformBuffer(uint32_t size, uint32_t binding, BufferUsageType usage)
 		: m_RendererID(0), m_Size(size), m_BindingPoint(binding), m_UsageType(usage)
 	{
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
-		glBufferData(GL_UNIFORM_BUFFER, size, nullptr, (m_UsageType == BufferUsageType::DYNAMIC_DRAW ) ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+		glCreateBuffers(1, &m_RendererID);
+		glNamedBufferData(m_RendererID, size, nullptr, (m_UsageType == BufferUsageType::DYNAMIC_DRAW ) ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
 		glBindBufferBase(GL_UNIFORM_BUFFER, m_BindingPoint, m_RendererID);
 	}
 
@@ -36,10 +35,10 @@ namespace Odysseus
 		m_BindingPoint = binding;
 	}
 
-	void OpenGLUniformBuffer::AddData(uint32_t offset, uint32_t size, const void* data)
+	void OpenGLUniformBuffer::SetData(uint32_t offset, uint32_t size, const void* data)
 	{
 		//glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
-		glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
+		glNamedBufferSubData(m_RendererID, offset, size, data);
 	}
 
 }

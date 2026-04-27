@@ -87,9 +87,13 @@ namespace Odysseus
 
 		struct LightData
 		{
-			glm::vec3 Position;
-			glm::vec3 Color;
-			float Intensity;
+			glm::vec3 Position = glm::vec3(0.0f);
+			glm::vec3 Color = glm::vec3(0.0f);
+			float Intensity = 1.0f;
+
+			glm::vec3 DirectionalLightDirection = glm::vec3(0.0f, -1.0f, 0.0f);
+			glm::vec3 DirectionalLightColor = glm::vec3(0.0f);
+			float DirectionalLightIntensity = 1.0f;
 		};
 
 		Ref<UniformBuffer> m_CameraBuffer, m_LightBuffer, m_MaterialBuffer;
@@ -147,19 +151,13 @@ namespace Odysseus
 		delete[] quadIndices;
 
 		//Default texture creation.
-		s_Data.defaultAlbedoTexture = Texture2D::Create(TextureSpecification());
-		uint32_t defaultTextureData = 0xffffffff;
-		s_Data.defaultAlbedoTexture->SetData(&defaultTextureData, sizeof(uint32_t));
+		s_Data.defaultAlbedoTexture = Texture2D::Create("assets/textures/DefaultWhite.png");
 
 		//Default normal texture (normal pointing up)
-		s_Data.defaultNormalTexture = Texture2D::Create(TextureSpecification());
-		uint32_t defaultNormalTextureData = 0xff8080ff; // (128, 128, 255) in RGBA8 format
-		s_Data.defaultNormalTexture->SetData(&defaultNormalTextureData, sizeof(uint32_t));
+		s_Data.defaultNormalTexture = Texture2D::Create("assets/textures/DefaultNormal.png");
 
 		//Default ORM texture (R: 1.0, G: 1.0, B: 0.0)
-		s_Data.defaultORMTexture = Texture2D::Create(TextureSpecification());
-		uint32_t defaultORMTextureData = 0xffffffff; // (255, 255, 0) in RGBA8 format
-		s_Data.defaultORMTexture->SetData(&defaultORMTextureData, sizeof(uint32_t));
+		s_Data.defaultORMTexture = Texture2D::Create("assets/textures/DefaultWhite.png");
 
 		int32_t samplers[s_Data.MaxTextureSlot];
 		for (uint32_t i = 0; i < s_Data.MaxTextureSlot; i++)
@@ -275,6 +273,7 @@ namespace Odysseus
 
 		s_Data.m_CameraBuffer = UniformBuffer::Create(sizeof(Renderer2DData::CameraData), 0, BufferUsageType::DYNAMIC_DRAW);
 		s_Data.m_LightBuffer = UniformBuffer::Create(sizeof(Renderer2DData::LightData), 1, BufferUsageType::DYNAMIC_DRAW);
+
 	}
 
 	void Renderer2D::Shutdown()
@@ -311,15 +310,17 @@ namespace Odysseus
 
 		s_Data.PBRShader->Bind();
 		s_Data.m_CameraBuffer->Bind();
-		s_Data.m_CameraBuffer->AddData(0, sizeof(Renderer2DData::CameraData), &(s_Data.cameraData));
+		s_Data.m_CameraBuffer->SetData(0, sizeof(Renderer2DData::CameraData), &(s_Data.cameraData));
 		s_Data.m_CameraBuffer->Unbind();
 
-		if(s_Data.LightsToRender)
+		s_Data.m_LightBuffer->Bind();
+		if (s_Data.LightsToRender)
 		{
-			s_Data.m_LightBuffer->Bind();
-			s_Data.m_LightBuffer->AddData(0, sizeof(Renderer2DData::LightData), &(s_Data.LightsToRender));
-			s_Data.m_LightBuffer->Unbind();
+			s_Data.m_LightBuffer->SetData(0, sizeof(glm::vec3), &s_Data.LightsToRender->Position);
+			s_Data.m_LightBuffer->SetData(sizeof(glm::vec3), sizeof(glm::vec3), &s_Data.LightsToRender->Color);
+			s_Data.m_LightBuffer->SetData(2*sizeof(glm::vec3), sizeof(float), &s_Data.LightsToRender->Intensity);
 		}
+		s_Data.m_LightBuffer->Unbind();
 		s_Data.PBRShader->Unbind();
 
 		StartBatch();
@@ -352,6 +353,8 @@ namespace Odysseus
 				s_Data.defaultORMTexture->Bind(2);
 
 			s_Data.PBRShader->Bind();
+
+
 			RenderCommand::DrawIndexed(s_Data.quadVertexArray, s_Data.QuadIndexCount);
 			s_Data.Stats.DrawCalls++;
 		}
@@ -380,6 +383,8 @@ namespace Odysseus
 		float Metallic = 1.0f;
 		float AO = 1.0f;
 
+		s_Data.TextureSlotIndex = textureIndex;
+
 		for (size_t i = 0; i < quadVertexCount; i++)
 		{
 			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
@@ -387,7 +392,7 @@ namespace Odysseus
 			s_Data.QuadVertexBufferPtr->TexCoord = defaultTexCoord[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-			s_Data.QuadVertexBufferPtr->Normal = glm::transpose(glm::inverse(glm::mat3(transform))) * s_Data.QuadVertexNormal[i];
+			s_Data.QuadVertexBufferPtr->Normal = transform * s_Data.QuadVertexNormal[i];
 			s_Data.QuadVertexBufferPtr->Roughness = Roughness;
 			s_Data.QuadVertexBufferPtr->Metallic = Metallic;
 			s_Data.QuadVertexBufferPtr->AO = AO;
@@ -437,7 +442,7 @@ namespace Odysseus
 			s_Data.QuadVertexBufferPtr->TexCoord = defaultTexCoord[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-			s_Data.QuadVertexBufferPtr->Normal = glm::transpose(glm::inverse(glm::mat3(transform))) * s_Data.QuadVertexNormal[i];
+			s_Data.QuadVertexBufferPtr->Normal = transform * s_Data.QuadVertexNormal[i];
 			s_Data.QuadVertexBufferPtr->Roughness = Roughness;
 			s_Data.QuadVertexBufferPtr->Metallic = Metallic;
 			s_Data.QuadVertexBufferPtr->AO = AO;
@@ -489,17 +494,20 @@ namespace Odysseus
 
 	void Renderer2D::DrawPointLight(const glm::vec3& position, const glm::vec3& color, float intensity, float radius, int entityID)
 	{
-		s_Data.LightsToRender->Position = position;
-		s_Data.LightsToRender->Color = color;
-		s_Data.LightsToRender->Intensity = intensity;
+		Ref<Renderer2DData::LightData> lightData = CreateRef<Renderer2DData::LightData>();
+		lightData->Position = position;
+		lightData->Color = color;
+		lightData->Intensity = intensity;
+		s_Data.LightsToRender = lightData;
 	}
-
-	void Renderer2D::DrawDirectionalLight(const glm::vec3& position, const glm::vec3& color, float intensity, float radius, int entityID)
+	void Renderer2D::DrawDirectionalLight(const glm::vec3& direction, const glm::vec3& color, float intensity, float radius, int entityID)
 	{
 		// Render directional light;
-		s_Data.LightsToRender->Position = position;
-		s_Data.LightsToRender->Color = color;
-		s_Data.LightsToRender->Intensity = intensity;
+		Ref<Renderer2DData::LightData> lightData = CreateRef<Renderer2DData::LightData>();
+		lightData->DirectionalLightDirection = direction;
+		lightData->DirectionalLightColor = color;
+		lightData->DirectionalLightIntensity = intensity;
+		s_Data.LightsToRender = lightData;
 	}
 
 	Renderer2D::Statistics Renderer2D::GetStats()

@@ -10,6 +10,9 @@ namespace Odysseus
 
 	Scene::Scene()
 	{
+		defaultAlbedoTexture = Texture2D::Create("assets/textures/DefaultWhite.png");
+		defaultNormalTexture = Texture2D::Create("assets/textures/DefaultNormal.png");
+		defaultORMTexture = Texture2D::Create("assets/textures/DefaultWhite.png");
 	}
 
 	Scene::~Scene()
@@ -31,7 +34,7 @@ namespace Odysseus
 		Object entity = { registry.create(), this };
 		entity.AddComponent<TransformComponent>(glm::vec3(0.0f));
 		auto& tag = entity.AddComponent<TagComponent>(name);
-		entity.AddComponent<SpriteRendererComponent>();
+		entity.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f), defaultAlbedoTexture, defaultNormalTexture, defaultORMTexture);
 		tag.Tag = name.empty() ? "Entity" : name;
 		return entity;
 	}
@@ -193,9 +196,8 @@ namespace Odysseus
 			auto [transform, light] = DirectionalLightView.get<TransformComponent, DirectionalLightComponent>(entity);
 
 			glm::vec3 direction = transform.Rotation * glm::vec3(0.0f, 0.0f, -1.0f);
-			glm::vec3 position = glm::vec3(0.0f) + direction * 100.0f; // Position the directional light far away in the direction it's facing
 
-			Renderer2D::DrawDirectionalLight(position, light.Color, light.Intensity);
+			Renderer2D::DrawDirectionalLight(direction, light.Color, light.Intensity);
 		}
 		Renderer2D::EndScene();
 	}

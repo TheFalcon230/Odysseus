@@ -23,7 +23,7 @@ namespace Odysseus
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 		virtual void SetBindingPoint(uint32_t binding) = 0;
-		virtual void AddData(uint32_t offset, uint32_t size, const void* data) = 0;
+		virtual void SetData(uint32_t offset, uint32_t size, const void* data) = 0;
 	};
 
 

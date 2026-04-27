@@ -14,7 +14,7 @@ namespace Odysseus
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 		virtual void SetBindingPoint(uint32_t binding) override;
-		virtual void AddData(uint32_t offset, uint32_t size, const void* data) override;
+		virtual void SetData(uint32_t offset, uint32_t size, const void* data) override;
 	private:
 		uint32_t m_RendererID, m_Size, m_BindingPoint;
 		BufferUsageType m_UsageType;

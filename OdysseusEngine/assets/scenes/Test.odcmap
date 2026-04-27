@@ -2,20 +2,6 @@ Scene: New Scene
 Objects:
   - Object: 184563512379
     TagComponent:
-      Name: Ground
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [-1.57079637, 0, 0]
-      Scale: [100, 100, 100]
-    SpriteRendererComponent:
-      Color: [1, 1, 1, 1]
-      TexturePath: assets\textures\Ground\ground_0035_color_4k.jpg
-      NormalMapPath: assets\textures\Ground\ground_0035_normal_opengl_4k.png
-      ORMMapPath: assets\textures\Ground\ground_0035_orm_4k.png
-      TilingFactor: 10
-      Roughness: 1
-  - Object: 184563512379
-    TagComponent:
       Name: Directional Light
     TransformComponent:
       Position: [0, 0, 0]
@@ -23,4 +9,15 @@ Objects:
       Scale: [0.999986887, 0.999991119, 0.999990642]
     DirectionalLightComponent:
       Color: [1, 1, 1, 1]
-      Intensity: 150
+      Intensity: 1000
+  - Object: 184563512379
+    TagComponent:
+      Name: Ground
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [-1.57079637, 0, 0]
+      Scale: [100, 100, 100]
+    SpriteRendererComponent:
+      Color: [1, 1, 1, 1]
+      TilingFactor: 10
+      Roughness: 1

@@ -80,7 +80,7 @@ namespace Odysseus
 
 		{
 			PROFILE_SCOPE("Camera OnUpdate");
-			if (bIsViewportFocused)
+			if (bIsViewportFocused && !bIsUsingGizmo)
 			{
 				m_CameraController.OnUpdate(updateTime);
 			}

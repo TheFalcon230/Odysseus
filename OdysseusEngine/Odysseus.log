@@ -1,26 +1,37 @@
-[11:09:57] [info] ODYSSEUS: Creating window Odysseus Engine 0.0.2 1280, 720
-[11:09:58] [info] ODYSSEUS: OpenGL Info:
-[11:09:58] [info] ODYSSEUS:   Vendor: NVIDIA Corporation
-[11:09:58] [info] ODYSSEUS:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
-[11:09:58] [info] ODYSSEUS:   Version: 4.6.0 NVIDIA 596.21
-[11:09:59] [trace] ODYSSEUS: OpenGLShader::Reflect - GL_VERTEX_SHADER assets/shaders/pbr.glsl
-[11:09:59] [trace] ODYSSEUS:     2 uniform buffers
-[11:09:59] [trace] ODYSSEUS:     0 resources
-[11:09:59] [trace] ODYSSEUS: Uniform buffers:
-[11:09:59] [trace] ODYSSEUS:   _61_63
-[11:09:59] [trace] ODYSSEUS:     Size = 140
-[11:09:59] [trace] ODYSSEUS:     Binding = 0
-[11:09:59] [trace] ODYSSEUS:     Members = 3
-[11:09:59] [trace] ODYSSEUS:   _70_72
-[11:09:59] [trace] ODYSSEUS:     Size = 32
-[11:09:59] [trace] ODYSSEUS:     Binding = 1
-[11:09:59] [trace] ODYSSEUS:     Members = 3
-[11:09:59] [trace] ODYSSEUS: OpenGLShader::Reflect - GL_FRAGMENT_SHADER assets/shaders/pbr.glsl
-[11:09:59] [trace] ODYSSEUS:     0 uniform buffers
-[11:09:59] [trace] ODYSSEUS:     3 resources
-[11:09:59] [trace] ODYSSEUS: Uniform buffers:
-[11:10:00] [warning] ODYSSEUS: Shader creation took 2424.6904 ms
-[11:10:00] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/Odysseus_Icon.png'
-[11:10:01] [info] ODYSSEUS: Texture loaded successfully!
-[11:10:01] [error] ODYSSEUS: Program/shader state performance warning: Vertex shader in program 2 is being recompiled based on GL state.
-[11:10:01] [error] ODYSSEUS: Program/shader state performance warning: Vertex shader in program 2 is being recompiled based on GL state, and was not found in the disk cache
+[21:59:41] [info] ODYSSEUS: Creating window Odysseus Engine 0.0.2 1280, 720
+[21:59:42] [info] ODYSSEUS: OpenGL Info:
+[21:59:42] [info] ODYSSEUS:   Vendor: NVIDIA Corporation
+[21:59:42] [info] ODYSSEUS:   Renderer: NVIDIA GeForce RTX 3060 Ti/PCIe/SSE2
+[21:59:42] [info] ODYSSEUS:   Version: 4.6.0 NVIDIA 596.21
+[21:59:42] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/DefaultWhite.png'
+[21:59:42] [info] ODYSSEUS: Texture loaded successfully!
+[21:59:42] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/DefaultNormal.png'
+[21:59:42] [info] ODYSSEUS: Texture loaded successfully!
+[21:59:42] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/DefaultWhite.png'
+[21:59:42] [info] ODYSSEUS: Texture loaded successfully!
+[21:59:43] [trace] ODYSSEUS: OpenGLShader::Reflect - GL_VERTEX_SHADER assets/shaders/pbr.glsl
+[21:59:43] [trace] ODYSSEUS:     2 uniform buffers
+[21:59:43] [trace] ODYSSEUS:     0 resources
+[21:59:43] [trace] ODYSSEUS: Uniform buffers:
+[21:59:43] [trace] ODYSSEUS:   _60_62
+[21:59:43] [trace] ODYSSEUS:     Size = 76
+[21:59:43] [trace] ODYSSEUS:     Binding = 0
+[21:59:43] [trace] ODYSSEUS:     Members = 2
+[21:59:43] [trace] ODYSSEUS:   _69_71
+[21:59:43] [trace] ODYSSEUS:     Size = 64
+[21:59:43] [trace] ODYSSEUS:     Binding = 1
+[21:59:43] [trace] ODYSSEUS:     Members = 6
+[21:59:43] [trace] ODYSSEUS: OpenGLShader::Reflect - GL_FRAGMENT_SHADER assets/shaders/pbr.glsl
+[21:59:43] [trace] ODYSSEUS:     0 uniform buffers
+[21:59:43] [trace] ODYSSEUS:     3 resources
+[21:59:43] [trace] ODYSSEUS: Uniform buffers:
+[21:59:45] [warning] ODYSSEUS: Shader creation took 2654.7122 ms
+[21:59:45] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/DefaultWhite.png'
+[21:59:45] [info] ODYSSEUS: Texture loaded successfully!
+[21:59:45] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/DefaultNormal.png'
+[21:59:45] [info] ODYSSEUS: Texture loaded successfully!
+[21:59:45] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/DefaultWhite.png'
+[21:59:45] [info] ODYSSEUS: Texture loaded successfully!
+[21:59:45] [info] ODYSSEUS: Start loading texture at path: 'assets/textures/Odysseus_Icon.png'
+[21:59:45] [info] ODYSSEUS: Texture loaded successfully!
+[21:59:45] [error] ODYSSEUS: Program/shader state performance warning: Vertex shader in program 2 is being recompiled based on GL state.

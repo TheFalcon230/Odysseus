@@ -34,6 +34,8 @@ namespace Odysseus
 		uint32_t viewportWidth = 0, viewportHeight = 0;
 
 		Ref<Texture2D> m_Texture;
+
+		Ref<Texture2D> defaultAlbedoTexture, defaultNormalTexture, defaultORMTexture;
 		entt::registry registry;
 
 		friend class Object;

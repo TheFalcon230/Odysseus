@@ -23,7 +23,7 @@ namespace Odysseus
 		inline void SetViewportSize(float width, float height) { fViewportWidth = width; fViewportHeight = height; UpdateProjection(); }
 
 		const glm::mat4 GetViewMatrix() const { return viewMatrix; }
-		glm::mat4 GetViewProjection() const { return projectionMatrix * viewMatrix; }
+		glm::mat4 GetViewProjection() const { return viewProjectionMatrix; }
 		const glm::mat4 GetModelMatrix() const { return modelMatrix; }
 
 		glm::vec3 GetUpDirection() const;
@@ -61,6 +61,7 @@ namespace Odysseus
 		float fFOV = 45.0f, fAspectRatio = 1.778f, fNearClip = 0.1f, fFarClip = 1000.0f;
 
 		glm::mat4 viewMatrix;
+		glm::mat4 viewProjectionMatrix;
 		glm::mat4 modelMatrix;
 		glm::vec3 Position = { 0.0f, 0.0f, 0.0f }, vecFocalPoint = {0.0f, 0.0f, 0.0f};
 

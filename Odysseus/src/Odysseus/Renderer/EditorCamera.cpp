@@ -64,6 +64,8 @@ namespace Odysseus
 	{
 		fAspectRatio = fViewportWidth / fViewportHeight;
 		projectionMatrix = glm::perspective(glm::radians(fFOV), fAspectRatio, fNearClip, fFarClip);
+
+		viewProjectionMatrix = projectionMatrix * viewMatrix;
 	}
 
 	void EditorCamera::UpdateView()
@@ -73,6 +75,8 @@ namespace Odysseus
 		glm::quat orientation = GetOrientation();
 		viewMatrix = glm::translate(glm::mat4(1.0f), Position) * glm::toMat4(orientation);
 		viewMatrix = glm::inverse(viewMatrix);
+
+		viewProjectionMatrix = projectionMatrix * viewMatrix;
 
 	}
 
