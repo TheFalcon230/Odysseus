@@ -135,8 +135,8 @@ namespace Odysseus
 		if (m_RendererID)
 		{
 			glDeleteFramebuffers(1, &m_RendererID);
-			glDeleteTextures(1, &m_DepthAttachment);
 			glDeleteTextures(ColorAttachments.size(), ColorAttachments.data());
+			glDeleteTextures(1, &m_DepthAttachment);
 
 			ColorAttachments.clear();
 			m_DepthAttachment = 0;

@@ -31,7 +31,7 @@ namespace Odysseus
 		Object entity = { registry.create(), this };
 		entity.AddComponent<TransformComponent>(glm::vec3(0.0f));
 		auto& tag = entity.AddComponent<TagComponent>(name);
-		entity.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f));
+		entity.AddComponent<SpriteRendererComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
 		return entity;
 	}
@@ -53,6 +53,16 @@ namespace Odysseus
 		auto& tag = entity.AddComponent<TagComponent>(name);
 		entity.AddComponent<PointLightComponent>(1.0f, glm::vec4(1.0f));
 		tag.Tag = name.empty() ? "Point Light" : name;
+		return entity;
+	}
+
+	Object Scene::CreateDirectionalLight(std::string name)
+	{
+		Object entity = { registry.create(), this };
+		entity.AddComponent<TransformComponent>(glm::vec3(0.0f));
+		auto& tag = entity.AddComponent<TagComponent>(name);
+		entity.AddComponent<DirectionalLightComponent>(1.0f, glm::vec4(1.0f));
+		tag.Tag = name.empty() ? "Directional Light" : name;
 		return entity;
 	}
 
@@ -137,6 +147,17 @@ namespace Odysseus
 				auto [transform, light] = LightView.get<TransformComponent, PointLightComponent>(entity);
 				Renderer2D::DrawPointLight(transform.Position, light.Color, light.Intensity);
 			}
+
+			auto DirectionalLightView = registry.view<TransformComponent, DirectionalLightComponent>();
+			for (auto entity : DirectionalLightView)
+			{
+				auto [transform, light] = DirectionalLightView.get<TransformComponent, DirectionalLightComponent>(entity);
+
+				glm::vec3 direction = transform.Rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+				glm::vec3 position = glm::vec3(0.0f) + direction * 100.0f; // Position the directional light far away in the direction it's facing
+
+				Renderer2D::DrawDirectionalLight(position, light.Color, light.Intensity);
+			}
 			Renderer2D::EndScene();
 		}
 	}
@@ -163,9 +184,19 @@ namespace Odysseus
 		for (auto entity : LightView)
 		{
 			auto [transform, light] = LightView.get<TransformComponent, PointLightComponent>(entity);
-			Renderer2D::DrawPointLight(transform.Position, light.Color, light.Intensity);
+			Renderer2D::DrawPointLight(transform.Position, light.Color, light.Intensity, (int)entity);
 		}
 
+		auto DirectionalLightView = registry.view<TransformComponent, DirectionalLightComponent>();
+		for (auto entity : DirectionalLightView)
+		{
+			auto [transform, light] = DirectionalLightView.get<TransformComponent, DirectionalLightComponent>(entity);
+
+			glm::vec3 direction = transform.Rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+			glm::vec3 position = glm::vec3(0.0f) + direction * 100.0f; // Position the directional light far away in the direction it's facing
+
+			Renderer2D::DrawDirectionalLight(position, light.Color, light.Intensity);
+		}
 		Renderer2D::EndScene();
 	}
 

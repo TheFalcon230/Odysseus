@@ -66,6 +66,10 @@ namespace Odysseus
 					{
 						Context->CreatePointLight("Point Light");
 					}
+					if (ImGui::MenuItem("Directional Light"))
+					{
+						Context->CreateDirectionalLight("Directional Light");
+					}
 
 					ImGui::EndPopup();
 				}
@@ -292,9 +296,20 @@ namespace Odysseus
 				ImGui::CloseCurrentPopup();
 			}
 
+			ImGui::Separator();
+
 			if (ImGui::MenuItem("Point light"))
 			{
 				OSelectionContext.AddComponent<PointLightComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+
+			if (ImGui::MenuItem("Directional Light"))
+			{
+				if (!OSelectionContext.HasComponent<PointLightComponent>())
+				{
+					OSelectionContext.AddComponent<DirectionalLightComponent>();
+				}
 				ImGui::CloseCurrentPopup();
 			}
 
@@ -393,14 +408,16 @@ namespace Odysseus
 				ImGui::EndDragDropTarget();
 			}
 			ImGui::Columns(1);
-			DrawFloatControl("Tiling Factor", component.TilingFactor, 1.0f, 0.0f, 10.0f, 100.0f);
+			DrawFloatControl("Tiling Factor", component.TilingFactor, 1.0f, 0.5f, 10.0f, 100.0f);
 			DrawFloatControl("Roughness factor", component.Roughness, 0.5f, 0.0f, 1.0f, 100.0f);
 			DrawFloatControl("Metallic factor", component.Metallic, 0.5f, 0.0f, 1.0f, 100.0f);
 			DrawFloatControl("AO factor", component.AO, 0.0f, 0.0f, 1.0f, 100.0f);
 
 		});
 
-		DrawComponent<PointLightComponent>("Point Light", object, [](auto& component) {ImGui::ColorEdit4("Color", glm::value_ptr(component.Color)); ImGui::DragFloat("Intensity", &component.Intensity, 0.1f, 0.0f, 100.0f); });
+		DrawComponent<PointLightComponent>("Point Light", object, [](auto& component) {ImGui::ColorEdit4("Color", glm::value_ptr(component.Color)); ImGui::DragFloat("Intensity", &component.Intensity, 0.1f, 0.1f, 100.0f); });
+
+		DrawComponent<DirectionalLightComponent>("Directional Light", object, [](auto& component) {ImGui::ColorEdit4("Color", glm::value_ptr(component.Color)); ImGui::DragFloat("Intensity", &component.Intensity, 0.1f, 0.1f, 100.0f); });
 
 
 		DrawComponent<CameraComponent>("Camera", object, [](CameraComponent& component)

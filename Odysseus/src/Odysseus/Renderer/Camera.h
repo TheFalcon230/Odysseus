@@ -39,7 +39,8 @@ namespace Odysseus
 	{
 	public:
 		Camera() = default;
-		Camera(const glm::mat4 pProjection): projectionMatrix(pProjection){}
+		Camera(const glm::mat4 pProjection)
+			: projectionMatrix(pProjection){}
 
 		const glm::mat4& GetProjection() const { return projectionMatrix; }
 

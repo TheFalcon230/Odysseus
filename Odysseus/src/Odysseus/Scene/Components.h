@@ -104,6 +104,16 @@ namespace Odysseus
 			: Intensity(intensity), Color(color) {}
 	};
 
+	struct DirectionalLightComponent
+	{
+		float Intensity = 1.0f;
+		glm::vec4 Color = glm::vec4(1.0f);
+
+		DirectionalLightComponent() = default;
+		DirectionalLightComponent(const float& intensity, const glm::vec4& color = glm::vec4(1.0f))
+			: Intensity(intensity), Color(color) {}
+	};
+
 	struct NativeScriptComponent
 	{
 		ScriptableObject* Instance = nullptr;

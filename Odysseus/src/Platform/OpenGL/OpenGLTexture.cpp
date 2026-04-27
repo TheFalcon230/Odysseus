@@ -68,6 +68,13 @@ namespace Odysseus
 				internalFormat = GL_RGB8;
 				dataFormat = GL_RGB;
 			}
+			else if (channels == 1)
+			{
+				internalFormat = GL_R8;
+				dataFormat = GL_RED;
+				ODC_CORE_WARN("Red channel texture is not supported by the current version of the engine.");
+				ODC_CORE_WARN("Consider using RGBA format with alpha channel set to 1.0f for better compatibility.");
+			}
 
 				m_InternalFormat = internalFormat;
 				m_DataFormat = dataFormat;

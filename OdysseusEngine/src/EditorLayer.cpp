@@ -24,31 +24,27 @@ namespace Odysseus
 	extern const std::filesystem::path g_AssetsDirectory;
 
 	EditorLayer::EditorLayer()
-		: Layer("Editor Layer"), m_CameraController(1920.f / 1080.f)
+		: Layer("Editor Layer"), m_CameraController(1280.0f / 720.0f)
 	{
 
 	}
 
 	void EditorLayer::OnAttach()
 	{
-		testQuad = CreateRef<QuadProperties>();
-		m_Texture = Texture2D::Create("assets/textures/TestImage.png");
-		T_Spritesheet = Texture2D::Create("assets/textures/RPG_Sheet.png");
-
 		FramebufferSpecification fbSpec;
 		fbSpec.Attachments = { FramebufferTextureFormat::RBGA8,FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
-		fbSpec.Width = 1920;
-		fbSpec.Height = 1080;
+		fbSpec.Width = 1280;
+		fbSpec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(fbSpec);
 
-		activeScene = CreateRef<Scene>();
+		editorScene = CreateRef<Scene>();
+		activeScene = editorScene;
 
 		auto commandLineArgs = Application::Get().GetCommandLineArgs();
 		if (commandLineArgs.Count > 1)
 		{
 			auto sceneFilePath = commandLineArgs[1];
-			SceneSerializer serializer(activeScene);
-			serializer.Deserialize(sceneFilePath);
+			OpenScene(sceneFilePath);
 		}
 
 		mainCameraEditor = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
@@ -58,8 +54,6 @@ namespace Odysseus
 
 		hierarchyPanel.SetContext(activeScene);
 		windowTitleBar.SetContext(this);
-
-
 	}
 
 	void EditorLayer::OnDetach()
@@ -98,7 +92,7 @@ namespace Odysseus
 		{
 			PROFILE_SCOPE("Renderer Prep");
 			m_Framebuffer->Bind();
-			RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+			RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 			RenderCommand::Clear();
 
 			// Clear enity ID attachment to -1
@@ -465,6 +459,7 @@ namespace Odysseus
 		contentBrowserPanel.OnImGuiRender();
 
 		ImGui::End();
+
 
 	}
 

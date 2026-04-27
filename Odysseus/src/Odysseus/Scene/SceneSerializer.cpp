@@ -222,6 +222,18 @@ namespace Odysseus
 			out << YAML::EndMap; // PointLightComponent
 		}
 
+		if (object.HasComponent<DirectionalLightComponent>())
+		{
+			out << YAML::Key << "DirectionalLightComponent";
+			out << YAML::BeginMap; // DirectionalLightComponent
+
+			auto& directionalLightComponent = object.GetComponent<DirectionalLightComponent>();
+			out << YAML::Key << "Color" << YAML::Value << directionalLightComponent.Color;
+			out << YAML::Key << "Intensity" << YAML::Value << directionalLightComponent.Intensity;
+
+			out << YAML::EndMap; // DirectionalLightComponent
+		}
+
 		out << YAML::EndMap; // Object
 	}
 
@@ -353,6 +365,14 @@ namespace Odysseus
 					auto& plc = deserializedEntity.AddComponent<PointLightComponent>();
 					plc.Color = pointLightComponent["Color"].as<glm::vec4>();
 					plc.Intensity = pointLightComponent["Intensity"].as<float>();
+				}
+
+				auto directionalLightComponent = entity["DirectionalLightComponent"];
+				if (directionalLightComponent)
+				{
+					auto& dlc = deserializedEntity.AddComponent<DirectionalLightComponent>();
+					dlc.Color = directionalLightComponent["Color"].as<glm::vec4>();
+					dlc.Intensity = directionalLightComponent["Intensity"].as<float>();
 				}
 			}
 		}

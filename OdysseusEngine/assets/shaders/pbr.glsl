@@ -3,15 +3,15 @@
 #version 450 core
 
 layout(location = 0) in vec3 a_Position;
-layout(location = 1) in vec3 a_Normal;
-layout(location = 2) in vec4 a_Color;
-layout(location = 3) in vec2 a_TexCoord;
-layout(location = 4) in float a_TexIndex;
-layout(location = 5) in float a_TilingFactor;
-layout(location = 6) in int a_EntityID;
-layout(location = 7) in float a_Roughness;
-layout(location = 8) in float a_Metallic;
-layout(location = 9) in float a_AO;
+layout(location = 1) in vec4 a_Color;
+layout(location = 2) in vec2 a_TexCoord;
+layout(location = 3) in float a_TexIndex;
+layout(location = 4) in float a_TilingFactor;
+layout(location = 5) in vec3 a_Normal;
+layout(location = 6) in float a_Roughness;
+layout(location = 7) in float a_Metallic;
+layout(location = 8) in float a_AO;
+layout(location = 9) in int a_EntityID;
 
 // uniform mat4 u_ViewProjection;
 
@@ -19,7 +19,7 @@ layout(std140, binding = 0) uniform CameraBuffer
 {
 	mat4 u_ViewProjection;
 	mat4 u_Model;
-	mat3 u_NormalMatrix;
+	//mat3 u_NormalMatrix;
 	vec3 u_CameraPosition;
 };
 
@@ -39,10 +39,6 @@ struct VertexOutput
 	mat3 TBN;
 };
 
-layout (location = 0) out vec3 FragPos;
-layout (location = 4) out flat float v_TexIndex;
-layout (location = 5) out flat int v_EntityID;
-layout (location = 6) out vec3 v_CameraPosition;
 
 struct Light {
 	vec3 u_LightPos;
@@ -57,19 +53,25 @@ struct Material
 	float AO;
 };
 
-layout (location = 10) out Light LightOutput;
-layout (location = 19) out VertexOutput Output;
-layout (location = 26) out Material MaterialOutput;
+layout (location = 0) out vec3 Pos;
+layout (location = 4) out flat float v_TexIndex;
+layout (location = 5) out flat int v_EntityID;
+layout (location = 6) out vec3 v_CameraPosition;
+layout (location = 10) out VertexOutput Output;
+layout (location = 19) out Material MaterialOutput;
+layout (location = 26) out Light LightOutput;
 
 void main()
 {
-		Output.Color = a_Color;
+	Output.Color = a_Color;
 	Output.TexCoord = a_TexCoord;
 	v_TexIndex = a_TexIndex;
 	Output.TilingFactor = a_TilingFactor;
 	v_EntityID = a_EntityID;
 	Output.Normal = a_Normal;
 	MaterialOutput.Roughness = a_Roughness;
+	MaterialOutput.AO = a_AO;
+	MaterialOutput.Metallic = a_Metallic;
 
 	v_CameraPosition = u_CameraPosition;
 
@@ -77,8 +79,8 @@ void main()
 	LightOutput.u_LightColor = u_LightBufferColor;
 	LightOutput.u_LightIntensity = u_LightBufferIntensity;
 
-	FragPos = vec3( u_Model * vec4(a_Position, 1.0f));
-	gl_Position = u_ViewProjection *  vec4(FragPos, 1.0f);
+	Pos = a_Position;
+	gl_Position = u_ViewProjection * vec4(Pos, 1.0f);
 }
 
 #type fragment
@@ -86,6 +88,7 @@ void main()
 
 layout(location = 0) out vec4 FragColor;
 layout(location = 1) out int ID;
+
 
 struct Light {
 	vec3 u_LightPos;
@@ -109,13 +112,13 @@ struct Material
 	float AO;
 };
 
-layout (location = 0) in vec3 FragPos;
+layout (location = 0) in vec3 Pos;
 layout (location = 4)in flat float v_TexIndex;
 layout (location = 5)in flat int v_EntityID;
 layout (location = 6)in vec3 v_CameraPosition;
-layout (location = 10)in Light LightOutput;
-layout (location = 19)in VertexOutput Output;
-layout (location = 26)in Material MaterialOutput;
+layout (location = 10) in VertexOutput Output;
+layout (location = 19) in Material MaterialOutput;
+layout (location = 26) in Light LightOutput;
 
 const float PI = 3.14159265359;
 
@@ -138,9 +141,9 @@ void main()
 	vec2 UV = Output.TexCoord * Output.TilingFactor;
 	vec4 albedo = texture(u_Texture, UV) * Output.Color;
 
-	float ao = texture(u_ORM, UV).r;
-	float roughness = texture(u_ORM, UV).g;
-	float metallic = texture(u_ORM, UV).b;
+	float ao = mix(1.0, texture(u_ORM, UV).r,  MaterialOutput.AO);
+	float roughness = texture(u_ORM, UV).g * MaterialOutput.Roughness;
+	float metallic = texture(u_ORM, UV).b * MaterialOutput.Metallic;
 
 	// switch(int(v_TexIndex))
 	// {
@@ -178,74 +181,52 @@ void main()
 	// 	case 31: objectColor *= texture(u_Textures[31], Output.TexCoord * Output.TilingFactor); break;
 	// }
 
-	// // obtain normal from normal map in range [0,1]
-    // vec3 normal = texture(u_NormalMap, UV).rgb;
-    // // transform normal vector to range [-1,1]
-    // normal = normalize(normal * 2.0f - 1);  // this normal is in tangent space
-	// //normal = normalize(Output.TBN * normal);
+	// obtain normal from normal map in range [0,1]
+    vec3 normal = texture(u_NormalMap, UV).rgb;
+    // transform normal vector to range [-1,1]
+    normal = normalize(normal * 2.0f - 1);  // this normal is in tangent space
+	//normal = normalize(Output.TBN * normal);
 
-    // vec3 N = normal * Output.Normal;
-    // vec3 V = normalize(v_CameraPosition - FragPos);
+    vec3 N = normal;
+    vec3 V = normalize(v_CameraPosition - Pos);
 
-    // vec3 F0 = vec3(0.04f);
-    // F0 = mix(F0, albedo.rgb, metallic);
-
-    // vec3 Lo = vec3(0.0f);
-
-    // vec3 L = normalize(LightOutput.u_LightPos - FragPos);
-    // vec3 H = normalize(L + V);
-    // float NdotL = max(dot(N, L), 0.0f);
-    // float attenuation = CalculateAttenuation(FragPos,LightOutput.u_LightPos) + LightOutput.u_LightIntensity;
-    // vec3 radiance = LightOutput.u_LightColor * attenuation;
-
-    // float NDF = DistributionGGX(N, H, roughness);        
-    // float G   = GeometrySmith(N, V, L,roughness); 
-    // vec3 F    = fresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
-
-    // vec3 kS = F;
-    // vec3 kD = vec3(1.0f) - kS;
-    // kD *= 1.0f - metallic;
-
-    // vec3 numerator = NDF * G * F;
-    // float denominator = 4.0f * max(dot(N, V), 0.0f) * NdotL + 0.0001f;
-    // vec3 specular = numerator / denominator;
-
-    // Lo += (kD * albedo.rgb / PI * specular) * radiance * NdotL;
-
-    // vec3 ambient = vec3(0.03f) * albedo.rgb * ao;
-    // vec3 finalColor = Lo + ambient;
-
-    // finalColor = finalColor / (finalColor + vec3(1.0f));
-    // finalColor = pow(finalColor, vec3(1.0f/2.2f));
-
-    // FragColor.rgb = finalColor.rgb;
-	// FragColor.a = albedo.a;
-
-	// ID = v_EntityID;
-
-	
-
-	float ambientStrength = 0.05f;
-	vec3 Ambient = ambientStrength * LightOutput.u_LightColor;
-
-	vec3 lightDir = normalize(LightOutput.u_LightPos - FragPos);
-	vec3 norm = normalize(Output.Normal);
-	vec3 viewDir = normalize( v_CameraPosition - FragPos);
-	vec3 halfwayDir = normalize(lightDir + viewDir);
-
-	float LdotN = dot(norm, lightDir);
-	float diff = LdotN * 0.5 + 0.5;
+    vec3 F0 = vec3(0.04f);
+    F0 = mix(F0, albedo.rgb, metallic);
 
 
-	vec3 Diffuse = diff * LightOutput.u_LightColor; 
-	Diffuse *= LightOutput.u_LightIntensity;
+    vec3 Lo = vec3(0.0f);
 
-	float specularStrength = 0.5f;
-	float spec = pow(dot(norm, halfwayDir)*0.5f + 0.5f, 256.0f * (1.0f - MaterialOutput.Roughness));
-	vec3 Specular = specularStrength * spec * LightOutput.u_LightColor * LightOutput.u_LightIntensity;
+    vec3 L = normalize(LightOutput.u_LightPos - Pos);
+    vec3 H = normalize(L + V);
+    float NdotL = max(dot(N, L), 0.0f);
+    float attenuation = CalculateAttenuation(Pos,LightOutput.u_LightPos) + LightOutput.u_LightIntensity;
+    vec3 radiance = LightOutput.u_LightColor * attenuation;
 
-	FragColor.rgb = (Ambient + Diffuse + Specular) * albedo.rgb;
-	FragColor.a = albedo.a;
+		float NDF = DistributionGGX(N, H, roughness);        
+		float G   = GeometrySmith(N, V, L,roughness); 
+		vec3 F    = fresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
+
+		vec3 kS = F;
+		vec3 kD = vec3(1.0f) - kS;
+		kD *= 1.0f - metallic;
+
+		vec3 numerator = NDF * G * F;
+		float denominator = 4.0f * max(dot(N, V), 0.0f) * NdotL + 0.0001f;
+		vec3 specular = numerator / denominator;
+
+    Lo += (kD * albedo.rgb / PI * specular) * radiance * NdotL;
+
+    vec3 ambient = vec3(0.03f) * albedo.rgb * ao;
+    vec3 finalColor = Lo + ambient;
+
+    finalColor = finalColor / (finalColor + vec3(1.0f));
+    finalColor = pow(finalColor, vec3(1.0f/2.2f));
+
+    FragColor.rgb = finalColor.rgb;
+	if(gl_FrontFacing)
+		FragColor.a = albedo.a;
+	else
+		FragColor.a = 0.0f;
 
 	ID = v_EntityID;
 }
@@ -255,8 +236,8 @@ float CalculateAttenuation(vec3 pos0, vec3 pos1)
     float distance = length(pos1 - pos0);
 
 	float numerator = clamp(pow(1-(distance/500.f), 4), 0.0f, 1.0f);
-
-    float attenuation = (numerator * numerator) / (distance * distance) + 1;
+	float denominator = (distance * distance) + 1;
+    float attenuation = (numerator * numerator) / denominator;
 		
     return attenuation;
 }

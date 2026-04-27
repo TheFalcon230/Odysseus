@@ -46,6 +46,7 @@ namespace Odysseus
 		static void DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID);
 
 		static void DrawPointLight(const glm::vec3& position, const glm::vec3& color, float intensity, float radius = 100.0f, int entityID = -1);
+		static void DrawDirectionalLight(const glm::vec3& position, const glm::vec3& color, float intensity, float radius = 100.0f, int entityID = -1);
 
 		//Stats
 		struct Statistics

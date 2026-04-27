@@ -62,16 +62,11 @@ namespace Odysseus
 		OrthographicCameraController m_CameraController;
 
 		//Temp variables
-		ShaderLibrary m_ShaderLibrary;
-		Ref<VertexArray> m_VertexArray;
-		Ref<Shader> m_Shader;
-		Ref<Texture2D> m_Texture;
-		Ref<Texture2D> T_Spritesheet;
-		Ref<Sprite> Sp_Bush_01;
-		Ref<QuadProperties> testQuad;
+
 		Ref<Framebuffer> m_Framebuffer;
 
 		Ref<Scene> activeScene;
+		Ref<Scene> editorScene;
 		Object ETestSquare, ECamera;
 
 		EditorCamera mainCameraEditor;

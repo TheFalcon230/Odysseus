@@ -10,6 +10,7 @@ namespace Odysseus
 	{
 		public:
 		OpenGLUniformBuffer(uint32_t size, uint32_t binding, BufferUsageType usage);
+		virtual ~OpenGLUniformBuffer();
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 		virtual void SetBindingPoint(uint32_t binding) override;

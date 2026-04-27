@@ -124,10 +124,10 @@ namespace Odysseus
 			ODC_CORE_WARN("Shader creation took {0} ms", timer.ElapsedMillis());
 		}
 
-		//assets/shaders/newShader.glsl
+		// Extract name from filepath
 		auto lastSlash = path.find_last_of("/\\");
 		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
-		auto lastDot = path.rfind(".");
+		auto lastDot = path.rfind('.');
 		auto count = lastDot == std::string::npos ? path.size() - lastSlash : lastDot - lastSlash;
 		m_Name = path.substr(lastSlash, count);
 		
@@ -234,7 +234,7 @@ namespace Odysseus
 	std::string OpenGLShader::ReadFile(const std::string& path)
 	{
 		std::string result;
-		std::ifstream in(path, std::ios::in | std::ios::binary);
+		std::ifstream in(path, std::ios::in | std::ios::binary); // ifstream closes itself due to RAII
 		if (in)
 		{
 			in.seekg(0, std::ios::end);
@@ -243,16 +243,17 @@ namespace Odysseus
 			{
 				result.resize(size);
 				in.seekg(0, std::ios::beg);
-				in.read(&result[0], result.size());
-				in.close();
+				in.read(&result[0], size);
 			}
 			else
 			{
-				ODC_CORE_ERROR("Could not read from file at path: {0}", path);
+				ODC_CORE_ERROR("Could not read from file '{0}'", path);
 			}
 		}
 		else
-			ODC_CORE_ERROR("Could not open file at path: {0}", path);
+		{
+			ODC_CORE_ERROR("Could not open file '{0}'", path);
+		}
 
 		return result;
 	}
@@ -263,19 +264,20 @@ namespace Odysseus
 
 		const char* typeToken = "#type";
 		size_t typeTokenLength = strlen(typeToken);
-		size_t pos = source.find(typeToken, 0);
+		size_t pos = source.find(typeToken, 0); //Start of shader type declaration line
 		while (pos != std::string::npos)
 		{
-			size_t eol = source.find_first_of("\r\n", pos);
+			size_t eol = source.find_first_of("\r\n", pos); //End of shader type declaration line
 			ODC_CORE_ASSERT(eol != std::string::npos, "Syntax error");
-			size_t begin = pos + typeTokenLength + 1;
+			size_t begin = pos + typeTokenLength + 1; //Start of shader type name (after "#type " keyword)
 			std::string type = source.substr(begin, eol - begin);
 			ODC_CORE_ASSERT(Utils::ShaderTypeFromString(type), "Invalid shader type specified");
 
-			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
+			size_t nextLinePos = source.find_first_not_of("\r\n", eol); //Start of shader code after shader type declaration line
 			ODC_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
-			pos = source.find(typeToken, nextLinePos);
-			shaderSources[Utils::ShaderTypeFromString(type)] = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
+			pos = source.find(typeToken, nextLinePos); //Start of next shader type declaration line
+
+			shaderSources[Utils::ShaderTypeFromString(type)] = (pos == std::string::npos) ? source.substr(nextLinePos) : source.substr(nextLinePos, pos - nextLinePos);
 		}
 
 		return shaderSources;
