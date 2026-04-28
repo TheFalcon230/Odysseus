@@ -61,6 +61,10 @@ namespace Odysseus
 					{
 						Context->CreateCube("Cube");
 					}
+					if (ImGui::MenuItem("Sphere"))
+					{
+						Context->CreateSphere("Sphere");
+					}
 					ImGui::Separator();
 					if (ImGui::MenuItem("Point Light"))
 					{
@@ -296,6 +300,12 @@ namespace Odysseus
 				ImGui::CloseCurrentPopup();
 			}
 
+			if (ImGui::MenuItem("Sphere Renderer"))
+			{
+				OSelectionContext.AddComponent<SphereRendererComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+
 			ImGui::Separator();
 
 			if (ImGui::MenuItem("Point light"))
@@ -327,6 +337,95 @@ namespace Odysseus
 		});
 
 		DrawComponent<SpriteRendererComponent>("Sprite Renderer", object, [](SpriteRendererComponent& component)
+		{
+			ImVec2 avail = ImGui::GetContentRegionAvail();
+			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+
+			ImGui::Columns(2);
+			ImGui::SetColumnWidth(0, avail.x * 0.5f);
+			ImGui::Text("Albedo");
+			ImGui::NextColumn();
+			if (ImGui::ImageButton("##Albedo", (ImTextureID)(component.Albedo ? component.Albedo->GetRendererID() : 0), ImVec2{ 64, 64 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
+			{
+				//Clears texture
+				component.Albedo = nullptr;
+			}
+
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+				{
+					const wchar_t* path = (const wchar_t*)payload->Data;
+					std::filesystem::path texturePath = std::filesystem::path(g_AssetsDirectory)/ path;
+					Ref<Texture2D> texture = Texture2D::Create(texturePath.string());
+					if (texture->IsLoaded())
+						component.Albedo = texture;
+					else
+						ODC_WARN("Could not load texture {0}", texturePath.filename().string());
+				}
+				ImGui::EndDragDropTarget();
+			}
+			ImGui::Columns(1);
+
+			ImGui::Columns(2);
+			ImGui::SetColumnWidth(0, avail.x * 0.5f);
+			ImGui::Text("Normal Map");
+			ImGui::NextColumn();
+			if (ImGui::ImageButton("##Normal", (ImTextureID)(component.NormalMap ? component.NormalMap->GetRendererID() : 0), ImVec2{ 64, 64 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
+			{
+				//Clears texture
+				component.NormalMap = nullptr;
+			}
+
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+				{
+					const wchar_t* path = (const wchar_t*)payload->Data;
+					std::filesystem::path texturePath = std::filesystem::path(g_AssetsDirectory)/ path;
+					Ref<Texture2D> texture = Texture2D::Create(texturePath.string());
+					if (texture->IsLoaded())
+						component.NormalMap = texture;
+					else
+						ODC_WARN("Could not load texture {0}", texturePath.filename().string());
+				}
+				ImGui::EndDragDropTarget();
+			}
+			ImGui::Columns(1);
+
+			ImGui::Columns(2);
+			ImGui::SetColumnWidth(0, avail.x * 0.5f);
+			ImGui::Text("ORM Map");
+			ImGui::NextColumn();
+			if (ImGui::ImageButton("##ORM", (ImTextureID)(component.ORMMap ? component.ORMMap->GetRendererID() : 0), ImVec2{ 64, 64 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
+			{
+				//Clears texture
+				component.ORMMap = nullptr;
+			}
+
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+				{
+					const wchar_t* path = (const wchar_t*)payload->Data;
+					std::filesystem::path texturePath = std::filesystem::path(g_AssetsDirectory)/ path;
+					Ref<Texture2D> texture = Texture2D::Create(texturePath.string());
+					if (texture->IsLoaded())
+						component.ORMMap = texture;
+					else
+						ODC_WARN("Could not load texture {0}", texturePath.filename().string());
+				}
+				ImGui::EndDragDropTarget();
+			}
+			ImGui::Columns(1);
+			DrawFloatControl("Tiling Factor", component.TilingFactor, 1.0f, 0.5f, 10.0f, 100.0f);
+			DrawFloatControl("Roughness factor", component.Roughness, 0.5f, 0.0f, 1.0f, 100.0f);
+			DrawFloatControl("Metallic factor", component.Metallic, 0.5f, 0.0f, 1.0f, 100.0f);
+			DrawFloatControl("AO factor", component.AO, 0.0f, 0.0f, 1.0f, 100.0f);
+
+		});
+
+		DrawComponent<SphereRendererComponent>("Sphere Renderer", object, [](SphereRendererComponent& component)
 		{
 			ImVec2 avail = ImGui::GetContentRegionAvail();
 			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));

@@ -69,6 +69,16 @@ namespace Odysseus
 		return entity;
 	}
 
+	Object Scene::CreateSphere(std::string name)
+	{
+		Object entity = { registry.create(), this };
+		entity.AddComponent<TransformComponent>(glm::vec3(0.0f));
+		auto& tag = entity.AddComponent<TagComponent>(name);
+		entity.AddComponent<SphereRendererComponent>(glm::vec4(1.0f), defaultAlbedoTexture, defaultNormalTexture, defaultORMTexture);
+		tag.Tag = name.empty() ? "Sphere Mesh" : name;
+		return entity;
+	}
+
 	void Scene::DestroyObject(Object object)
 	{
 		registry.destroy(object);
@@ -181,6 +191,13 @@ namespace Odysseus
 		{
 			auto [transform, cube] = CubeView.get<TransformComponent, CubeRendererComponent>(entity);
 			Renderer2D::DrawCube(transform.Transform(), cube.Color, (int)entity);
+		}
+
+		auto SphereView = registry.view<TransformComponent, SphereRendererComponent>();
+		for (auto entity : SphereView)
+		{
+			auto [transform, sphere] = SphereView.get<TransformComponent, SphereRendererComponent>(entity);
+			Renderer2D::DrawSphere(transform.Transform(), sphere, (int)entity);
 		}
 
 		auto LightView = registry.view<TransformComponent, PointLightComponent>();

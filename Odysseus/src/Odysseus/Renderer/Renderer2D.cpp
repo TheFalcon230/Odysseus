@@ -29,6 +29,22 @@ namespace Odysseus
 		// Editor only
 		int EntityID;
 	};
+
+	struct SphereVertex
+	{
+		glm::vec3 Position;
+		glm::vec4 Color;
+		glm::vec2 TexCoord;
+		float TexIndex;
+		float TilingFactor;
+		glm::vec3 Normal;
+		float Roughness;
+		float Metallic;
+		float AO;
+
+		// Editor only
+		int EntityID;
+	};
 	struct CubeVertex
 	{
 		glm::vec3 Position;
@@ -44,21 +60,30 @@ namespace Odysseus
 
 	struct Renderer2DData
 	{
-		static const uint32_t MaxQuadsPerDrawCall = 10000;
+		static const uint32_t MaxQuadsPerDrawCall = 20000;
 		static const uint32_t MaxVerticesPerDrawCall = MaxQuadsPerDrawCall * 4;
 		static const uint32_t MaxIndices = MaxQuadsPerDrawCall * 6;
 		static const uint32_t MaxTextureSlot = 32;
 		static const uint32_t MaxLights = 16;
 
+		static const int resolution = 2;
+
 		Ref<VertexArray> quadVertexArray;
-		Ref<VertexBuffer> vertexBuffer;
+		Ref<VertexArray> SphereVertexArray;
+		Ref<VertexBuffer> vertexBuffer, sphereVertexBuffer;
 		Ref<Shader> unlitShader;
 		Ref<Shader> PBRShader;
 		Ref<Texture2D> defaultAlbedoTexture, defaultNormalTexture, defaultORMTexture;
 
+		Ref<UniformBuffer> m_CameraBuffer, m_LightBuffer, m_MaterialBuffer;
+
 		uint32_t QuadIndexCount = 0;
+		uint32_t SphereIndexCount = 0;
 		QuadVertex* QuadVertexBufferBase = nullptr;
 		QuadVertex* QuadVertexBufferPtr = nullptr;
+
+		SphereVertex* SphereVertexBufferBase = nullptr;
+		SphereVertex* SphereVertexBufferPtr = nullptr;
 
 		CubeVertex* CubeVertexBufferBase = nullptr;
 		CubeVertex* CubeVertexBufferPtr = nullptr;
@@ -70,12 +95,6 @@ namespace Odysseus
 		/// Current texture slot index (can only starts at 1 -> 0 is reserved to defaultTexture)
 		/// </summary>
 		uint32_t TextureSlotIndex = 1;
-
-		glm::vec4 QuadVertexPositions[4];
-		glm::vec4 QuadVertexNormal[4];
-
-		glm::vec4 CubeVertexPosition[36];
-		glm::vec4 CubeVertexNormal[36];
 
 		struct CameraData
 		{
@@ -89,20 +108,26 @@ namespace Odysseus
 		{
 			glm::vec3 Position = glm::vec3(0.0f);
 			glm::vec3 Color = glm::vec3(0.0f);
-			float Intensity = 1.0f;
+			float Intensity = 0.0f;
 
 			glm::vec3 DirectionalLightDirection = glm::vec3(0.0f, -1.0f, 0.0f);
 			glm::vec3 DirectionalLightColor = glm::vec3(0.0f);
-			float DirectionalLightIntensity = 1.0f;
+			float DirectionalLightIntensity = 0;
 		};
 
-		Ref<UniformBuffer> m_CameraBuffer, m_LightBuffer, m_MaterialBuffer;
 
 		Ref<LightData> LightsToRender;
 
 		CameraData cameraData;
 
 		Renderer2D::Statistics Stats;
+
+		glm::vec4 QuadVertexPositions[4];
+		glm::vec4 QuadVertexNormal[4];
+
+		glm::vec4 SphereVertexPositions[resolution * resolution * 6];
+		glm::vec4 SphereVertexNormals[resolution * resolution * 6];
+		glm::vec2 SphereTexCoords[resolution * resolution * 6];
 	};
 
 	static Renderer2DData s_Data;
@@ -112,6 +137,7 @@ namespace Odysseus
 	{
 
 		s_Data.quadVertexArray = VertexArray::Create();
+		s_Data.SphereVertexArray = VertexArray::Create();
 
 		s_Data.vertexBuffer = VertexBuffer::Create(s_Data.MaxVerticesPerDrawCall * sizeof(QuadVertex));
 		s_Data.vertexBuffer->SetLayout({
@@ -128,7 +154,24 @@ namespace Odysseus
 			});
 		s_Data.quadVertexArray->AddVertexBuffer(s_Data.vertexBuffer);
 
+
+		s_Data.sphereVertexBuffer = VertexBuffer::Create(s_Data.MaxVerticesPerDrawCall * sizeof(SphereVertex));
+		s_Data.sphereVertexBuffer->SetLayout({
+			{ ShaderDataType::Float3, "a_Position" },
+			{ ShaderDataType::Float4, "a_Color" },
+			{ ShaderDataType::Float2, "a_TexCoord" },
+			{ ShaderDataType::Float, "a_TexIndex" },
+			{ ShaderDataType::Float, "a_TilingFactor" },
+			{ ShaderDataType::Float3, "a_Normal"},
+			{ ShaderDataType::Float, "a_Roughness"},
+			{ ShaderDataType::Float, "a_Metallic"},
+			{ ShaderDataType::Float, "a_AO"},
+			{ ShaderDataType::Int, "a_EntityID"},
+			});
+		s_Data.SphereVertexArray->AddVertexBuffer(s_Data.sphereVertexBuffer);
+
 		s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVerticesPerDrawCall];
+		s_Data.SphereVertexBufferBase = new SphereVertex[s_Data.MaxVerticesPerDrawCall];
 
 		uint32_t* quadIndices = new uint32_t[s_Data.MaxIndices];
 
@@ -226,7 +269,7 @@ namespace Odysseus
 		s_Data.CubeVertexPosition[33] = {  0.5f, -0.5f,  0.5f, 1.0f };
 		s_Data.CubeVertexPosition[34] = { -0.5f, -0.5f, -0.5f, 1.0f };
 		s_Data.CubeVertexPosition[35] = {  0.5f, -0.5f, -0.5f, 1.0f };
-		
+
 
 		// Normals for each face of the cube (6 faces * 6 vertices per face)
 		s_Data.CubeVertexNormal[0] =  {  0.0f,  0.0f,  1.0f,  0.0f };
@@ -271,9 +314,12 @@ namespace Odysseus
 		s_Data.CubeVertexNormal[34] = {  0.0f, -1.0f,  0.0f,  0.0f };
 		s_Data.CubeVertexNormal[35] = {  0.0f, -1.0f,  0.0f,  0.0f };*/
 
+		CalculateSphereVertices();
+
 		s_Data.m_CameraBuffer = UniformBuffer::Create(sizeof(Renderer2DData::CameraData), 0, BufferUsageType::DYNAMIC_DRAW);
 		s_Data.m_LightBuffer = UniformBuffer::Create(sizeof(Renderer2DData::LightData), 1, BufferUsageType::DYNAMIC_DRAW);
 
+		s_Data.LightsToRender = CreateRef<Renderer2DData::LightData>();
 	}
 
 	void Renderer2D::Shutdown()
@@ -318,10 +364,12 @@ namespace Odysseus
 		{
 			s_Data.m_LightBuffer->SetData(0, sizeof(glm::vec3), &s_Data.LightsToRender->Position);
 			s_Data.m_LightBuffer->SetData(sizeof(glm::vec3), sizeof(glm::vec3), &s_Data.LightsToRender->Color);
-			s_Data.m_LightBuffer->SetData(2*sizeof(glm::vec3), sizeof(float), &s_Data.LightsToRender->Intensity);
+			s_Data.m_LightBuffer->SetData(2 * sizeof(glm::vec3), sizeof(float), &s_Data.LightsToRender->Intensity);
+			s_Data.m_LightBuffer->SetData(2 * sizeof(glm::vec3) + sizeof(float), sizeof(glm::vec3), &s_Data.LightsToRender->DirectionalLightDirection);
+			s_Data.m_LightBuffer->SetData(3 * sizeof(glm::vec3) + sizeof(float), sizeof(glm::vec3), &s_Data.LightsToRender->DirectionalLightColor);
+			s_Data.m_LightBuffer->SetData(4 * sizeof(glm::vec3) + sizeof(float), sizeof(float), &s_Data.LightsToRender->DirectionalLightIntensity);
 		}
 		s_Data.m_LightBuffer->Unbind();
-		s_Data.PBRShader->Unbind();
 
 		StartBatch();
 	}
@@ -353,11 +401,32 @@ namespace Odysseus
 				s_Data.defaultORMTexture->Bind(2);
 
 			s_Data.PBRShader->Bind();
-
-
 			RenderCommand::DrawIndexed(s_Data.quadVertexArray, s_Data.QuadIndexCount);
-			s_Data.Stats.DrawCalls++;
+			//s_Data.Stats.DrawCalls++;
 		}
+		if (s_Data.SphereIndexCount)
+		{
+			uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.SphereVertexBufferPtr - (uint8_t*)s_Data.SphereVertexBufferBase);
+			s_Data.sphereVertexBuffer->SetData(s_Data.SphereVertexBufferBase, dataSize);
+
+			// Bind textures
+			for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+				s_Data.TextureSlots[i]->Bind(0);
+
+			if (s_Data.NormalMapSlot)
+				s_Data.NormalMapSlot->Bind(1);
+			else
+				s_Data.defaultNormalTexture->Bind(1);
+
+			if (s_Data.ORMMapSlot)
+				s_Data.ORMMapSlot->Bind(2);
+			else
+				s_Data.defaultORMTexture->Bind(2);
+
+			s_Data.PBRShader->Bind();
+			RenderCommand::DrawIndexed(s_Data.SphereVertexArray, s_Data.SphereIndexCount);
+		}
+		s_Data.Stats.DrawCalls++;
 	}
 
 	void Renderer2D::NextBatch()
@@ -371,19 +440,97 @@ namespace Odysseus
 		s_Data.QuadIndexCount = 0;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 
+		s_Data.SphereIndexCount = 0;
+		s_Data.SphereVertexBufferPtr = s_Data.SphereVertexBufferBase;
+
 		s_Data.TextureSlotIndex = 1;
+	}
+
+	void Renderer2D::CalculateSphereVertices()
+	{
+		glm::vec3 up = { 0.0f, 1.0f, 0.0f };
+		glm::vec3 right = { 1.0f, 0.0f, 0.0f };
+		glm::vec3 left = glm::vec3(-1.0f, 0.0f, 0.0f);
+		glm::vec3 forward = { 0.0f, 0.0f, 1.0f };
+		glm::vec3 back = glm::vec3(0.0f, 0.0f, -1.0f);
+		glm::vec3 down = glm::vec3(0.0f, -1.0f, 0.0f);
+
+		// Allocate for ALL faces indices
+		uint32_t indicesPerFace = (s_Data.resolution - 1) * (s_Data.resolution - 1) * 6;
+		uint32_t* quadIndices = new uint32_t[indicesPerFace * 6];
+
+		glm::vec3 positions[6] = {
+			forward, right, back, left, up, down
+		};
+
+		uint32_t globalTriIndex = 0;
+
+		for (size_t iPosition = 0; iPosition < 6; iPosition++)
+		{
+			glm::vec3 localUp = positions[iPosition];
+			uint32_t vertexOffsetForThisFace = s_Data.resolution * s_Data.resolution * iPosition;
+			
+			glm::vec3 axisA = glm::vec3(localUp.y, localUp.z, localUp.x);
+			glm::vec3 axisB = glm::cross(localUp, axisA);
+
+			for (int y = 0; y < s_Data.resolution; y++)
+			{
+				for (int x = 0; x < s_Data.resolution; x++)
+				{
+					int i = x + y * s_Data.resolution;
+
+					glm::vec2 texCoord = glm::vec2(x, y) / (float)(s_Data.resolution - 1);
+					s_Data.SphereTexCoords[i + vertexOffsetForThisFace] = texCoord;
+
+					glm::vec2 Percent = glm::vec2(x, y) / (float)(s_Data.resolution - 1);
+					glm::vec3 PointOnUnitCube = localUp + (Percent.x - 0.5f) * 2.0f * axisA + (Percent.y - 0.5f) * 2.0f * axisB;
+					glm::vec3 PointOnUnitSphere = glm::normalize(PointOnUnitCube);
+					s_Data.SphereVertexPositions[i + vertexOffsetForThisFace] = glm::vec4(PointOnUnitSphere, 1.0f);
+
+
+					if (x != s_Data.resolution - 1 && y != s_Data.resolution - 1)
+					{
+						// Add vertex offset to indices for this face
+						quadIndices[globalTriIndex + 0] = i + vertexOffsetForThisFace;
+						quadIndices[globalTriIndex + 1] = i + s_Data.resolution + 1 + vertexOffsetForThisFace;
+						quadIndices[globalTriIndex + 2] = i + s_Data.resolution + vertexOffsetForThisFace;
+
+						quadIndices[globalTriIndex + 3] = i + vertexOffsetForThisFace;
+						quadIndices[globalTriIndex + 4] = i + 1 + vertexOffsetForThisFace;
+						quadIndices[globalTriIndex + 5] = i + s_Data.resolution + 1 + vertexOffsetForThisFace;
+						
+						globalTriIndex += 6;
+					}
+				}
+			}
+		}
+
+		// Create index buffer with correct total size
+		uint32_t totalIndices = indicesPerFace * 6;
+		Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
+		s_Data.SphereVertexArray->SetIndexBuffer(quadIB);
+		delete[] quadIndices;
+
+		// Calculate normals for all vertices
+		uint32_t totalVertices = s_Data.resolution * s_Data.resolution * 6;
+		for (uint32_t i = 0; i < totalVertices; i++)
+		{
+			glm::vec3 normalVec = glm::normalize(glm::vec3(s_Data.SphereVertexPositions[i]));
+			s_Data.SphereVertexNormals[i] = glm::vec4(normalVec, 0.0f);
+		}
 	}
 
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)
 	{
+		if (s_Data.SphereIndexCount >= Renderer2DData::MaxIndices)
+			NextBatch();
+
 		constexpr size_t quadVertexCount = 4;
 		float textureIndex = 0.0f;
 		float tilingFactor = 1.0f;
 		float Roughness = 1.0f;
 		float Metallic = 1.0f;
 		float AO = 1.0f;
-
-		s_Data.TextureSlotIndex = textureIndex;
 
 		for (size_t i = 0; i < quadVertexCount; i++)
 		{
@@ -405,7 +552,7 @@ namespace Odysseus
 		s_Data.Stats.QuadCount++;
 	}
 
-	void Odysseus::Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const Ref<Texture2D>& normalMap, const Ref<Texture2D>& ormMap, float Roughness, float Metallic, float AO,float tilingFactor, const glm::vec4& tintColor, int entityID)
+	void Odysseus::Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const Ref<Texture2D>& normalMap, const Ref<Texture2D>& ormMap, float Roughness, float Metallic, float AO, float tilingFactor, const glm::vec4& tintColor, int entityID)
 	{
 		constexpr size_t quadVertexCount = 4;
 
@@ -484,7 +631,7 @@ namespace Odysseus
 	{
 		if (src.Albedo)
 		{
-			DrawQuad(transform, src.Albedo, src.NormalMap, src.ORMMap, src.Roughness, src.Metallic, src.AO,src.TilingFactor, src.Color, entityID);
+			DrawQuad(transform, src.Albedo, src.NormalMap, src.ORMMap, src.Roughness, src.Metallic, src.AO, src.TilingFactor, src.Color, entityID);
 		}
 		else
 		{
@@ -494,20 +641,114 @@ namespace Odysseus
 
 	void Renderer2D::DrawPointLight(const glm::vec3& position, const glm::vec3& color, float intensity, float radius, int entityID)
 	{
-		Ref<Renderer2DData::LightData> lightData = CreateRef<Renderer2DData::LightData>();
-		lightData->Position = position;
-		lightData->Color = color;
-		lightData->Intensity = intensity;
-		s_Data.LightsToRender = lightData;
+		s_Data.LightsToRender->Position = position;
+		s_Data.LightsToRender->Color = color;
+		s_Data.LightsToRender->Intensity = intensity;
 	}
 	void Renderer2D::DrawDirectionalLight(const glm::vec3& direction, const glm::vec3& color, float intensity, float radius, int entityID)
 	{
 		// Render directional light;
-		Ref<Renderer2DData::LightData> lightData = CreateRef<Renderer2DData::LightData>();
-		lightData->DirectionalLightDirection = direction;
-		lightData->DirectionalLightColor = color;
-		lightData->DirectionalLightIntensity = intensity;
-		s_Data.LightsToRender = lightData;
+		s_Data.LightsToRender->DirectionalLightDirection = direction;
+		s_Data.LightsToRender->DirectionalLightColor = color;
+		s_Data.LightsToRender->DirectionalLightIntensity = intensity;
+	}
+
+	void Renderer2D::DrawSphere(const glm::mat4& transform, const glm::vec4& color, int entityID)
+	{
+		if (s_Data.SphereIndexCount >= Renderer2DData::MaxIndices)
+			NextBatch();
+
+		constexpr size_t sphereVertexCount = s_Data.resolution * s_Data.resolution * 6;
+		float textureIndex = 0.0f;
+		float tilingFactor = 1.0f;
+		float Roughness = 1.0f;
+		float Metallic = 1.0f;
+		float AO = 1.0f;
+
+		glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(transform)));
+
+		for (size_t i = 0; i < sphereVertexCount; i++)
+		{
+			s_Data.SphereVertexBufferPtr->Position = transform * s_Data.SphereVertexPositions[i];
+			s_Data.SphereVertexBufferPtr->Color = color;
+			s_Data.SphereVertexBufferPtr->TexCoord = s_Data.SphereTexCoords[i];
+			s_Data.SphereVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.SphereVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.SphereVertexBufferPtr->Normal = glm::normalize(normalMatrix * glm::vec3(s_Data.SphereVertexNormals[i]));
+			s_Data.SphereVertexBufferPtr->Roughness = Roughness;
+			s_Data.SphereVertexBufferPtr->Metallic = Metallic;
+			s_Data.SphereVertexBufferPtr->AO = AO;
+			s_Data.SphereVertexBufferPtr->EntityID = entityID;
+			s_Data.SphereVertexBufferPtr++;
+		}
+
+		s_Data.SphereIndexCount += (s_Data.resolution - 1) * (s_Data.resolution - 1) * 6 * 6;
+
+		s_Data.Stats.QuadCount += sphereVertexCount / 4.0f;
+	}
+
+	void Renderer2D::DrawSphere(const glm::mat4& transform, const Ref<Texture2D>& texture, const Ref<Texture2D>& normalMap, const Ref<Texture2D>& ormMap, float Roughness, float Metallic, float AO, float tilingFactor, const glm::vec4& tintColor, int entityID)
+	{
+		constexpr size_t sphereVertexCount = s_Data.resolution * s_Data.resolution * 6;
+
+		if (s_Data.SphereIndexCount >= Renderer2DData::MaxIndices)
+			NextBatch();
+
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
+		{
+			if (*s_Data.TextureSlots[i] == *texture)
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+
+		if (textureIndex == 0.0f)
+		{
+			if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlot)
+				NextBatch();
+
+			// if texture not found, add to slot
+			textureIndex = (float)s_Data.TextureSlotIndex;
+			s_Data.TextureSlots[textureIndex] = texture;
+			s_Data.TextureSlotIndex++;
+		}
+
+		glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(transform)));
+
+		s_Data.NormalMapSlot = normalMap;
+		s_Data.ORMMapSlot = ormMap;
+		for (size_t i = 0; i < sphereVertexCount; i++)
+		{
+			s_Data.SphereVertexBufferPtr->Position = transform * s_Data.SphereVertexPositions[i];
+			s_Data.SphereVertexBufferPtr->Color = tintColor;
+			s_Data.SphereVertexBufferPtr->TexCoord = s_Data.SphereTexCoords[i];
+			s_Data.SphereVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.SphereVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.SphereVertexBufferPtr->Normal = glm::normalize(normalMatrix * glm::vec3(s_Data.SphereVertexNormals[i]));
+			s_Data.SphereVertexBufferPtr->Roughness = Roughness;
+			s_Data.SphereVertexBufferPtr->Metallic = Metallic;
+			s_Data.SphereVertexBufferPtr->AO = AO;
+			s_Data.SphereVertexBufferPtr->EntityID = entityID;
+			s_Data.SphereVertexBufferPtr++;
+		}
+
+		s_Data.SphereIndexCount += (s_Data.resolution - 1) * (s_Data.resolution - 1) * 6 * 6;
+
+		s_Data.Stats.QuadCount += sphereVertexCount / 4.0f;
+	}
+
+	void Renderer2D::DrawSphere(const glm::mat4& transform, SphereRendererComponent& src, int entityID)
+	{
+		if (src.Albedo)
+		{
+			DrawSphere(transform, src.Albedo, src.NormalMap, src.ORMMap, src.Roughness, src.Metallic, src.AO, src.TilingFactor, src.Color, entityID);
+		}
+		else
+		{
+			DrawSphere(transform, src.Color, entityID);
+		}
 	}
 
 	Renderer2D::Statistics Renderer2D::GetStats()

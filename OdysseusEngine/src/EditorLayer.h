@@ -90,9 +90,9 @@ namespace Odysseus
 		ImGuizmo::OPERATION iGizmoType = ImGuizmo::TRANSLATE;
 		ImGuizmo::MODE iGizmoMode = ImGuizmo::LOCAL;
 
-		bool bSnapTranslation = false;
-		bool bSnapRotation = false;
-		bool bSnapScale = false;
+		bool bSnapTranslation = true;
+		bool bSnapRotation = true;
+		bool bSnapScale = true;
 
 		HierarchyPanel hierarchyPanel;
 		WindowTitleBar windowTitleBar;

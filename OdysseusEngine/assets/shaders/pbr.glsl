@@ -171,30 +171,45 @@ void main()
     vec3 N = normal * Output.Normal;
     vec3 V = normalize(v_CameraPosition - Pos);
 
-
     vec3 ambient = vec3(0.1f) * Cdiff;
     vec3 Lo = ambient;
 
 	vec3 Li = LightOutput.u_LightColor * LightOutput.u_LightIntensity;
 
+	vec3 Ldirectional = LightOutput.DirectionalLightDirection;
     vec3 L = normalize(LightOutput.u_LightPos - Pos);
     vec3 H = normalize(L + V);
+	vec3 Hdirectional = normalize(V + Ldirectional);
+
     float NdotL = max(dot(N, L), 0.0f);
     float HdotV = max(dot(H, V), 0.0f);
+	float NdotLdirectional = max(dot(N, Ldirectional), 0.0f);
+    float HdotVirectional = max(dot(Hdirectional, V), 0.0f);
 
 	float F0 = DiffuseFresnel(V, H, L, N, roughness);
+	float F0directional = DiffuseFresnel(V, Hdirectional, Ldirectional, N, roughness);
 
 	float NDF = DistributionGGX(N, H, roughness);
 	float G = GeometrySmith(N, V, L, roughness);
 	vec3 F = SpecularFresnel(HdotV, vec3(0.5f));
 
+	float NDFdirectional = DistributionGGX(N, Hdirectional, roughness);
+	float Gdirectional = GeometrySmith(N, V, Ldirectional, roughness);
+	vec3 Fdirectional = SpecularFresnel(HdotVirectional, vec3(0.5f));
+
 	vec3 numerator = NDF * G * F;
 	float denominator = 4.0 * max(dot(N, V), 0.0f) * NdotL + 0.0001f;
 	vec3 specular = numerator / denominator;
 
+	vec3 numeratorDirectional = NDFdirectional * Gdirectional * Fdirectional;
+	float denominatorDirectional = 4.0 * max(dot(N, V), 0.0f) * NdotLdirectional + 0.0001f;
+	vec3 specularDirectional = numeratorDirectional / denominatorDirectional;
+
+
 	Cdiff *= F0;
 	Lo += ((Cdiff * (1 - metallic)) + specular * mix(vec3(1.0f), Cdiff, metallic)) * NdotL * ao * radiance;
-
+	Cdiff *= F0directional;
+	Lo += ((Cdiff * (1 - metallic)) + specularDirectional * mix(vec3(1.0f), Cdiff, metallic)) * NdotLdirectional * ao;
     vec3 finalColor = Lo;
 
     finalColor = finalColor / (finalColor + vec3(1.0f));

@@ -49,8 +49,8 @@ namespace Odysseus
 
 		mainCameraEditor = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
-		auto square = activeScene->CreateSquare("Test Square");
-		ETestSquare = square;
+		auto sphere = activeScene->CreateSphere("Test Sphere");
+		ETestSquare = sphere;
 
 		hierarchyPanel.SetContext(activeScene);
 		windowTitleBar.SetContext(this);

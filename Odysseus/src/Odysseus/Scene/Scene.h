@@ -19,6 +19,7 @@ namespace Odysseus
 		Object CreateCube(std::string name = "");
 		Object CreatePointLight(std::string name = "");
 		Object CreateDirectionalLight(std::string name = "");
+		Object CreateSphere(std::string name = "");
 		void DestroyObject(Object object);
 
 		void UpdateEditor(Timestep time, EditorCamera& camera);

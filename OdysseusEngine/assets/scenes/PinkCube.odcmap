@@ -1,15 +1,28 @@
-Scene: Untitled
+Scene: New Scene
 Objects:
-  - Object: 12837192831273
+  - Object: 184563512379
     TagComponent:
-      Name: Top
+      Name: Left
     TransformComponent:
-      Position: [0, 0.5, 0]
-      Rotation: [1.57079637, 0.785398185, 0]
+      Position: [-0.354999989, 0, 0.349999994]
+      Rotation: [0, -0.785398185, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Color: [0.876447856, 0, 0.834712803, 1]
-  - Object: 12837192831273
+      Color: [1, 0, 0.949807167, 1]
+      TilingFactor: 1
+      Roughness: 0.5
+  - Object: 184563512379
+    TagComponent:
+      Name: Right
+    TransformComponent:
+      Position: [0.351999998, 0, 0.349999994]
+      Rotation: [0, 0.785398185, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [0.54842025, 0, 0.586872578, 1]
+      TilingFactor: 1
+      Roughness: 0.5
+  - Object: 184563512379
     TagComponent:
       Name: Camera
     TransformComponent:
@@ -27,21 +40,14 @@ Objects:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
-  - Object: 12837192831273
+  - Object: 184563512379
     TagComponent:
-      Name: Right
+      Name: Top
     TransformComponent:
-      Position: [0.351999998, 0, 0.349999994]
-      Rotation: [0, 0.785398185, 0]
+      Position: [0, 0.5, 0]
+      Rotation: [-1.57079637, 0.785398185, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Color: [0.54842025, 0, 0.586872578, 1]
-  - Object: 12837192831273
-    TagComponent:
-      Name: Left
-    TransformComponent:
-      Position: [-0.354999989, 0, 0.349999994]
-      Rotation: [0, -0.785398185, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [1, 0, 0.949807167, 1]
+      Color: [0.876447856, 0, 0.834712803, 1]
+      TilingFactor: 1
+      Roughness: 0.5
